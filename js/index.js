@@ -12,41 +12,84 @@ canvas.setAttribute("height", canvasHeight);
 canvas.setAttribute("width",  canvasWidth);
 
 
-
-
 // let selectionZones = [];
 // let currentSelectionZone = {};
 
 // Select any hovered points
+let cloning = false;
+let cloners = [];
+let mouseQueue = [];
+
+
+// const mouseDown = (e) => {
+  
+
+
+// }
+
 canvas.addEventListener("mousedown", (e) => {
 
+  console.log(cloners);
+  cloners = [];
+  cloning = false;
   mouse.pressed = true;
   mouse.anySelected = false;
 
-  points = points.map(row => {
-    return row.map(p => {
-      if(p.hovered) {
-        p.selected = true;
-        mouse.anySelected = true;
+  grids.map(grid => {
+
+    for(var i = 0; i < grid.points.length; i++){
+            
+      let thisP = grid.points[i];
+      let nextP = grid.points[i + 1];
+      let start, end, dist;
+      dist = 0;
+      
+      if(!nextP) {
+        nextP = grid.points[0];
       }
-      return p;
-    });
+
+      start = {x: thisP.x, y: thisP.y};
+      end = {x: nextP.x, y: nextP.y};
+      
+
+      dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
+
+      if(dist < 15) {
+          cloners.push(thisP);
+          cloners.push(nextP);
+      }
+    }
+
+
+
+  })
+
+  points = points.map(p => {
+
+    // let dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
+    // if(p.clone == true) {
+    //   cloners.push(p);
+    // }
+
+    if(p.hovered) {
+      p.selected = true;
+      mouse.anySelected = true;
+    }
+    return p;
   });
 
   if(mouse.AnySelected == false) {
-    points = points.map(row => {
-      return row.map(p => {
+    points = points.map(p => {
         p.selected = false;
         p.hovered = false;
         return p;
-      });
     });
   }
 
   if(mouse.anySelected == false ) {
-    // if(mouse.shiftPressed == false) {
+    if(mouse.shiftPressed == false) {
       clearSticky();
-    // }
+    }
 
     mouse.dragging = true;
     mouse.dragZone.start.x = e.offsetX;
@@ -55,6 +98,30 @@ canvas.addEventListener("mousedown", (e) => {
     mouse.dragZone.end.y = e.offsetY;
   }
 
+
+  if(cloners.length == 2) {
+    cloning = true;
+    // Add new points to the points array
+    let newOne = { x: parseInt(cloners[0].x), y: parseInt(cloners[0].y), selected: true}
+    let newTwo = { x: parseInt(cloners[1].x), y: parseInt(cloners[1].y), selected: true}
+    points.push(newOne);
+    points.push(newTwo);
+
+
+    // Add existing points to new points
+    let newPoints = [
+      cloners[0],
+      cloners[1],
+      newTwo,
+      newOne
+    ]
+
+    mouse.dragging = false;
+    // Create a grid tile from it
+    grids.push(new Grid(newPoints, "right"));
+  }
+
+
 });
 
 
@@ -62,20 +129,41 @@ canvas.addEventListener("mousedown", (e) => {
 window.addEventListener("mouseup", (e) => {
   mouse.pressed = false;
 
-  if(mouse.dragging == true) {
-    mouse.dragging = false;
-  } else if(mouse.dragging == false) {
-    
+  for(var i = 0; i < grids.length; i++) {
+    let g = grids[i];
+  }
 
-  points = points.map(row => {
-    return row.map(p => {
-        p.selected = false;
-        return p;
-    });
+  cloning = false;
+
+
+  points = points.map(p => {
+    p.clone = false;
+    return p;
   });
 
 
+  if(mouse.dragging == true) {
+    mouse.dragging = false;
+  } else if(mouse.dragging == false) {
+    points = points.map(p => {
+      p.selected = false;
+      return p;
+    });
   }
+
+  points = points.map(p=> {
+    points.map(otherP=> {
+      let distance = Math.sqrt(Math.pow(p.x - otherP.x, 2) + Math.pow(p.y - otherP.y, 2));
+      if(distance < 30) {
+        p.x = otherP.x;
+        p.y = otherP.y;
+      }
+
+    })
+    return p;
+  })
+
+
 });
 
 
@@ -89,35 +177,48 @@ canvas.addEventListener("mousemove", (e) => {
     mouse.dragZone.end.y += dY;
   }
 
-  points = points.map(row => {
-    return row.map(p => {
+  let one = { x : points[0].x, y : points[0].y};
+  let two = { x : points[1].x, y : points[1].y};
 
-      if(mouse.dragging) {
+  points = points.map(p => {
+
+    if(mouse.dragging) {
+      p.hovered = false;
+      p.stickyHovered = checkDragZone(p);
+    }
+
+    if(mouse.dragging == false) {
+      let distance = Math.sqrt(Math.pow(p.x - mouse.x, 2) + Math.pow(p.y - mouse.y, 2));
+      let radius = 20;
+
+      if(distance < radius) {
+        p.hovered = true;
+      } else {
         p.hovered = false;
-        p.stickyHovered = checkDragZone(p);
-        
       }
+    }
 
-      if(mouse.dragging == false) {
-        let distance = Math.sqrt(Math.pow(p.x - mouse.x, 2) + Math.pow(p.y - mouse.y, 2));
-        let radius = 20;
+    if(p.selected) {
+      p.x += dX;
+      p.y += dY;
+      moveSticky(dX,dY);
 
-        if(distance < radius) {
-          p.hovered = true;
-        } else {
-          p.hovered = false;
+      points.map(otherP => {
+        if(otherP != p) {
+          let distance = Math.sqrt(Math.pow(p.x - otherP.x, 2) + Math.pow(p.y - otherP.y, 2));
+          if(distance < 10) {
+            // p.x = otherP.x;
+            // p.y = otherP.y;
+          }
+
         }
-      }
+      })
 
-      if(p.selected) {
-        p.x += dX;
-        p.y += dY;
-        moveSticky(dX,dY);
-      }
 
-      return p;
 
-    });
+    }
+
+    return p;
   });
 
   mouse.x = e.offsetX;
@@ -125,29 +226,25 @@ canvas.addEventListener("mousemove", (e) => {
 });
 
 const clearSticky = () => {
-   points = points.map(row => {
-    return row.map(p => {
+   points = points.map(p => {
+
       if(p.stickyHovered) {
         p.stickyHovered = false;
       }
       return p;
-    });
+
   });
 }
 
 const moveSticky = (dX, dY) => {
-   points = points.map(row => {
-    return row.map(p => {
+   points = points.map(p => {
       if(p.stickyHovered && !p.selected) {
         p.x += dX;
         p.y += dY;
       }
       return p;
-    });
   });
-
 }
-
 
 const keyMap = {
   37 : "left",
@@ -180,6 +277,7 @@ window.addEventListener("keyup", e => {
 const mouse = {
   x : 0,
   y: 0,
+  
   pressed : false,
   anySelected : false,
   dragging : false,
@@ -196,45 +294,57 @@ const mouse = {
   }
 }
 
-let size = 10;
-let points = [];
 
-for(var i = 0; i < size; i++) {
-  points[i] = [];
-  for(var j = 0; j < size; j++) {
-    points[i].push({
-      x: 0, 
-      y: 0, 
-      active: false,
-      hovered: false,
-      stickyHovered : false,
-      selected: false
-    }); 
-  }
-}
-
-
-
+let points = [
+  {x : 100, y : 100},
+  {x : 200, y : 100},
+  {x : 200, y : 200},
+  {x : 100, y : 200}
+];
 
 let grids = [];
-grids[0] = new Grid(2, 2, 100, "right");
-grids[1] = new Grid(3, 2, 100, "right");
-grids[2] = new Grid(4, 2, 100, "right");
-grids[3] = new Grid(2, 3, 100);
-grids[4] = new Grid(3, 3, 100);
-grids[5] = new Grid(4, 3, 100);
+
+grids.push(new Grid(points, "right"));
 
 
+const drawMaybe = () => {
+
+}
+
+// grids[1] = new Grid(3, 2, 100, "right");
+// grids[2] = new Grid(4, 2, 100, "right");
+// grids[3] = new Grid(2, 3, 100);
+// grids[4] = new Grid(3, 3, 100);
+// grids[5] = new Grid(4, 3, 100);
+
+
+let holdCount = 0;
+let heldEnough = false;
+
+const addGrid = () => {
+  
+}
 
 const frameLoop = () => {
   
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
   drawControls();
+  drawMaybe();
+
+  mouseQueue.map(mouseEvent => {
+    if(mouseEvent.eventName == "mouseDown") {
+      mouseDown(mouseEvent.event);
+    }
+  });
+
+  mouseQueue = [];
+
 
   grids.map(g => {
     g.draw();
-  })
+  });
+
 
   drawDragZone();
 
@@ -257,8 +367,7 @@ const drawDragZone = () => {
 
 const drawControls = () => {
 
-  points = points.map(row => {
-    return row.map(p => {
+  points = points.map(p => {
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, 20, Math.PI * 2,0);
@@ -279,7 +388,7 @@ const drawControls = () => {
       ctx.closePath();
 
       return p;
-    })
+    
   })
 }
 

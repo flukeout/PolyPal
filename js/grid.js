@@ -1,15 +1,11 @@
 class Grid {
 
-    constructor(x, y, size, direction) {
-        this.x = x;
-        this.y = y;
+    constructor(points, direction) {
         this.direction = direction || "top";
-        this.size = size;
         this.controlPointSize = 12;
         this.points = [];
         this.lineSegmentDensity = .05;
-        this.init();
-        
+        this.points = points;
         this.controlPointColor = "#DDD";
         this.lineWidth = 1;
         this.gridWidth = 1;
@@ -18,50 +14,15 @@ class Grid {
         this.outlineColor = "#777";
     }
 
-    init(){
-
-        this.points = [
-            points[this.x][this.y],
-            points[this.x + 1][this.y],
-            points[this.x + 1][this.y + 1],
-            points[this.x][this.y + 1]
-        ]
-
-        this.points[0].x = this.x * this.size;
-        this.points[0].y = this.y * this.size;
-
-        this.points[1].x = (this.x * this.size) + this.size;
-        this.points[1].y = this.size * this.y;
-
-        this.points[2].x = (this.x * this.size) + this.size;
-        this.points[2].y = (this.y * this.size) + this.size;
-
-        this.points[3].x = this.x * this.size;
-        this.points[3].y = (this.y * this.size) + this.size;
-
-        this.points = this.points.map(p => {
-            p.active = true;
-            return p;
-        });
-    }
-
-
-
-    mouseReleased(){
-        this.points = this.points.map(p => {
-            p.selected = false;
-            return p;
-        });
-    }
 
     draw() {
-        this.drawOutLines();
         this.drawFillLines();
+        this.drawOutLines();
     }
 
     drawFillLines() {
 
-        
+
         let startXDelta, endXDelta, startYDelta, endYDelta, numLines;
 
         if(this.direction == "top") {
@@ -103,7 +64,6 @@ class Grid {
               this.points[0].y + startYDelta * i,
             );
 
-
             if(this.direction == "top") {
             ctx.lineTo(
               this.points[3].x + endXDelta * i,
@@ -115,7 +75,6 @@ class Grid {
               this.points[1].x- endXDelta * i,
               this.points[1].y - endYDelta * i,
             );
-
           }
 
 
@@ -126,7 +85,6 @@ class Grid {
     }
 
     drawOutLines(){
-        
         ctx.lineWidth = this.outlineWidth;
         ctx.strokeStyle = this.outlineColor;
         ctx.lineCap = "round";
@@ -134,17 +92,36 @@ class Grid {
         for(var i = 0; i < this.points.length; i++){
             ctx.beginPath();
             let thisP = this.points[i];
+            thisP.clone = false;
             ctx.moveTo(thisP.x, thisP.y);
             let nextP = this.points[i + 1];
-            if(nextP) {
-                ctx.lineTo(nextP.x, nextP.y);
-            } else {
-                ctx.lineTo(this.points[0].x,this.points[0].y);
+            let start, end, dist;
+            dist = 0;
+            
+            if(!nextP) {
+              nextP = this.points[0];
             }
+
+            start = {x: thisP.x, y: thisP.y};
+            end = {x: nextP.x, y: nextP.y};
+            
+            ctx.lineTo(nextP.x, nextP.y);
+
+            dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
+
+            if(dist < 15) {
+                ctx.strokeStyle = "rgba(255,0,0,1)";
+                ctx.lineWidth = 5;
+                
+                // cloners.push(thisP);
+                // cloners.push(nextP)
+            } else {
+                ctx.strokeStyle = this.outlineColor;
+                ctx.lineWidth = this.lineWidth;
+            }
+
             ctx.stroke();
             ctx.closePath();
-
         }
-
     }
 }
