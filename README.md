@@ -1,4 +1,4 @@
-# Draw pictures with grids & triangles
+# Draw pictures with planes & triangles
 
 <img src="https://flukeout.github.io/gridplanes/images/screenshot.png" width="350"/>
 
