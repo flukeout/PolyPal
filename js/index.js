@@ -433,6 +433,8 @@ const frameLoop = () => {
   consoleEl.innerText = points.length;
 
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
   drawControls();
 
