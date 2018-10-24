@@ -11,27 +11,56 @@ class Grid {
         this.gridWidth = 1;
         this.lineColor = "#AAA";
         this.outlineWidth = 1;
-        this.outlineColor = "#777";
+        this.outlineColor = "#000";
+        this.fillStartEdge = 0;
+        this.hovered = false;
     }
 
-
     draw() {
+        this.checkHover();
+        this.drawFill();
         this.drawFillLines();
         this.drawOutLines();
     }
 
+    drawFill() {
+      if(!this.hovered) {
+        return;
+      }
+      ctx.beginPath();
+      ctx.moveTo(this.points[0].x, this.points[0].y);
+
+      for(var i = 1 ; i < this.points.length; i++) {
+        let p = this.points[i];
+        ctx.lineTo(p.x, p.y);
+      }
+      ctx.fillStyle = "rgba(255,0,0,.15)";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    checkHover() {
+      let polygon = [];
+      for(var i = 0; i < this.points.length; i++) {
+        let p = this.points[i];
+        polygon.push([p.x,p.y]);
+      }
+
+      this.hovered =testWithin([mouse.x, mouse.y], polygon);
+    }
+
     drawFillLines() {
 
+        if(this.points.length != 4) {
+          return;
+        }
 
         let startXDelta, endXDelta, startYDelta, endYDelta, numLines;
 
         if(this.direction == "top") {
 
-
           numLines = 20;
 
-          // let total = Math.abs(this.points[1].x - this.points[0].x) + Math.abs(this.points[2].x - this.points[3].x);
-          // numLines = total / 10;
 
           startXDelta = (this.points[1].x - this.points[0].x) / numLines;
           startYDelta = (this.points[1].y - this.points[0].y) / numLines;
@@ -49,9 +78,7 @@ class Grid {
           endXDelta = (this.points[1].x - this.points[2].x) / numLines;
           endYDelta = (this.points[1].y - this.points[2].y) / numLines;
 
-        } else if (this.direction == "side") {
-
-        }
+        } 
 
         ctx.beginPath();
         ctx.strokeStyle = this.lineColor;

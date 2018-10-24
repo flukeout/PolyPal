@@ -10,6 +10,13 @@ body {
   background: #efefef;
 }
 
+.console {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  font-family: monospace;
+}
+
 h1 {
   position: absolute;
   width: 100%;

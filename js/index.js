@@ -1,3 +1,9 @@
+// Seems like points are getting consolidated properly now
+// but
+// * dragging vertices (when two or more lines are higlighted)
+// * starts a weird buggy clone
+
+
 // Basic Config
 const canvasWidth = 900
     , canvasHeight = 600
@@ -6,6 +12,7 @@ const canvasWidth = 900
 // Element references
 const bodyEl = document.querySelector("body")
     , canvas = document.querySelector("canvas")
+    , consoleEl = document.querySelector(".console")
     , ctx = canvas.getContext("2d", { alpha: false });
 
 canvas.setAttribute("height", canvasHeight);
@@ -22,14 +29,12 @@ let mouseQueue = [];
 
 
 // const mouseDown = (e) => {
-  
 
 
 // }
 
 canvas.addEventListener("mousedown", (e) => {
 
-  console.log(cloners);
   cloners = [];
   cloning = false;
   mouse.pressed = true;
@@ -38,7 +43,7 @@ canvas.addEventListener("mousedown", (e) => {
   grids.map(grid => {
 
     for(var i = 0; i < grid.points.length; i++){
-            
+
       let thisP = grid.points[i];
       let nextP = grid.points[i + 1];
       let start, end, dist;
@@ -50,19 +55,19 @@ canvas.addEventListener("mousedown", (e) => {
 
       start = {x: thisP.x, y: thisP.y};
       end = {x: nextP.x, y: nextP.y};
-      
 
       dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
 
       if(dist < 15) {
+        if(cloners.length < 2) {
           cloners.push(thisP);
           cloners.push(nextP);
+        }
       }
     }
+  });
 
-
-
-  })
+  console.log(cloners);
 
   points = points.map(p => {
 
@@ -90,7 +95,6 @@ canvas.addEventListener("mousedown", (e) => {
     if(mouse.shiftPressed == false) {
       clearSticky();
     }
-
     mouse.dragging = true;
     mouse.dragZone.start.x = e.offsetX;
     mouse.dragZone.start.y = e.offsetY;
@@ -99,7 +103,7 @@ canvas.addEventListener("mousedown", (e) => {
   }
 
 
-  if(cloners.length == 2) {
+  if(cloners.length == 2 && mouse.anySelected == false) {
     cloning = true;
     // Add new points to the points array
     let newOne = { x: parseInt(cloners[0].x), y: parseInt(cloners[0].y), selected: true}
@@ -118,7 +122,7 @@ canvas.addEventListener("mousedown", (e) => {
 
     mouse.dragging = false;
     // Create a grid tile from it
-    grids.push(new Grid(newPoints, "right"));
+    grids.push(new Grid(newPoints, "top"));
   }
 
 
@@ -151,17 +155,6 @@ window.addEventListener("mouseup", (e) => {
     });
   }
 
-  points = points.map(p=> {
-    points.map(otherP=> {
-      let distance = Math.sqrt(Math.pow(p.x - otherP.x, 2) + Math.pow(p.y - otherP.y, 2));
-      if(distance < 30) {
-        p.x = otherP.x;
-        p.y = otherP.y;
-      }
-
-    })
-    return p;
-  })
 
 
 });
@@ -177,8 +170,8 @@ canvas.addEventListener("mousemove", (e) => {
     mouse.dragZone.end.y += dY;
   }
 
-  let one = { x : points[0].x, y : points[0].y};
-  let two = { x : points[1].x, y : points[1].y};
+  // let one = { x : points[0].x, y : points[0].y};
+  // let two = { x : points[1].x, y : points[1].y};
 
   points = points.map(p => {
 
@@ -251,7 +244,8 @@ const keyMap = {
   38 : "up",
   39 : "right",
   40 : "down",
-  16 : "shift"
+  16 : "shift",
+  68 : "delete"
 }
 
 const getKey = keyCode => {
@@ -260,10 +254,42 @@ const getKey = keyCode => {
 
 window.addEventListener("keydown", e => {
   let key = getKey(e.keyCode);
-  if(key == "shift") {
-    // mouse.shiftPressed = true;
+
+  if(key == "delete") {
+
+
+    let selectedPoints = points.filter(p => {
+      return p.stickyHovered;
+    });
+
+    deletePoints(selectedPoints);
   }
+
 });
+
+const deletePoints = (selectedPoints) => {
+
+  if(selectedPoints.length == 0) {
+    return;
+  }
+
+  grids = grids.map(grid => {
+    grid.points = grid.points.filter(p => {
+      for(var i = 0; i < selectedPoints.length; i++) {
+        return p != selectedPoints[i];
+      }
+    });
+    return grid;
+  });
+  
+  points = points.filter(p => {
+    for(var i = 0; i < selectedPoints.length; i++) {
+      return p != selectedPoints[i];
+    }
+  });
+
+  
+}
 
 window.addEventListener("keyup", e => {
   let key = getKey(e.keyCode);
@@ -295,56 +321,224 @@ const mouse = {
 }
 
 
-let points = [
-  {x : 100, y : 100},
-  {x : 200, y : 100},
-  {x : 200, y : 200},
-  {x : 100, y : 200}
-];
 
+let size = 140;
+let startX = 360;
+let startY = 200;
+
+let points = [
+  {x : startX, y : startY},
+  {x : startX + size, y : startY},
+  {x : startX + size, y : startY + size},
+  {x : startX, y : startY + size}
+];
 let grids = [];
 
 grids.push(new Grid(points, "right"));
 
+// Check if there are any overlapping points...
+const consolidatePoints = () => {
 
-const drawMaybe = () => {
+  // need to replace the point in teh place where it was taken out of
+  // Build list of points that are the same...
+
+  let x;
+  let y;
+  let haveNewPoint = false;
+
+  let samePoints = points.filter(thisPoint => {
+    for(var i = 0; i < points.length; i++) {
+      let otherPoint = points[i];
+      if(otherPoint != thisPoint) {
+        if(otherPoint.x == thisPoint.x && otherPoint.y == thisPoint.y) {
+          x = thisPoint.x;
+          y = thisPoint.y;
+          haveNewPoint = true;
+          return thisPoint;
+        }
+      }
+    }
+  });
+
+  if(haveNewPoint == false) {
+    return;
+  }
+
+  // replace with new reference...
+  let newPoint = { x: x, y: y, new: true};
+  let alreadyReturned;
+
+
+
+  // this does NOT update the 'grids value'
+  // might as well do it the mapped way...
+
+  points = points.filter(p => {
+    if(p.x == newPoint.x && p.y == newPoint.y) {
+      return false;
+    } else {
+      return true;
+    }
+  });
+
+  grids = grids.map(grid => {
+    grid.points = grid.points.map(p => {
+      if(p.x == newPoint.x && p.y == newPoint.y) {
+        return newPoint;
+      } else {
+        return p;
+      }
+    });
+
+    return grid;
+  })
+
+  points.push(newPoint);
+
+
+  // points = points.map(p => {
+  //   if(p.x == newPoint.x && p.y == newPoint.y && alreadyReturned == false) {
+  //     alreadyReturned = true;
+  //     return newPoint;
+  //   } else {
+  //     return p;
+  //   }
+  // });
+
+  // console.log(newPoint);
+
+
+
+
+  return;
+
+
+  let uniquePoints = [];
+  
+
+  // these need to be merged i guess....
+  // not just to delete one...
+
+  samePoints.map(p => {
+    let contains = false;
+
+    for(var i = 0; i < uniquePoints.length; i++){
+      let uniquePoint = uniquePoints[i];
+      if(uniquePoint.x == p.x && uniquePoint.y == p.y) {
+        contains = true;
+      }
+    }
+
+    if(contains == false) {
+      uniquePoints.push(JSON.parse(JSON.stringify(p)));
+    }
+  });
+
+
+
+  uniquePoints.map(newPoint => {
+    
+    grids = grids.map(grid => {
+      let contained = false;
+
+      grid.points = grid.points.filter(gridPoint => {
+        if(gridPoint.x == newPoint.x && gridPoint.y == newPoint.y ) {
+          contained = true;
+          return newPoint;
+        } else {
+          return gridPoint;
+        }
+      });
+
+      return grid;
+    });
+  });
+
+  // TODO - need to filter out the 'same points from the points' array
+  if(uniquePoints.length > 0) {
+    points = points.filter(p => {
+      for(var i = 0; i < uniquePoints.length; i++) {
+        let uniqueP = uniquePoints[i];
+        if(p.x != uniqueP.x && p.y != uniqueP.y) {
+          return p;
+        }
+      }
+    });
+    
+    for(var i = 0; i < uniquePoints.length; i++) {
+      points.push(uniquePoints[i]);
+    }
+
+  }
+
 
 }
-
-// grids[1] = new Grid(3, 2, 100, "right");
-// grids[2] = new Grid(4, 2, 100, "right");
-// grids[3] = new Grid(2, 3, 100);
-// grids[4] = new Grid(3, 3, 100);
-// grids[5] = new Grid(4, 3, 100);
 
 
 let holdCount = 0;
 let heldEnough = false;
 
-const addGrid = () => {
+// Get rid of shapes with 2 or fewer points
+const cleanupGrids = () => {
+
+  grids = grids.filter(grid => {
+    return grid.points.length > 2;
+  });
+}
+
+// Filter out points that aren't associated with any shapes
+const cleanupPoints = () => {
   
+  points = points.filter(p => {
+    let contained = false;
+    for(var i = 0; i < grids.length; i++) {
+      
+      let gridPoints = grids[i].points;
+      if(gridPoints.includes(p)) {
+        contained = true;
+      }
+    }
+    return contained;
+  });
 }
 
 const frameLoop = () => {
-  
+
+    
+  consoleEl.innerText = points.length;
+
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
   drawControls();
-  drawMaybe();
-
-  mouseQueue.map(mouseEvent => {
-    if(mouseEvent.eventName == "mouseDown") {
-      mouseDown(mouseEvent.event);
-    }
-  });
-
-  mouseQueue = [];
-
 
   grids.map(g => {
     g.draw();
   });
 
+  if(mouse.pressed == false) {
+
+     points = points.map(p=> {
+        points.map(otherP=> {
+          if(p != otherP) {
+            let distance = Math.sqrt(Math.pow(p.x - otherP.x, 2) + Math.pow(p.y - otherP.y, 2));
+            if(distance < 30) {
+              p.x = otherP.x;
+              p.y = otherP.y;
+
+
+            }
+
+          }
+        })
+        return p;
+      });
+
+    consolidatePoints(); // Merge same points together
+
+
+    //cleanupGrids();      // Throw out grids with less than 3 pionts
+    // cleanupPoints();     // Get rid of orphan points
+  }
 
   drawDragZone();
 
@@ -391,238 +585,6 @@ const drawControls = () => {
     
   })
 }
-
-const drawShip = () => {
-  return;
-  if(ship.right) {
-    ship.xV += ship.accel;
-  } else if (ship.left) {
-    ship.xV -= ship.accel;
-  } else {
-    ship.xV *= ship.brakeRatio;
-  }
-
-  if(ship.up) {
-    ship.yV -= ship.accel;
-  } else if (ship.down) {
-    ship.yV += ship.accel;
-  } else {
-    ship.yV *= ship.brakeRatio;
-  }
-
-  // Limit max speed
-  ship.x += ship.xV;
-  if(Math.abs(ship.xV) > ship.maxV){
-    ship.xV = ship.xV > 0 ? ship.maxV : -ship.maxV;
-  }
-
-  ship.y += ship.yV;
-  if(Math.abs(ship.yV) > ship.maxV){
-    ship.yV = ship.yV > 0 ? ship.maxV : -ship.maxV;
-  }
-
-  // Constrain ship position
-  if(ship.x < ship.width) { ship.x = ship.width }
-  if(ship.x > canvasWidth - ship.width) { ship.x = canvasWidth - ship.width} 
-  if(ship.y < 0) { ship.y = 0 }
-  if(ship.y > canvasHeight - ship.height) { ship.y = canvasHeight - ship.height }
-
-  ctx.lineCap = "round";
-
-  // Ship is taller when decelerating, shorter when accelerating
-  let heightModifier = mapScale(ship.yV, -4, 4, -1, 1);
-  let drawHeight =  ship.height + (5 * heightModifier);
-
-  ctx.beginPath();
-  ctx.moveTo(ship.x, ship.y);
-
-  // Figure out ship tilt based on x velocity
-  let shipAngle = 2 * Math.PI;
-  let angleOffset = mapScale(ship.xV, -ship.maxV , ship.maxV, -.4, .4);
-  
-  // Draw right wing
-  let rX = ship.width * Math.cos(shipAngle + angleOffset);
-  let rY = ship.width * Math.sin(shipAngle + angleOffset);
-  ctx.moveTo(ship.x, ship.y + drawHeight);
-  ctx.lineTo(ship.x + rX, ship.y + rY + drawHeight);
-  ctx.lineTo(ship.x, ship.y);
-
-  // Draw left wing
-  let nA = shipAngle / 2;
-  let lX =  ship.width * Math.cos(nA + angleOffset);
-  let lY =  ship.width * Math.sin(nA + angleOffset);
-  ctx.moveTo(ship.x, ship.y + drawHeight);
-  ctx.lineTo(ship.x + lX, ship.y + lY + drawHeight);
-  ctx.lineTo(ship.x, ship.y);
-  
-
-  let offsetY = 60; // Slight offset for collision checking
-
-  let perlinNoise = noise.simplex2(
-    perlinPosition.x + (perlinDetail * ship.x),
-    perlinPosition.y + (perlinDetail * (ship.y + offsetY))
-  ) * perlinScalar;
-
-  // Ship height
-  ship.altitude = mapScale(perlinNoise, -1, 1, 0, 50);
-
-  if(ship.altitude < 20 && perlinScalar === 1) {
-    if(!ship.hit) {
-      crash();
-    }
-  }
-
-  ctx.strokeStyle = "rgba(255,   0,   0, 0.5)";
-  ctx.fillStyle   = "rgba(255, 255, 255, 0.6)";
-
-  ship.hit ? ctx.stroke() : ctx.fill();
-
-  ctx.closePath();
-
-  // Draw ship shadow
-  if(!ship.hit){
-    ctx.beginPath();
-    ctx.fillStyle = "rgba(255,255,255,.15)";
-    ctx.moveTo(ship.x, ship.y + ship.altitude);
-    ctx.lineTo(ship.x + lX, ship.y + drawHeight + ship.altitude);
-    ctx.lineTo(ship.x + rX, ship.y + drawHeight + ship.altitude);
-    ctx.fill();
-    ctx.closePath();
-  }
-}
-
-const drawPortal = () => {
-  let x = canvasWidth - ship.x;
-  let y = canvasHeight - ship.y;
-  portalPosition.x = x;
-  portalPosition.y = y;
-
-  let heightModifier = mapScale(-ship.yV, -4, 4, -1, 1);
-  let drawHeight =  (ship.height - 2) + (5 * heightModifier);
-
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
-
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-
-  // Figure out ship tilt based on x velocity
-  let shipAngle = 2 * Math.PI;
-  let angleOffset = mapScale(ship.xV, -ship.maxV , ship.maxV, .4, -.4);
-  
-  // Draw right wing
-  let rX = (ship.width - 2) * Math.cos(shipAngle + angleOffset);
-  let rY = ship.width * Math.sin(shipAngle + angleOffset);
-  ctx.moveTo(x, y + drawHeight);
-  ctx.lineTo(x + rX, y + rY + drawHeight);
-  ctx.lineTo(x, y);
-
-  // Draw left wing
-  let nA = shipAngle / 2;
-  let lX =  (ship.width - 2) * Math.cos(nA + angleOffset);
-  let lY =  ship.width * Math.sin(nA + angleOffset);
-  ctx.moveTo(x, y + drawHeight);
-  ctx.lineTo(x + lX, y + lY + drawHeight);
-  ctx.lineTo(x, y);
-
-  ctx.stroke();
-  ctx.closePath();
-
-}
-
-const drawLine = (x, y, column) => {
-
-  ctx.lineWidth = lineWidth;
-  ctx.lineCap = "butt";
-
-  let p  = { x : x - xPointSpacing, y : y };
-  let pP = { x : x - xPointSpacing, y : y };
-
-  let perlinDelta;
-  let segmentCount = Math.ceil(canvasWidth / xPointSpacing);
-  // let xSpacing = xPointSpacing / 40;
-  // let ySpacing = yLineSpacing / 40;
-
-  // Draw each line segment
-  for(let i = -1; i < segmentCount; i++) {
-
-    let perlinNoise = noise.simplex2(
-      perlinPosition.x + perlinDetail * i * xPointSpacing,
-      perlinPosition.y + perlinDetail * column * yLineSpacing
-    ) * perlinScalar;
-
-    perlinDelta = peakHeight * (-1 + perlinNoise);
-
-    p.x = p.x + xPointSpacing;
-
-    let alpha = .1 + ( .4 * mapScale(Math.abs(perlinDelta), 60, 80, 0, 1));
-    alpha = alpha.toFixed(2);
-
-    if(i > -1) {
-      ctx.beginPath();
-      ctx.strokeStyle = 
-        ship.hit ? 
-          `rgba(255,   0,   0, ${alpha})`:
-          `rgba(255, 255, 255, ${alpha})`;
-
-      ctx.moveTo(p.x, p.y + perlinDelta);
-      ctx.lineTo(pP.x, pP.y);
-      ctx.stroke();
-      ctx.closePath();
-    }
-
-    // Remember the last point your drew
-    pP.x = parseInt(p.x);
-    pP.y = parseInt(p.y + perlinDelta);
-  }
-}
-
-// const warpLine = {
-//   start : { x :   0, y :   0 },
-//   end :   { x : 400, y : 400 },
-//   life : 0,
-//   maxLife : 100,
-//   lineWidth : 20,
-//   fadeSpeed : 15,
-
-//   startLine : function(sX, sY, eX, eY){
-//     this.start.x = sX;
-//     this.start.y = sY;
-//     this.end.x = eX;
-//     this.end.y = eY;
-//     this.life = this.maxLife;
-//   },
-  
-//   draw : function() {
-//     this.life -= this.fadeSpeed;
-
-//     if(this.life < 0) {
-//       this.life = 0;
-//     }
-
-//     if(this.life === 0) { return };
-
-//     let gradient = ctx.createLinearGradient(this.start.x, this.start.y, this.end.x, this.end.y);
-//     let lineAlpha = this.life / this.maxLife;
-
-//     gradient.addColorStop(1,"rgba(255,255,255,"+lineAlpha/2+")");
-//     gradient.addColorStop(0,"rgba(255,255,255,0)");
-
-//     ctx.lineCap = "round";
-//     ctx.strokeStyle = gradient;
-//     ctx.lineWidth = this.lineWidth;
-
-//     let midX = Math.min(this.end.x, this.start.x) + Math.abs(this.end.x - this.start.x) /2;
-//     let midY = Math.min(this.end.y, this.start.y);
-
-//     ctx.beginPath();
-//     ctx.moveTo(this.start.x, this.start.y);
-//     ctx.quadraticCurveTo(midX, midY - 20, this.end.x, this.end.y);
-//     ctx.stroke();
-//     ctx.closePath();
-//   }
-// }
-
-// noise.seed(Math.random());
 
 frameLoop();
 
