@@ -11,7 +11,7 @@ class Grid {
         this.gridWidth = 1;
         this.lineColor = "#AAA";
         this.outlineWidth = 1;
-        this.outlineColor = "#000";
+        this.outlineColor = "#666";
         this.fillStartEdge = 0;
         this.hovered = false;
     }
@@ -47,6 +47,15 @@ class Grid {
       }
 
       this.hovered =testWithin([mouse.x, mouse.y], polygon);
+    }
+
+    click() {
+      if(this.direction == "top") {
+        this.direction = "right";
+      } else {
+        this.direction = "top";
+      }
+      console.log(this.direction);
     }
 
     drawFillLines() {

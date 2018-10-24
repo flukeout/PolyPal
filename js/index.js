@@ -28,10 +28,6 @@ let cloners = [];
 let mouseQueue = [];
 
 
-// const mouseDown = (e) => {
-
-
-// }
 
 canvas.addEventListener("mousedown", (e) => {
 
@@ -40,7 +36,13 @@ canvas.addEventListener("mousedown", (e) => {
   mouse.pressed = true;
   mouse.anySelected = false;
 
+
+
   grids.map(grid => {
+
+    if(grid.hovered) {
+      grid.click();
+    }
 
     for(var i = 0; i < grid.points.length; i++){
 
@@ -321,7 +323,6 @@ const mouse = {
 }
 
 
-
 let size = 140;
 let startX = 360;
 let startY = 200;
@@ -394,83 +395,7 @@ const consolidatePoints = () => {
   })
 
   points.push(newPoint);
-
-
-  // points = points.map(p => {
-  //   if(p.x == newPoint.x && p.y == newPoint.y && alreadyReturned == false) {
-  //     alreadyReturned = true;
-  //     return newPoint;
-  //   } else {
-  //     return p;
-  //   }
-  // });
-
-  // console.log(newPoint);
-
-
-
-
-  return;
-
-
-  let uniquePoints = [];
   
-
-  // these need to be merged i guess....
-  // not just to delete one...
-
-  samePoints.map(p => {
-    let contains = false;
-
-    for(var i = 0; i < uniquePoints.length; i++){
-      let uniquePoint = uniquePoints[i];
-      if(uniquePoint.x == p.x && uniquePoint.y == p.y) {
-        contains = true;
-      }
-    }
-
-    if(contains == false) {
-      uniquePoints.push(JSON.parse(JSON.stringify(p)));
-    }
-  });
-
-
-
-  uniquePoints.map(newPoint => {
-    
-    grids = grids.map(grid => {
-      let contained = false;
-
-      grid.points = grid.points.filter(gridPoint => {
-        if(gridPoint.x == newPoint.x && gridPoint.y == newPoint.y ) {
-          contained = true;
-          return newPoint;
-        } else {
-          return gridPoint;
-        }
-      });
-
-      return grid;
-    });
-  });
-
-  // TODO - need to filter out the 'same points from the points' array
-  if(uniquePoints.length > 0) {
-    points = points.filter(p => {
-      for(var i = 0; i < uniquePoints.length; i++) {
-        let uniqueP = uniquePoints[i];
-        if(p.x != uniqueP.x && p.y != uniqueP.y) {
-          return p;
-        }
-      }
-    });
-    
-    for(var i = 0; i < uniquePoints.length; i++) {
-      points.push(uniquePoints[i]);
-    }
-
-  }
-
 
 }
 
