@@ -2,13 +2,8 @@ class Grid {
 
     constructor(points, direction) {
         this.direction = direction || "top";
-        this.controlPointSize = 12;
-        this.points = [];
-        this.lineSegmentDensity = .05;
         this.points = points;
-        this.controlPointColor = "#DDD";
         this.lineWidth = 1;
-        this.gridWidth = 1;
         this.lineColor = "#AAA";
         this.outlineWidth = 1;
         this.outlineColor = "#666";
@@ -24,9 +19,7 @@ class Grid {
     }
 
     drawFill() {
-      if(!this.hovered) {
-        return;
-      }
+      if(this.points.length === 0) {return;}
       ctx.beginPath();
       ctx.moveTo(this.points[0].x, this.points[0].y);
 
@@ -34,7 +27,7 @@ class Grid {
         let p = this.points[i];
         ctx.lineTo(p.x, p.y);
       }
-      ctx.fillStyle = "rgba(255,0,0,.15)";
+      ctx.fillStyle = this.hovered ? "rgba(255,0,0,.15)"  : "#ffffff";
       ctx.fill();
       ctx.closePath();
     }
@@ -46,7 +39,7 @@ class Grid {
         polygon.push([p.x,p.y]);
       }
 
-      this.hovered =testWithin([mouse.x, mouse.y], polygon);
+      this.hovered = testWithin([mouse.x, mouse.y], polygon);
     }
 
     click() {
@@ -55,7 +48,6 @@ class Grid {
       } else {
         this.direction = "top";
       }
-      console.log(this.direction);
     }
 
     drawFillLines() {
@@ -69,7 +61,6 @@ class Grid {
         if(this.direction == "top") {
 
           numLines = 20;
-
 
           startXDelta = (this.points[1].x - this.points[0].x) / numLines;
           startYDelta = (this.points[1].y - this.points[0].y) / numLines;
@@ -146,11 +137,8 @@ class Grid {
             dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
 
             if(dist < 15) {
-                ctx.strokeStyle = "rgba(255,0,0,1)";
+                ctx.strokeStyle = "rgba(255,0,0,.4)";
                 ctx.lineWidth = 5;
-                
-                // cloners.push(thisP);
-                // cloners.push(nextP)
             } else {
                 ctx.strokeStyle = this.outlineColor;
                 ctx.lineWidth = this.lineWidth;

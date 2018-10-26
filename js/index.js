@@ -1,42 +1,41 @@
-// Seems like points are getting consolidated properly now
-// but
-// * dragging vertices (when two or more lines are higlighted)
-// * starts a weird buggy clone
+// TO-DO
+// * If you have sticky points selected and extrude,
+//    * Deselect the points
+
+const start = () => {
+  
+  let loaded = loadPicture();
+
+  if(loaded == false) {
+    resetPicture();
+  }
+
+}
 
 
 // Basic Config
 const canvasWidth = 900
     , canvasHeight = 600
 
-
 // Element references
 const bodyEl = document.querySelector("body")
     , canvas = document.querySelector("canvas")
-    , consoleEl = document.querySelector(".console")
     , ctx = canvas.getContext("2d", { alpha: false });
 
 canvas.setAttribute("height", canvasHeight);
 canvas.setAttribute("width",  canvasWidth);
 
 
-// let selectionZones = [];
-// let currentSelectionZone = {};
-
 // Select any hovered points
 let cloning = false;
 let cloners = [];
-let mouseQueue = [];
-
 
 
 canvas.addEventListener("mousedown", (e) => {
-
   cloners = [];
   cloning = false;
   mouse.pressed = true;
   mouse.anySelected = false;
-
-
 
   grids.map(grid => {
 
@@ -259,7 +258,6 @@ window.addEventListener("keydown", e => {
 
   if(key == "delete") {
 
-
     let selectedPoints = points.filter(p => {
       return p.stickyHovered;
     });
@@ -269,28 +267,21 @@ window.addEventListener("keydown", e => {
 
 });
 
-const deletePoints = (selectedPoints) => {
 
-  if(selectedPoints.length == 0) {
-    return;
-  }
+// Delete an array of points
+const deletePoints = (selectedPoints) => {
 
   grids = grids.map(grid => {
     grid.points = grid.points.filter(p => {
-      for(var i = 0; i < selectedPoints.length; i++) {
-        return p != selectedPoints[i];
-      }
+      return selectedPoints.indexOf(p) == -1;
     });
     return grid;
   });
   
   points = points.filter(p => {
-    for(var i = 0; i < selectedPoints.length; i++) {
-      return p != selectedPoints[i];
-    }
+    return selectedPoints.indexOf(p) == -1;
   });
 
-  
 }
 
 window.addEventListener("keyup", e => {
@@ -299,8 +290,6 @@ window.addEventListener("keyup", e => {
     // mouse.shiftPressed = false;
   }
 });
-
-
 
 const mouse = {
   x : 0,
@@ -327,15 +316,10 @@ let size = 140;
 let startX = 360;
 let startY = 200;
 
-let points = [
-  {x : startX, y : startY},
-  {x : startX + size, y : startY},
-  {x : startX + size, y : startY + size},
-  {x : startX, y : startY + size}
-];
+let points = [];
 let grids = [];
 
-grids.push(new Grid(points, "right"));
+
 
 // Check if there are any overlapping points...
 const consolidatePoints = () => {
@@ -399,6 +383,10 @@ const consolidatePoints = () => {
 
 }
 
+const comparePoints = (point, otherPoint) => {
+  return point.x == otherPoint.x && point.y == otherPoint.y;
+}
+
 
 let holdCount = 0;
 let heldEnough = false;
@@ -406,9 +394,20 @@ let heldEnough = false;
 // Get rid of shapes with 2 or fewer points
 const cleanupGrids = () => {
 
+  grids = grids.map(grid => {
+    let newPoints = [];
+    grid.points.map(point => {
+      if(newPoints.indexOf(point) === -1) {
+        newPoints.push(point);
+      }
+    });
+    grid.points = newPoints;
+    return grid;
+  });
+
   grids = grids.filter(grid => {
     return grid.points.length > 2;
-  });
+  })
 }
 
 // Filter out points that aren't associated with any shapes
@@ -427,20 +426,27 @@ const cleanupPoints = () => {
   });
 }
 
+let frameCount = 0;
 const frameLoop = () => {
+  frameCount++;
 
-    
-  consoleEl.innerText = points.length;
+  if(mouse.pressed == false) {
+    // points = points.map(p => {
+      // let delta = Math.sin(p.x + (frameCount/40))
+      // console.log(delta);
+      // p.y = p.y + delta;
+      // return p;
+    // })
+  }
 
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-ctx.fillStyle = "#FFFFFF";
+  // ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx.fillStyle = "#FFFFFF";
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-  drawControls();
 
   grids.map(g => {
     g.draw();
   });
+  drawControls();
 
   if(mouse.pressed == false) {
 
@@ -451,20 +457,16 @@ ctx.fillStyle = "#FFFFFF";
             if(distance < 30) {
               p.x = otherP.x;
               p.y = otherP.y;
-
-
             }
-
           }
         })
         return p;
       });
 
     consolidatePoints(); // Merge same points together
+    cleanupGrids();      // Throw out grids with less than 3 points
+    cleanupPoints();     // Get rid of orphan points
 
-
-    //cleanupGrids();      // Throw out grids with less than 3 pionts
-    // cleanupPoints();     // Get rid of orphan points
   }
 
   drawDragZone();
@@ -494,7 +496,7 @@ const drawControls = () => {
       ctx.arc(p.x, p.y, 20, Math.PI * 2,0);
 
       if(p.stickyHovered) {
-        ctx.fillStyle = "rgba(255,0,0,.1)";
+          ctx.fillStyle = "rgba(255,0,0,.1)";
         if(mouse.shiftPressed) {
           ctx.fillStyle = "rgba(255,0,0,.15)";
         }
@@ -502,7 +504,7 @@ const drawControls = () => {
       }
 
       if(p.hovered) {
-        ctx.fillStyle = "#EEEEEE";
+        ctx.fillStyle = "rgba(255,0,0,.1)";
         ctx.fill();
       }
 
@@ -535,3 +537,5 @@ const checkDragZone = p => {
   && p.y < endY
   )
 }
+
+start();

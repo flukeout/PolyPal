@@ -1,3 +1,14 @@
+.ui {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.ui button {
+  margin-top: 5px;
+}
+
 
 body {
   margin: 0;
@@ -8,13 +19,6 @@ body {
   align-items: center;
   justify-content: center;
   background: #efefef;
-}
-
-.console {
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  font-family: monospace;
 }
 
 h1 {
