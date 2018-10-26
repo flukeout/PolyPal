@@ -2,9 +2,15 @@
 
 const saveButton = document.querySelector(".save")
     , loadButton = document.querySelector(".load")
-    , resetButton = document.querySelector(".reset");
+    , resetButton = document.querySelector(".reset")
+    , wobbleButton = document.querySelector(".wobble");
 
 const resetPicture = () => {
+    let size = 85;
+    let startX = canvasWidth / 2 - size / 2;
+    let startY = canvasHeight / 2 - size / 2 - 20;
+
+
     points = [{x : startX, y : startY},
       {x : startX + size, y : startY},
       {x : startX + size, y : startY + size},
@@ -56,6 +62,14 @@ saveButton.addEventListener("click", () => {
 
 loadButton.addEventListener("click", () => {
     loadPicture();
+});
+
+wobbleButton.addEventListener("mousedown", () => {
+    wobble = true;
+});
+
+wobbleButton.addEventListener("mouseup", () => {
+    wobble = false;
 });
 
 resetButton.addEventListener("click", () => {

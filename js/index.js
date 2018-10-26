@@ -29,6 +29,7 @@ canvas.setAttribute("width",  canvasWidth);
 // Select any hovered points
 let cloning = false;
 let cloners = [];
+let wobble = false;
 
 
 canvas.addEventListener("mousedown", (e) => {
@@ -312,9 +313,6 @@ const mouse = {
 }
 
 
-let size = 140;
-let startX = 360;
-let startY = 200;
 
 let points = [];
 let grids = [];
@@ -430,13 +428,13 @@ let frameCount = 0;
 const frameLoop = () => {
   frameCount++;
 
-  if(mouse.pressed == false) {
-    // points = points.map(p => {
-      // let delta = Math.sin(p.x + (frameCount/40))
-      // console.log(delta);
-      // p.y = p.y + delta;
-      // return p;
-    // })
+  if(mouse.pressed == false && wobble) {
+    points = points.map(p => {
+      let delta = Math.sin(p.x/100 + frameCount/10) * 10;
+      p.delta = delta;
+      p.y = p.y + delta;
+      return p;
+    })
   }
 
   // ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -446,7 +444,16 @@ const frameLoop = () => {
   grids.map(g => {
     g.draw();
   });
+
   drawControls();
+
+  if(mouse.pressed == false && wobble) {
+    points = points.map(p => {
+      p.y = p.y - p.delta;
+      p.delta = 0;
+      return p;
+    })
+  }
 
   if(mouse.pressed == false) {
 
