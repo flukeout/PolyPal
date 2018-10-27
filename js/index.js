@@ -517,6 +517,14 @@ const drawControls = () => {
 
       ctx.closePath();
 
+      ctx.beginPath();
+      let size = 4;
+      ctx.fillStyle = "rgba(0,0,0,.5)";
+      ctx.fillRect(p.x - size/2, p.y - size/2, size, size);
+      ctx.closePath();
+
+
+
       return p;
     
   })

@@ -7,9 +7,8 @@ const saveButton = document.querySelector(".save")
 
 const resetPicture = () => {
     let size = 85;
-    let startX = canvasWidth / 2 - size / 2;
-    let startY = canvasHeight / 2 - size / 2 - 20;
-
+    let startX = Math.floor(canvasWidth / 2 - size / 2);
+    let startY = Math.floor(canvasHeight / 2 - size / 2 - 20);
 
     points = [{x : startX, y : startY},
       {x : startX + size, y : startY},

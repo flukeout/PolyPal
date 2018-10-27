@@ -4,17 +4,23 @@ class Grid {
         this.direction = direction || "top";
         this.points = points;
         this.lineWidth = 1;
-        this.lineColor = "#AAA";
-        this.outlineWidth = 1;
-        this.outlineColor = "#666";
+        // this.lineColor = "#AAA";
+        // this.lineColor = "#rgba(0,0,0,.5);";
+        this.lineColor = "rgba(255,255,255,.1)";
+        this.outlineWidth = 2;
+        this.outlineColor = "#FFF";
         this.fillStartEdge = 0;
         this.hovered = false;
+        this.colors = ["#8F3D61","#B94B5D", "#DD7E5F", "#EB9762", "#EDBD77"];
+        this.randomColorIndex =Math.floor(getRandom(0,this.colors.length))
+        this.selectedColor = this.colors[this.randomColorIndex];
+        this.outlineColor = this.selectedColor;
     }
 
     draw() {
         this.checkHover();
         this.drawFill();
-        this.drawFillLines();
+        // this.drawFillLines();
         this.drawOutLines();
     }
 
@@ -27,7 +33,9 @@ class Grid {
         let p = this.points[i];
         ctx.lineTo(p.x, p.y);
       }
+
       ctx.fillStyle = this.hovered ? "rgba(255,0,0,.15)"  : "#ffffff";
+      ctx.fillStyle = this.selectedColor;
       ctx.fill();
       ctx.closePath();
     }
@@ -144,7 +152,11 @@ class Grid {
                 ctx.lineWidth = this.lineWidth;
             }
 
-            ctx.stroke();
+            // console.log(this.outlineWidth);
+            if(this.outlineWidth > 0) {
+              ctx.stroke();  
+            }
+            
             ctx.closePath();
         }
     }
