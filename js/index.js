@@ -41,7 +41,14 @@ canvas.addEventListener("mousedown", (e) => {
 
   grids.map(grid => {
 
+    // Select grids
     if(grid.hovered) {
+      grids = grids.map(nGrid => {
+        if(nGrid != grid) {
+          nGrid.selected = false;
+        }
+        return nGrid;
+      });
       grid.click();
     }
 
@@ -265,10 +272,17 @@ window.addEventListener("keydown", e => {
     });
 
     deletePoints(selectedPoints);
+    deleteGrids()
   }
 
 });
 
+
+const deleteGrids = () => {
+  grids = grids.filter(grid => {
+    return !grid.selected;
+  });
+}
 
 // Delete an array of points
 const deletePoints = (selectedPoints) => {

@@ -11,7 +11,9 @@ class Grid {
         this.outlineWidth = 2;
         this.outlineColor = "#777";
         this.fillStartPoint = 0;
+
         this.hovered = false;
+        this.selected = false;
 
         // this.colors = ["#8F3D61","#B94B5D", "#DD7E5F", "#EB9762", "#EDBD77"];
         // this.randomColorIndex =Math.floor(getRandom(0,this.colors.length))
@@ -26,7 +28,8 @@ class Grid {
     }
 
     drawFill() {
-      if(this.points.length === 0) {return;}
+      if(this.points.length === 0) { return }
+
       ctx.beginPath();
       ctx.moveTo(this.points[0].x, this.points[0].y);
 
@@ -34,8 +37,11 @@ class Grid {
         let p = this.points[i];
         ctx.lineTo(p.x, p.y);
       }
+      ctx.fillStyle = "#ffffff";
+      
+      if(this.hovered) { ctx.fillStyle = "rgba(255,0,0,.15)"; } 
+      if(this.selected) { ctx.fillStyle = "rgba(255,0,0,.25)"; } 
 
-      ctx.fillStyle = this.hovered ? "rgba(255,0,0,.15)" : "#ffffff";
       ctx.fill();
       ctx.closePath();
     }
@@ -51,6 +57,8 @@ class Grid {
 
     click() {
       this.fillStartPoint++;
+
+      this.selected = !this.selected;
 
       if(this.fillStartPoint >= this.points.length) {
         this.fillStartPoint = 0;
