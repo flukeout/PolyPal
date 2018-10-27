@@ -16,7 +16,7 @@ const resetPicture = () => {
       {x : startX, y : startY + size}
     ];
     grids = [];
-    grids.push(new Grid(points, "right"));
+    grids.push(new Grid(points));
 }
 
 const loadPicture = () => {

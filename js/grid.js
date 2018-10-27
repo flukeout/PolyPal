@@ -1,27 +1,28 @@
 class Grid {
 
-    constructor(points, direction) {
-        this.direction = direction || "top";
+    constructor(points  ) {
+
         this.points = points;
+        
         this.lineWidth = 1;
-        // this.lineColor = "#AAA";
-        // this.lineColor = "#rgba(0,0,0,.5);";
-        this.lineColor = "rgba(255,255,255,.1)";
+        this.fillLineColor = "#AAA";
+        this.numFillLines = 20;
+        
         this.outlineWidth = 2;
-        this.outlineColor = "#FFF";
-        this.fillStartEdge = 0;
+        this.outlineColor = "#777";
+        this.fillStartPoint = 0;
         this.hovered = false;
-        this.colors = ["#8F3D61","#B94B5D", "#DD7E5F", "#EB9762", "#EDBD77"];
-        this.randomColorIndex =Math.floor(getRandom(0,this.colors.length))
-        this.selectedColor = this.colors[this.randomColorIndex];
-        this.outlineColor = this.selectedColor;
+
+        // this.colors = ["#8F3D61","#B94B5D", "#DD7E5F", "#EB9762", "#EDBD77"];
+        // this.randomColorIndex =Math.floor(getRandom(0,this.colors.length))
+        // this.selectedColor = this.colors[this.randomColorIndex];
     }
 
     draw() {
-        this.checkHover();
-        this.drawFill();
-        // this.drawFillLines();
-        this.drawOutLines();
+      this.checkShapeHover();
+      this.drawFill();
+      this.drawFillLines();
+      this.drawOutLines();
     }
 
     drawFill() {
@@ -34,89 +35,75 @@ class Grid {
         ctx.lineTo(p.x, p.y);
       }
 
-      ctx.fillStyle = this.hovered ? "rgba(255,0,0,.15)"  : "#ffffff";
-      ctx.fillStyle = this.selectedColor;
+      ctx.fillStyle = this.hovered ? "rgba(255,0,0,.15)" : "#ffffff";
       ctx.fill();
       ctx.closePath();
     }
 
-    checkHover() {
-      let polygon = [];
+    checkShapeHover() {
+      let shapePoints = [];
       for(var i = 0; i < this.points.length; i++) {
         let p = this.points[i];
-        polygon.push([p.x,p.y]);
+        shapePoints.push([p.x, p.y]);
       }
-
-      this.hovered = testWithin([mouse.x, mouse.y], polygon);
+      this.hovered = testWithin([mouse.x, mouse.y], shapePoints);
     }
 
     click() {
-      if(this.direction == "top") {
-        this.direction = "right";
-      } else {
-        this.direction = "top";
+      this.fillStartPoint++;
+
+      if(this.fillStartPoint >= this.points.length) {
+        this.fillStartPoint = 0;
       }
     }
 
     drawFillLines() {
 
-        if(this.points.length != 4) {
-          return;
-        }
+      if(this.points.length < 3) { return }
 
-        let startXDelta, endXDelta, startYDelta, endYDelta, numLines;
+      let firstPoint, secondPoint, thirdPoint, fourthPoint;
+      let startXDelta, startYDelta, endXDelta, endYDelta;
 
-        if(this.direction == "top") {
+      firstPoint = this.points[this.fillStartPoint] || this.points[this.fillStartPoint - this.points.length];
+      secondPoint = this.points[this.fillStartPoint + 1] || this.points[this.fillStartPoint - this.points.length + 1];
+      thirdPoint = this.points[this.fillStartPoint + 2] || this.points[this.fillStartPoint - this.points.length + 2];
+      fourthPoint;
 
-          numLines = 20;
+      if(this.points.length == 4) {
+        fourthPoint = this.points[this.fillStartPoint + 3] || this.points[this.fillStartPoint - this.points.length + 3];
+        
+      }
 
-          startXDelta = (this.points[1].x - this.points[0].x) / numLines;
-          startYDelta = (this.points[1].y - this.points[0].y) / numLines;
+      if(this.points.length == 3) {
+        fourthPoint = this.points[this.fillStartPoint] || this.points[this.fillStartPoint - this.points.length];
+      }
 
-          endXDelta = (this.points[2].x - this.points[3].x) / numLines;
-          endYDelta = (this.points[2].y - this.points[3].y) / numLines;
+      startXDelta = (secondPoint.x - firstPoint.x) / this.numFillLines;
+      startYDelta = (secondPoint.y - firstPoint.y) / this.numFillLines;
 
-        } else if (this.direction == "right") {
+      endXDelta = (thirdPoint.x - fourthPoint.x) / this.numFillLines;
+      endYDelta = (thirdPoint.y - fourthPoint.y) / this.numFillLines;
 
-          numLines = 20;
-          // Right
-          startXDelta = (this.points[3].x - this.points[0].x) / numLines;
-          startYDelta = (this.points[3].y - this.points[0].y) / numLines;
+      ctx.beginPath();
+      ctx.strokeStyle = this.fillLineColor;
+      ctx.lineWidth = this.lineWidth;
 
-          endXDelta = (this.points[1].x - this.points[2].x) / numLines;
-          endYDelta = (this.points[1].y - this.points[2].y) / numLines;
+      for(var i = 1; i < this.numFillLines; i++) {
 
-        } 
+        ctx.moveTo(
+          firstPoint.x + startXDelta * i,
+          firstPoint.y + startYDelta * i,
+        );
 
-        ctx.beginPath();
-        ctx.strokeStyle = this.lineColor;
-        ctx.lineWidth = this.lineWidth;
+        ctx.lineTo(
+          fourthPoint.x + endXDelta * i,
+          fourthPoint.y + endYDelta * i,
+        );
+      }
 
-        for(var i = 1; i < numLines; i++) {
+      ctx.stroke();
+      ctx.closePath();
 
-            ctx.moveTo(
-              this.points[0].x + startXDelta * i,
-              this.points[0].y + startYDelta * i,
-            );
-
-            if(this.direction == "top") {
-            ctx.lineTo(
-              this.points[3].x + endXDelta * i,
-              this.points[3].y + endYDelta * i,
-            );
-
-          } else {
-            ctx.lineTo(
-              this.points[1].x- endXDelta * i,
-              this.points[1].y - endYDelta * i,
-            );
-          }
-
-
-        }
-
-        ctx.stroke();
-        ctx.closePath();
     }
 
     drawOutLines(){

@@ -1,6 +1,7 @@
 // TO-DO
 // * If you have sticky points selected and extrude,
 //    * Deselect the points
+// * Draw hovered line segments on top of other stuff
 
 const start = () => {
   
@@ -437,13 +438,9 @@ const frameLoop = () => {
     })
   }
 
-  // ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-  ctx.fillStyle = "#FFFFFF";
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+  clearCanvas();
 
-  grids.map(g => {
-    g.draw();
-  });
+  grids.map(grid => grid.draw());
 
   drawControls();
 
@@ -473,7 +470,6 @@ const frameLoop = () => {
     consolidatePoints(); // Merge same points together
     cleanupGrids();      // Throw out grids with less than 3 points
     cleanupPoints();     // Get rid of orphan points
-
   }
 
   drawDragZone();
@@ -496,46 +492,10 @@ const drawDragZone = () => {
 
 
 const drawControls = () => {
-
-  points = points.map(p => {
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 20, Math.PI * 2,0);
-
-      if(p.stickyHovered) {
-          ctx.fillStyle = "rgba(255,0,0,.1)";
-        if(mouse.shiftPressed) {
-          ctx.fillStyle = "rgba(255,0,0,.15)";
-        }
-        ctx.fill();
-      }
-
-      if(p.hovered) {
-        ctx.fillStyle = "rgba(255,0,0,.1)";
-        ctx.fill();
-      }
-
-      ctx.closePath();
-
-      ctx.beginPath();
-      let size = 4;
-      ctx.fillStyle = "rgba(0,0,0,.5)";
-      ctx.fillRect(p.x - size/2, p.y - size/2, size, size);
-      ctx.closePath();
-
-
-
-      return p;
-    
-  })
+  points.map(p => drawVertex(p));
 }
 
 frameLoop();
-
-
-function getRandom(min, max){
-  return min + Math.random() * (max-min);
-}
 
 
 const checkDragZone = p => {

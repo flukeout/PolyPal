@@ -1,7 +1,9 @@
-function sqr(x) { return x * x }
+// Cool utility functions
 
-function dist2(v, w) { return sqr(v.x - w.x) + sqr(v.y - w.y) }
-
+// Distance from a point to a line segment
+// p    = point {x,y}
+// v, w = start and and points {x,y}, {x,y}
+function distToSegment(p, v, w) { return Math.sqrt(distToSegmentSquared(p, v, w)); }
 function distToSegmentSquared(p, v, w) {
   var l2 = dist2(v, w);
   if (l2 == 0) return dist2(p, v);
@@ -10,21 +12,21 @@ function distToSegmentSquared(p, v, w) {
   return dist2(p, { x: v.x + t * (w.x - v.x),
                     y: v.y + t * (w.y - v.y) });
 }
-
-function distToSegment(p, v, w) { return Math.sqrt(distToSegmentSquared(p, v, w)); }
+function sqr(x) { return x * x }
+function dist2(v, w) { return sqr(v.x - w.x) + sqr(v.y - w.y) }
 
 
 function getRandom(min, max){
   return min + Math.random() * (max-min);
 }
 
-// point [x,y]
-// polygon [[x,y], [x,y], [x,y]]
-
+// Check if a point is within a polygon
+// * point   = [x,y]
+// * polygon = [[x,y], [x,y], [x,y]]
 function testWithin(point, vs) {
 
     var x = point[0], y = point[1];
-    
+
     var inside = false;
     for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
         var xi = vs[i][0], yi = vs[i][1];
@@ -37,3 +39,7 @@ function testWithin(point, vs) {
     
     return inside;
 };
+
+function getRandom(min, max){
+  return min + Math.random() * (max-min);
+}
