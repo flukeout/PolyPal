@@ -1,7 +1,13 @@
-// TO-DO
-// * If you have sticky points selected and extrude,
-//    * Deselect the points
-// * Draw hovered line segments on top of other stuff
+/* TO-DO
+
+* Allow dragging a plane
+
+
+* If you have sticky points selected and extrude,
+  * Deselect the points
+* Draw hovered line segments on top of other stuff
+
+*/
 
 const start = () => {
   
@@ -26,85 +32,107 @@ const bodyEl = document.querySelector("body")
 canvas.setAttribute("height", canvasHeight);
 canvas.setAttribute("width",  canvasWidth);
 
+let hoverRadius = 16; // Size of vertex selection radius
 
-// Select any hovered points
 let cloning = false;
 let cloners = [];
 let wobble = false;
 
 
+let pointSelected = false;
+let gridSelected = false;
+
 canvas.addEventListener("mousedown", (e) => {
   cloners = [];
   cloning = false;
   mouse.pressed = true;
-  mouse.anySelected = false;
+  pointSelected = false;
+  gridSelected = false;
 
-  grids.map(grid => {
+  let gridClicked = false;
+  let clickedSelectedPoint = false;
 
-    // Select grids
-    if(grid.hovered) {
-      grids = grids.map(nGrid => {
-        if(nGrid != grid) {
-          nGrid.selected = false;
-        }
-        return nGrid;
-      });
-      grid.click();
-    }
-
-    for(var i = 0; i < grid.points.length; i++){
-
-      let thisP = grid.points[i];
-      let nextP = grid.points[i + 1];
-      let start, end, dist;
-      dist = 0;
-      
-      if(!nextP) {
-        nextP = grid.points[0];
-      }
-
-      start = {x: thisP.x, y: thisP.y};
-      end = {x: nextP.x, y: nextP.y};
-
-      dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
-
-      if(dist < 15) {
-        if(cloners.length < 2) {
-          cloners.push(thisP);
-          cloners.push(nextP);
-        }
-      }
+  points.map(p => {
+    if(p.hovered && p.selected) {
+      clickedSelectedPoint = true;
     }
   });
 
-  console.log(cloners);
-
-  points = points.map(p => {
-
-    // let dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
-    // if(p.clone == true) {
-    //   cloners.push(p);
-    // }
-
-    if(p.hovered) {
-      p.selected = true;
-      mouse.anySelected = true;
-    }
-    return p;
-  });
-
-  if(mouse.AnySelected == false) {
+  // If a non-selected point is clicked, clear all selected points.
+  if(clickedSelectedPoint == false) {
     points = points.map(p => {
-        p.selected = false;
-        p.hovered = false;
-        return p;
+      p.selected = false;
+      return p;
     });
   }
 
-  if(mouse.anySelected == false ) {
-    if(mouse.shiftPressed == false) {
-      clearSticky();
-    }
+  // Select clicked point.
+  points = points.map(p => {
+    if(p.hovered) {
+      p.selected = true;
+      pointSelected = true;
+    } 
+    return p;
+  });
+
+
+  if(pointSelected == false) {
+    points = points.map(p => {
+      p.selected = false;
+      p.hovered = false;
+      return p;
+    });
+  }
+
+  if(pointSelected == false) {
+
+      grids.map(grid => {
+
+        // Select grids
+        if(grid.hovered) {
+          grids = grids.map(nGrid => {
+            if(nGrid != grid) {
+              nGrid.selected = false;
+            }
+            return nGrid;
+          });
+          grid.click();
+          gridClicked = true;
+        }
+
+        for(var i = 0; i < grid.points.length; i++){
+
+          let thisP = grid.points[i];
+          let nextP = grid.points[i + 1];
+          let start, end, dist;
+          dist = 0;
+          
+          if(!nextP) {
+            nextP = grid.points[0];
+          }
+
+          start = {x: thisP.x, y: thisP.y};
+          end = {x: nextP.x, y: nextP.y};
+
+          dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
+
+          if(dist < 15) {
+            if(cloners.length < 2) {
+              cloners.push(thisP);
+              cloners.push(nextP);
+            }
+          }
+        }
+      });
+
+      if(gridClicked == false) {
+        deselectGrids();
+      }
+  } else {
+    deselectGrids();
+  }
+
+  if(pointSelected == false ) {
     mouse.dragging = true;
     mouse.dragZone.start.x = e.offsetX;
     mouse.dragZone.start.y = e.offsetY;
@@ -112,15 +140,16 @@ canvas.addEventListener("mousedown", (e) => {
     mouse.dragZone.end.y = e.offsetY;
   }
 
-
-  if(cloners.length == 2 && mouse.anySelected == false) {
+  // For cloning
+  if(cloners.length == 2 && pointSelected == false) {
+    deselectGrids();
     cloning = true;
     // Add new points to the points array
-    let newOne = { x: parseInt(cloners[0].x), y: parseInt(cloners[0].y), selected: true}
-    let newTwo = { x: parseInt(cloners[1].x), y: parseInt(cloners[1].y), selected: true}
+    let newOne = { x: parseInt(cloners[0].x), y: parseInt(cloners[0].y), cloning: true}
+    let newTwo = { x: parseInt(cloners[1].x), y: parseInt(cloners[1].y), cloning: true}
+    
     points.push(newOne);
     points.push(newTwo);
-
 
     // Add existing points to new points
     let newPoints = [
@@ -135,39 +164,8 @@ canvas.addEventListener("mousedown", (e) => {
     grids.push(new Grid(newPoints, "top"));
   }
 
-
 });
 
-
-// Deselect all points on mouseup
-window.addEventListener("mouseup", (e) => {
-  mouse.pressed = false;
-
-  for(var i = 0; i < grids.length; i++) {
-    let g = grids[i];
-  }
-
-  cloning = false;
-
-
-  points = points.map(p => {
-    p.clone = false;
-    return p;
-  });
-
-
-  if(mouse.dragging == true) {
-    mouse.dragging = false;
-  } else if(mouse.dragging == false) {
-    points = points.map(p => {
-      p.selected = false;
-      return p;
-    });
-  }
-
-
-
-});
 
 
 canvas.addEventListener("mousemove", (e) => {
@@ -180,9 +178,6 @@ canvas.addEventListener("mousemove", (e) => {
     mouse.dragZone.end.y += dY;
   }
 
-  // let one = { x : points[0].x, y : points[0].y};
-  // let two = { x : points[1].x, y : points[1].y};
-
   points = points.map(p => {
 
     if(mouse.dragging) {
@@ -192,33 +187,18 @@ canvas.addEventListener("mousemove", (e) => {
 
     if(mouse.dragging == false) {
       let distance = Math.sqrt(Math.pow(p.x - mouse.x, 2) + Math.pow(p.y - mouse.y, 2));
-      let radius = 20;
 
-      if(distance < radius) {
+      if(distance < hoverRadius) {
         p.hovered = true;
       } else {
         p.hovered = false;
       }
     }
 
-    if(p.selected) {
+    if((p.selected || p.cloning) && mouse.pressed) {
       p.x += dX;
       p.y += dY;
       moveSticky(dX,dY);
-
-      points.map(otherP => {
-        if(otherP != p) {
-          let distance = Math.sqrt(Math.pow(p.x - otherP.x, 2) + Math.pow(p.y - otherP.y, 2));
-          if(distance < 10) {
-            // p.x = otherP.x;
-            // p.y = otherP.y;
-          }
-
-        }
-      })
-
-
-
     }
 
     return p;
@@ -228,14 +208,47 @@ canvas.addEventListener("mousemove", (e) => {
   mouse.y = e.offsetY;
 });
 
+
+
+// Deselect all points on mouseup
+window.addEventListener("mouseup", (e) => {
+  mouse.pressed = false;
+
+  for(var i = 0; i < grids.length; i++) {
+    let g = grids[i];
+  }
+
+  cloning = false;
+
+  points = points.map(p => {
+    if(p.stickyHovered) {
+      p.stickyHovered = false;
+      p.selected = true;
+    }
+    p.cloning = false;
+    return p;
+  });
+
+
+
+
+  if(mouse.dragging == true) {
+    mouse.dragging = false;
+  } else if(mouse.dragging == false) {
+    // points = points.map(p => {
+    //   p.selected = false;
+    //   return p;
+    // });
+  }
+});
+
+
 const clearSticky = () => {
    points = points.map(p => {
-
       if(p.stickyHovered) {
         p.stickyHovered = false;
       }
       return p;
-
   });
 }
 
@@ -268,17 +281,16 @@ window.addEventListener("keydown", e => {
   if(key == "delete") {
 
     let selectedPoints = points.filter(p => {
-      return p.stickyHovered;
+      return p.selected;
     });
 
     deletePoints(selectedPoints);
-    deleteGrids()
+    deleteSelectedGrids();
   }
-
 });
 
 
-const deleteGrids = () => {
+const deleteSelectedGrids = () => {
   grids = grids.filter(grid => {
     return !grid.selected;
   });
@@ -312,7 +324,6 @@ const mouse = {
   y: 0,
   
   pressed : false,
-  anySelected : false,
   dragging : false,
 
   dragZone : {

@@ -1,3 +1,10 @@
+const deselectGrids = () => {
+  grids = grids.map(grid => {
+    grid.selected = false;
+    return grid;
+  });
+}
+
 class Grid {
 
     constructor(points  ) {
@@ -39,8 +46,8 @@ class Grid {
       }
       ctx.fillStyle = "#ffffff";
       
-      if(this.hovered) { ctx.fillStyle = "rgba(255,0,0,.15)"; } 
-      if(this.selected) { ctx.fillStyle = "rgba(255,0,0,.25)"; } 
+      // if(this.hovered) { ctx.fillStyle = "rgba(255,0,0,.15)"; } 
+      if(this.selected) { ctx.fillStyle = "rgba(255,0,0,.15)"; } 
 
       ctx.fill();
       ctx.closePath();
