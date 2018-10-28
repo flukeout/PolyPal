@@ -31,7 +31,7 @@ let hoverStrokeStyle = "rgba(255,0,0,.5)";
 
 let hoverRadius = 16;   // Size of vertex selection radius
 let mergeDistance = 16; // Distance before we auto merge points
-let lineHoverDistance = 16;
+let lineHoverDistance = 12;
 
 let cloning = false;
 let cloners = [];
@@ -264,7 +264,9 @@ const keyMap = {
   40 : "down",
   16 : "shift",
   68 : "delete",
-  8  : "delete"
+  8  : "delete",
+  187 : "plus",
+  189 : "minus",
 }
 
 const getKey = keyCode => {
@@ -276,14 +278,21 @@ window.addEventListener("keydown", e => {
   let key = getKey(e.keyCode);
 
   if(key == "delete") {
-
     let selectedPoints = points.filter(p => {
       return p.selected;
     });
-
     deletePoints(selectedPoints);
     deleteSelectedGrids();
   }
+
+  if(key == "plus") {
+    scalePoints(.05);
+  }
+
+  if(key == "minus") {
+    scalePoints(-.05);
+  }
+
 });
 
 
