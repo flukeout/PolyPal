@@ -36,10 +36,15 @@ function testWithin(point, vs) {
             && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
         if (intersect) inside = !inside;
     }
-    
+
     return inside;
 };
 
 function getRandom(min, max){
   return min + Math.random() * (max-min);
+}
+
+
+const comparePoints = (point, otherPoint) => {
+  return point.x == otherPoint.x && point.y == otherPoint.y;
 }

@@ -44,9 +44,9 @@ class Grid {
         let p = this.points[i];
         ctx.lineTo(p.x, p.y);
       }
+
       ctx.fillStyle = "#ffffff";
-      
-      // if(this.hovered) { ctx.fillStyle = "rgba(255,0,0,.15)"; } 
+
       if(this.selected) { ctx.fillStyle = "rgba(255,0,0,.15)"; } 
 
       ctx.fill();
@@ -118,48 +118,51 @@ class Grid {
 
       ctx.stroke();
       ctx.closePath();
-
     }
 
     drawOutLines(){
-        ctx.lineWidth = this.outlineWidth;
-        ctx.strokeStyle = this.outlineColor;
-        ctx.lineCap = "round";
+      ctx.lineWidth = this.outlineWidth;
+      ctx.strokeStyle = this.outlineColor;
+      ctx.lineCap = "round";
 
-        for(var i = 0; i < this.points.length; i++){
-            ctx.beginPath();
-            let thisP = this.points[i];
-            thisP.clone = false;
-            ctx.moveTo(thisP.x, thisP.y);
-            let nextP = this.points[i + 1];
-            let start, end, dist;
-            dist = 0;
-            
-            if(!nextP) {
-              nextP = this.points[0];
-            }
-
-            start = {x: thisP.x, y: thisP.y};
-            end = {x: nextP.x, y: nextP.y};
-            
-            ctx.lineTo(nextP.x, nextP.y);
-
-            dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
-
-            if(dist < 15) {
-                ctx.strokeStyle = "rgba(255,0,0,.4)";
-                ctx.lineWidth = 5;
-            } else {
-                ctx.strokeStyle = this.outlineColor;
-                ctx.lineWidth = this.lineWidth;
-            }
-
-            // console.log(this.outlineWidth);
-            if(this.outlineWidth > 0) {
-              ctx.stroke();  
-            }
-            
-            ctx.closePath();
+      for(var i = 0; i < this.points.length; i++){
+        ctx.beginPath();
+        let thisP = this.points[i];
+        thisP.clone = false;
+        ctx.moveTo(thisP.x, thisP.y);
+        let nextP = this.points[i + 1];
+        let start, end, dist;
+        dist = 0;
+        
+        if(!nextP) {
+          nextP = this.points[0];
         }
+
+        start = {x: thisP.x, y: thisP.y};
+        end = {x: nextP.x, y: nextP.y};
+
+        ctx.lineTo(nextP.x, nextP.y);
+
+        dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
+
+        if(dist <= lineHoverDistance) {
+          hoverSegments.push(
+            {
+              start : { x : start.x, y: start.y },
+              end : { x : end.x, y: end.y },
+              distance : dist
+            }
+          )
+        }
+
+        ctx.strokeStyle = this.outlineColor;
+        ctx.lineWidth = this.lineWidth;
+
+        if(this.outlineWidth > 0) {
+          ctx.stroke();
+        }
+
+        ctx.closePath();
+      }
     }
 }

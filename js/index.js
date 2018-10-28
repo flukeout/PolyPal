@@ -1,24 +1,18 @@
 /* TO-DO
 
+
+* Don't highlight multiple lines at once...
+* Dont' highlight a line if a vertex is highlighted
+* Select one plane at a time
+* Make it clear when vertices will get merged together
+
 * Allow dragging a plane
-
-
-* If you have sticky points selected and extrude,
-  * Deselect the points
 * Draw hovered line segments on top of other stuff
+* Scale
+* Rotate
+
 
 */
-
-const start = () => {
-  
-  let loaded = loadPicture();
-
-  if(loaded == false) {
-    resetPicture();
-  }
-
-}
-
 
 // Basic Config
 const canvasWidth = 900
@@ -32,13 +26,16 @@ const bodyEl = document.querySelector("body")
 canvas.setAttribute("height", canvasHeight);
 canvas.setAttribute("width",  canvasWidth);
 
-let hoverRadius = 16; // Size of vertex selection radius
+let dragZoneFillStyle = "rgba(255,0,0,.15)";
+let hoverStrokeStyle = "rgba(255,0,0,.5)";
+
+let hoverRadius = 16;   // Size of vertex selection radius
+let mergeDistance = 16; // Distance before we auto merge points
+let lineHoverDistance = 16;
 
 let cloning = false;
 let cloners = [];
 let wobble = false;
-
-
 let pointSelected = false;
 let gridSelected = false;
 
@@ -74,7 +71,6 @@ canvas.addEventListener("mousedown", (e) => {
     } 
     return p;
   });
-
 
   if(pointSelected == false) {
     points = points.map(p => {
@@ -230,8 +226,6 @@ window.addEventListener("mouseup", (e) => {
   });
 
 
-
-
   if(mouse.dragging == true) {
     mouse.dragging = false;
   } else if(mouse.dragging == false) {
@@ -262,13 +256,15 @@ const moveSticky = (dX, dY) => {
   });
 }
 
+
 const keyMap = {
   37 : "left",
   38 : "up",
   39 : "right",
   40 : "down",
   16 : "shift",
-  68 : "delete"
+  68 : "delete",
+  8  : "delete"
 }
 
 const getKey = keyCode => {
@@ -276,6 +272,7 @@ const getKey = keyCode => {
 }
 
 window.addEventListener("keydown", e => {
+
   let key = getKey(e.keyCode);
 
   if(key == "delete") {
@@ -309,20 +306,16 @@ const deletePoints = (selectedPoints) => {
   points = points.filter(p => {
     return selectedPoints.indexOf(p) == -1;
   });
-
 }
 
 window.addEventListener("keyup", e => {
   let key = getKey(e.keyCode);
-  if(key == "shift") {
-    // mouse.shiftPressed = false;
-  }
 });
 
 const mouse = {
   x : 0,
   y: 0,
-  
+
   pressed : false,
   dragging : false,
 
@@ -338,18 +331,8 @@ const mouse = {
   }
 }
 
-
-
-let points = [];
-let grids = [];
-
-
-
 // Check if there are any overlapping points...
 const consolidatePoints = () => {
-
-  // need to replace the point in teh place where it was taken out of
-  // Build list of points that are the same...
 
   let x;
   let y;
@@ -377,8 +360,6 @@ const consolidatePoints = () => {
   let newPoint = { x: x, y: y, new: true};
   let alreadyReturned;
 
-
-
   // this does NOT update the 'grids value'
   // might as well do it the mapped way...
 
@@ -403,17 +384,8 @@ const consolidatePoints = () => {
   })
 
   points.push(newPoint);
-  
-
 }
 
-const comparePoints = (point, otherPoint) => {
-  return point.x == otherPoint.x && point.y == otherPoint.y;
-}
-
-
-let holdCount = 0;
-let heldEnough = false;
 
 // Get rid of shapes with 2 or fewer points
 const cleanupGrids = () => {
@@ -434,6 +406,7 @@ const cleanupGrids = () => {
   })
 }
 
+
 // Filter out points that aren't associated with any shapes
 const cleanupPoints = () => {
   
@@ -450,8 +423,15 @@ const cleanupPoints = () => {
   });
 }
 
+let points = [];
+let grids = [];
 let frameCount = 0;
+let hoverSegments = [];
+let hoveredVertex = false;
+
 const frameLoop = () => {
+  hoverSegments = [];
+  hoveredVertex = false;
   frameCount++;
 
   if(mouse.pressed == false && wobble) {
@@ -467,7 +447,13 @@ const frameLoop = () => {
 
   grids.map(grid => grid.draw());
 
+
   drawControls();
+  if(hoveredVertex == false ) {
+    drawHoverSegment();
+  }
+  
+
 
   if(mouse.pressed == false && wobble) {
     points = points.map(p => {
@@ -478,53 +464,50 @@ const frameLoop = () => {
   }
 
   if(mouse.pressed == false) {
-
-     points = points.map(p=> {
-        points.map(otherP=> {
-          if(p != otherP) {
-            let distance = Math.sqrt(Math.pow(p.x - otherP.x, 2) + Math.pow(p.y - otherP.y, 2));
-            if(distance < 30) {
-              p.x = otherP.x;
-              p.y = otherP.y;
-            }
-          }
-        })
-        return p;
-      });
-
-    consolidatePoints(); // Merge same points together
+    mergeSamePoints();   // Make points close to each other have the same x,y values
+    consolidatePoints(); // Make points with same x,y be the same points
     cleanupGrids();      // Throw out grids with less than 3 points
     cleanupPoints();     // Get rid of orphan points
   }
 
   drawDragZone();
-
   requestAnimationFrame(frameLoop);
 }
 
-const drawDragZone = () => {
-    if(mouse.dragging) {
-      ctx.beginPath();
-      ctx.fillStyle = "rgba(255,0,0,.15)";
-      ctx.moveTo(mouse.dragZone.start.x, mouse.dragZone.start.y);
-      ctx.lineTo(mouse.dragZone.end.x, mouse.dragZone.start.y);
-      ctx.lineTo(mouse.dragZone.end.x, mouse.dragZone.end.y);
-      ctx.lineTo(mouse.dragZone.start.x, mouse.dragZone.end.y);
-      ctx.fill();
-      ctx.closePath();
-    }
+const mergeSamePoints = () => {
+  points = points.map(p => {
+    points.map(otherP => {
+      if(p != otherP) {
+        let distance = Math.sqrt(Math.pow(p.x - otherP.x, 2) + Math.pow(p.y - otherP.y, 2));
+        if(distance <= mergeDistance) {
+          p.x = otherP.x;
+          p.y = otherP.y;
+        }
+      }
+    })
+    return p;
+  });
 }
 
+const drawDragZone = () => {
+  if(mouse.dragging) {
+    ctx.beginPath();
+    ctx.fillStyle = dragZoneFillStyle;
+    ctx.moveTo(mouse.dragZone.start.x, mouse.dragZone.start.y);
+    ctx.lineTo(mouse.dragZone.end.x, mouse.dragZone.start.y);
+    ctx.lineTo(mouse.dragZone.end.x, mouse.dragZone.end.y);
+    ctx.lineTo(mouse.dragZone.start.x, mouse.dragZone.end.y);
+    ctx.fill();
+    ctx.closePath();
+  }
+}
 
 const drawControls = () => {
   points.map(p => drawVertex(p));
 }
 
-frameLoop();
-
 
 const checkDragZone = p => {
-
   let startX  = Math.min(mouse.dragZone.start.x, mouse.dragZone.end.x);
   let endX    = Math.max(mouse.dragZone.start.x, mouse.dragZone.end.x);
   let startY  = Math.min(mouse.dragZone.start.y, mouse.dragZone.end.y);
@@ -536,6 +519,14 @@ const checkDragZone = p => {
   && p.y > startY
   && p.y < endY
   )
+}
+
+const start = () => {
+  let loaded = loadPicture();
+  if(loaded == false) {
+    resetPicture();
+  }
+  frameLoop();
 }
 
 start();

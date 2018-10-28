@@ -1,5 +1,8 @@
 const drawVertex = (p) => {
 
+  if(p.hovered) {
+    hoveredVertex = true;
+  }
   // Hover or selected highlight
   if((p.hovered && !p.selected )|| p.stickyHovered) {
     ctx.beginPath();
@@ -26,4 +29,25 @@ const drawVertex = (p) => {
 const clearCanvas = () => {
   ctx.fillStyle = "#FFFFFF";
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+}
+
+// Draw the segment that is being hovered
+const drawHoverSegment = () => {
+  if(hoverSegments.length === 0) { return }
+
+  let closestSegment = hoverSegments.reduce((segment, closestSeg) => {
+    if(segment.distance < closestSeg.distance) {
+      return segment;
+    } else {
+      return closestSeg;
+    }
+  }, hoverSegments[0]);
+
+  ctx.beginPath();
+  ctx.moveTo(closestSegment.start.x, closestSegment.start.y);
+  ctx.lineTo(closestSegment.end.x, closestSegment.end.y);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = hoverStrokeStyle;
+  ctx.stroke();
+  ctx.closePath();
 }
