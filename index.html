@@ -6,22 +6,34 @@
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-    <div class="ui">
+    <div class="top-ui">
       <button class="save">Save</button>
       <button class="load">Load</button>
       <button class="reset">Reset</button>
       <button class="wobble">Wobble</button>
+      - 
+      <button class="extrude" type="line">&#9724;</button>
+      <button class="extrude" type="point">&#9650;</button>
+      - 
+      <button class="minus">-</button>
+      <button class="plus">+</button>
       
+
+    </div>
+    <div class="bottom-ui">
     </div>
     <div class="scene">
       <canvas></canvas>
     </div>
-    <script src="js/scale.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/scale.js"></script>
     <script src="js/draw.js"></script>
     <script src="js/grid.js"></script>
     <script src="js/memory.js"></script>
     <script src="js/index.js"></script>
+    <script src="js/listeners.js"></script>
+
 
   </body>
 </html>

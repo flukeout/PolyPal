@@ -1,14 +1,30 @@
-.ui {
+.top-ui {
   position: absolute;
-  top: 0;
+  top: 10px;
   width: 100%;
   text-align: center;
 }
 
-.ui button {
-  margin-top: 5px;
+.bottom-ui {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
 }
 
+button {
+  padding: 3px 10px;
+  margin: 0 3px;
+
+}
+
+button:focus {
+  outline: none;
+}
+
+button.selected {
+  box-shadow: 0px 0px  0px 3px rgba(0,255,0,.6);
+}
 
 body {
   margin: 0;

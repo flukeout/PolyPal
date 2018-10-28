@@ -1,16 +1,15 @@
 /* TO-DO
 
-
-* Don't highlight multiple lines at once...
-* Dont' highlight a line if a vertex is highlighted
 * Select one plane at a time
+  * Might need z-index for this
+
+
 * Make it clear when vertices will get merged together
 
+
 * Allow dragging a plane
-* Draw hovered line segments on top of other stuff
 * Scale
 * Rotate
-
 
 */
 
@@ -26,12 +25,6 @@ const bodyEl = document.querySelector("body")
 canvas.setAttribute("height", canvasHeight);
 canvas.setAttribute("width",  canvasWidth);
 
-let dragZoneFillStyle = "rgba(255,0,0,.15)";
-let hoverStrokeStyle = "rgba(255,0,0,.5)";
-
-let hoverRadius = 16;   // Size of vertex selection radius
-let mergeDistance = 16; // Distance before we auto merge points
-let lineHoverDistance = 12;
 
 let cloning = false;
 let cloners = [];
@@ -112,7 +105,7 @@ canvas.addEventListener("mousedown", (e) => {
 
           dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
 
-          if(dist < 15) {
+          if(dist <= lineHoverDistance) {
             if(cloners.length < 2) {
               cloners.push(thisP);
               cloners.push(nextP);
@@ -141,19 +134,26 @@ canvas.addEventListener("mousedown", (e) => {
     deselectGrids();
     cloning = true;
     // Add new points to the points array
-    let newOne = { x: parseInt(cloners[0].x), y: parseInt(cloners[0].y), cloning: true}
-    let newTwo = { x: parseInt(cloners[1].x), y: parseInt(cloners[1].y), cloning: true}
-    
-    points.push(newOne);
-    points.push(newTwo);
+    let newPoints = [];
+    let newOne, newTwo;
 
-    // Add existing points to new points
-    let newPoints = [
-      cloners[0],
-      cloners[1],
-      newTwo,
-      newOne
-    ]
+    if(settings.extrudeMode == "line") {
+      newOne = { x: parseInt(cloners[0].x), y: parseInt(cloners[0].y), cloning: true}
+      newTwo = { x: parseInt(cloners[1].x), y: parseInt(cloners[1].y), cloning: true}
+      points.push(newTwo);
+      points.push(newOne);
+      
+      newPoints.push(newTwo);
+      newPoints.push(newOne);
+      
+    } else if (settings.extrudeMode == "point") {
+      newOne = { x: parseInt(mouse.x), y: parseInt(mouse.y), cloning: true}
+      points.push(newOne);
+      newPoints.push(newOne);
+    }
+
+    newPoints.push(cloners[0]);
+    newPoints.push(cloners[1]);
 
     mouse.dragging = false;
     // Create a grid tile from it

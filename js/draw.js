@@ -3,6 +3,7 @@ const drawVertex = (p) => {
   if(p.hovered) {
     hoveredVertex = true;
   }
+
   // Hover or selected highlight
   if((p.hovered && !p.selected )|| p.stickyHovered) {
     ctx.beginPath();

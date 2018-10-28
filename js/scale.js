@@ -1,4 +1,5 @@
 const scalePoints = (scalar) => {
+
   let selectedPoints = points.filter(p => p.selected);
   let midX = canvasWidth / 2;
   let midY = canvasHeight / 2;
@@ -39,7 +40,6 @@ const scalePoints = (scalar) => {
         p.x = p.x + (p.x - midX) * scalar;
         p.y = p.y + (p.y - midY) * scalar;
       }
-
     }
     return p;
   });

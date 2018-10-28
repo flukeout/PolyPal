@@ -48,3 +48,7 @@ function getRandom(min, max){
 const comparePoints = (point, otherPoint) => {
   return point.x == otherPoint.x && point.y == otherPoint.y;
 }
+
+const dQ = (selector) => {
+  return document.querySelector(selector);
+}
