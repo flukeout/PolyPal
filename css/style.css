@@ -1,3 +1,4 @@
+
 .top-ui {
   position: absolute;
   top: 10px;
@@ -15,6 +16,7 @@
 button {
   padding: 3px 10px;
   margin: 0 3px;
+  user-select: none;
 
 }
 

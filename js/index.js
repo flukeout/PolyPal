@@ -1,11 +1,11 @@
 /* TO-DO
 
+*Bugs
+
 * Select one plane at a time
   * Might need z-index for this
 
-
 * Make it clear when vertices will get merged together
-
 
 * Allow dragging a plane
 * Scale

@@ -52,3 +52,35 @@ const comparePoints = (point, otherPoint) => {
 const dQ = (selector) => {
   return document.querySelector(selector);
 }
+
+
+
+const getMidpoint = (points) => {
+
+  let bounds = points.reduce((bounds, point) => {
+    if(point.x < bounds.minX) {
+      bounds.minX = point.x;
+    }
+    if(point.x > bounds.maxX) {
+      bounds.maxX = point.x;
+    }
+    if(point.y > bounds.maxY) {
+      bounds.maxY = point.y;
+    }
+    if(point.y < bounds.minY) {
+      bounds.minY = point.y;
+    }
+    return bounds;
+  }, {
+    minX : points[0].x,
+    maxX : points[0].x,
+    minY : points[0].y,
+    maxY : points[0].y
+  });
+
+  return {
+    x : bounds.minX + (bounds.maxX - bounds.minX) / 2,
+    y : bounds.minY + (bounds.maxY - bounds.minY) / 2
+  }
+
+}

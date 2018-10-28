@@ -8,29 +8,3 @@ let settings = {
   extrudeMode : "line"
 };
 
-
-
-let extrudeButtons = document.querySelectorAll(".extrude");
-
-
-const setExtrudeSelected = () => {
-  extrudeButtons.forEach(function(el){
-    let mode = el.getAttribute("type");
-    if(mode == settings.extrudeMode) {
-      el.classList.add("selected");
-    } else {
-      el.classList.remove("selected");
-    }
-  });
-}
-
-
-extrudeButtons.forEach(function(el){
-  el.addEventListener("click", function(el){
-    let mode = el.target.getAttribute("type");
-    settings.extrudeMode = mode;
-    setExtrudeSelected();
-  });
-});
-
-setExtrudeSelected();
