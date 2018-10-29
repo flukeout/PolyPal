@@ -69,7 +69,6 @@ class Grid {
       // this.fillStartPoint++;
       this.selected = !this.selected;
 
-
       // if(this.fillStartPoint >= this.points.length) {
       //   this.fillStartPoint = 0;
       // }
