@@ -7,28 +7,31 @@
   </head>
   <body>
     <div class="top-ui">
+      Picture
       <button class="save">Save</button>
       <button class="load">Load</button>
       <button class="reset">Reset</button>
       <button class="wobble">Wobble</button>
-      - 
-      
+      &mdash; 
+      Extrude type
       <button class="extrude" type="line">&#9724;</button>
       <button class="extrude" type="point">&#9650;</button>
-      
-      - 
+      &mdash;
+      Zoom
       <button class="minus">-</button>
       <button class="plus">+</button>
-      - 
-      <button class="rotate" type="left">rotate left</button>
-      <button class="rotate" type="right">rotate right</button>
+      &mdash;
+      Rotate 
+      <button class="rotate" type="left">Left</button>
+      <button class="rotate" type="right">Right</button>
+    </div>
 
-    </div>
-    <div class="bottom-ui">
-    </div>
     <div class="scene">
       <canvas></canvas>
     </div>
+
+    <div class="colors"></div>
+
     <script src="js/utils.js"></script>
     <script src="js/settings.js"></script>
     <script src="js/scale.js"></script>
@@ -37,6 +40,8 @@
     <script src="js/memory.js"></script>
     <script src="js/index.js"></script>
     <script src="js/listeners.js"></script>
+    <script src="js/colors.js"></script>
+
 
 
   </body>

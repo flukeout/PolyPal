@@ -8,23 +8,37 @@ const drawVertex = (p) => {
   if((p.hovered && !p.selected )|| p.stickyHovered) {
     ctx.beginPath();
     ctx.arc(p.x, p.y, hoverRadius, Math.PI * 2,0);
-    ctx.fillStyle = "rgba(255,0,0,.1)";
-    ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.2)";
+    ctx.strokeStyle = "rgba(0,0,0,.4)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // ctx.fill();
     ctx.closePath();
+
   } else if (p.selected) {
+
     ctx.beginPath();
     ctx.arc(p.x, p.y, hoverRadius, Math.PI * 2,0);
-    ctx.fillStyle = "rgba(255,0,0,.2)";
-    ctx.fill();
+    ctx.fillStyle = selectedVertexFillStyle;
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgba(0,0,0,1)";
+    ctx.stroke();
+    // ctx.fill();
     ctx.closePath();
+
+    // Vertex point
+    ctx.beginPath();
+    ctx.fillStyle = "rgba(0,0,0,1)";
+    ctx.fillRect(p.x - vertexSize/2, p.y - vertexSize/2, vertexSize, vertexSize);
+    ctx.closePath();
+
   }
 
   // Vertex point
-  let vertexSize = 4;
-  ctx.beginPath();
-  ctx.fillStyle = "rgba(0,0,0,.5)";
-  ctx.fillRect(p.x - vertexSize/2, p.y - vertexSize/2, vertexSize, vertexSize);
-  ctx.closePath();
+  // ctx.beginPath();
+  // ctx.fillStyle = vertexFillStyle;
+  // ctx.fillRect(p.x - vertexSize/2, p.y - vertexSize/2, vertexSize, vertexSize);
+  // ctx.closePath();
 }
 
 const clearCanvas = () => {

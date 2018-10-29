@@ -1,9 +1,23 @@
 /* TO-DO
 
-*Bugs
+
+
+* Bugs
+  * When you have triangle mode on, and click on a segment if often makes a new triangle
+  ... even when you don't want it. Maybe make it so you have to drag a bit?
+  * When clicking planes, you can click two at once (the one below what you clicked)
+  * Beter indication of what's selected etc for colored mode
+
+
+  * When hovering over two lines and extruding, sometimes the wrong one gets selected...
+
+
+  * When saving & loading, the lines aren't in the same directions
+
 
 * Select one plane at a time
   * Might need z-index for this
+
 
 * Make it clear when vertices will get merged together
 
@@ -157,7 +171,12 @@ canvas.addEventListener("mousedown", (e) => {
 
     mouse.dragging = false;
     // Create a grid tile from it
-    grids.push(new Grid(newPoints, "top"));
+
+    let newGrid = new Grid(newPoints, "top")
+    newGrid.fillColor = selectedColor;
+    grids.push(newGrid);
+
+
   }
 
 });
@@ -255,7 +274,6 @@ const moveSticky = (dX, dY) => {
       return p;
   });
 }
-
 
 const keyMap = {
   37 : "left",
@@ -454,15 +472,27 @@ const frameLoop = () => {
 
   clearCanvas();
 
+  // Draw each grid
   grids.map(grid => grid.draw());
 
+  // Draw the selected grid's outlines
+  grids.map(grid => {
+
+    if(grid.hovered && !grid.selected) {
+      grid.drawOutLines("hovered");
+    }
+
+    if(grid.selected) {
+      grid.drawOutLines("selected");
+    }
+    
+  });
 
   drawControls();
+
   if(hoveredVertex == false ) {
     drawHoverSegment();
   }
-  
-
 
   if(mouse.pressed == false && wobble) {
     points = points.map(p => {

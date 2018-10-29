@@ -7,24 +7,21 @@ const deselectGrids = () => {
 
 class Grid {
 
-    constructor(points  ) {
+    constructor(points) {
+      this.points = points;
 
-        this.points = points;
-        
-        this.lineWidth = 1;
-        this.fillLineColor = "#AAA";
-        this.numFillLines = 20;
-        
-        this.outlineWidth = 2;
-        this.outlineColor = "#777";
-        this.fillStartPoint = 0;
+      this.lineWidth = 1;
+      this.fillLineColor = "#AAA";
+      this.numFillLines = shapeFillLineCount;
+      
+      this.outlineWidth = shapeOutlineLineWidth;
+      this.outlineColor = shapeOutlineColor;
+      this.fillStartPoint = 0;
 
-        this.hovered = false;
-        this.selected = false;
+      this.fillColor = "grid";
 
-        // this.colors = ["#8F3D61","#B94B5D", "#DD7E5F", "#EB9762", "#EDBD77"];
-        // this.randomColorIndex =Math.floor(getRandom(0,this.colors.length))
-        // this.selectedColor = this.colors[this.randomColorIndex];
+      this.hovered = false;
+      this.selected = false;
     }
 
     draw() {
@@ -45,11 +42,17 @@ class Grid {
         ctx.lineTo(p.x, p.y);
       }
 
-      ctx.fillStyle = "#ffffff";
-
-      if(this.selected) { ctx.fillStyle = "rgba(255,0,0,.15)"; } 
+      if(this.fillColor !== "grid") {
+        ctx.fillStyle = this.fillColor;
+      } else {
+        ctx.fillStyle = "#FFFFFF";
+      }
 
       ctx.fill();
+
+      // if(this.selected) { ctx.fillStyle = "rgba(255,0,0,.15)"; }
+      // ctx.fill();
+
       ctx.closePath();
     }
 
@@ -63,16 +66,22 @@ class Grid {
     }
 
     click() {
-      this.fillStartPoint++;
-
+      // this.fillStartPoint++;
       this.selected = !this.selected;
 
-      if(this.fillStartPoint >= this.points.length) {
-        this.fillStartPoint = 0;
-      }
+
+      // if(this.fillStartPoint >= this.points.length) {
+      //   this.fillStartPoint = 0;
+      // }
+      // this.fillColor = selectedColor;
     }
 
     drawFillLines() {
+
+
+      if(this.fillColor !== "grid") {
+        return;
+      }
 
       if(this.points.length < 3) { return }
 
@@ -120,10 +129,20 @@ class Grid {
       ctx.closePath();
     }
 
-    drawOutLines(){
+    drawOutLines(type){
       ctx.lineWidth = this.outlineWidth;
       ctx.strokeStyle = this.outlineColor;
       ctx.lineCap = "round";
+
+      if(type === "hovered") {
+        ctx.strokeStyle = "rgba(0,0,0,.25)";
+        ctx.lineWidth = 2;
+      }
+
+      if(type === "selected") {
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 2;
+      }
 
       for(var i = 0; i < this.points.length; i++){
         ctx.beginPath();
@@ -155,11 +174,14 @@ class Grid {
           )
         }
 
-        ctx.strokeStyle = this.outlineColor;
-        ctx.lineWidth = this.lineWidth;
+        
+        
 
         if(this.outlineWidth > 0) {
           ctx.stroke();
+
+          // ctx.strokeStyle = this.outlineColor;
+          // ctx.stroke();
         }
 
         ctx.closePath();

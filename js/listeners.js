@@ -16,4 +16,3 @@ setExtrudeMode("line");
 document.querySelectorAll(".extrude").forEach((el) => {
   el.addEventListener("click", (e) => setExtrudeMode(e.target.getAttribute("type")));
 });
-
