@@ -476,17 +476,16 @@ const frameLoop = () => {
   grids.map(grid => grid.draw());
 
   // Draw the selected grid's outlines
-  grids.map(grid => {
-
-    if(grid.hovered && !grid.selected) {
-      grid.drawOutLines("hovered");
-    }
-
-    if(grid.selected) {
-      grid.drawOutLines("selected");
-    }
-    
-  });
+  if(hoverSegments.length === 0) {
+    grids.map(grid => {
+      if(grid.hovered && !grid.selected) {
+        grid.drawOutLines("hovered");
+      }
+      if(grid.selected) {
+        grid.drawOutLines("selected");
+      }
+    });
+  }
 
   drawControls();
 
