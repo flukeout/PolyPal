@@ -130,7 +130,7 @@ class Grid {
 
     drawOutLines(type){
       ctx.lineWidth = this.outlineWidth;
-      ctx.strokeStyle = this.outlineColor;
+      ctx.strokeStyle = this.fillColor;
       ctx.lineCap = "round";
 
       if(type === "hovered") {
@@ -173,14 +173,11 @@ class Grid {
           )
         }
 
-        
-        
-
         if(this.outlineWidth > 0) {
           ctx.stroke();
-
-          // ctx.strokeStyle = this.outlineColor;
-          // ctx.stroke();
+          ctx.strokeStyle = this.outlineColor;
+          // ctx.strokeStyle = "rgb(0,255,0)";
+          ctx.stroke();
         }
 
         ctx.closePath();

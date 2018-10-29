@@ -34,3 +34,5 @@ const selectColor = color => {
     }
   });
 }
+
+selectColor(selectedColor);

@@ -93,3 +93,13 @@ canvas {
 .colors .swatch.selected {
   transform: scale(1.2);
 }
+
+.tools {
+  position: absolute;
+  left: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
