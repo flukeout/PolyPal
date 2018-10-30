@@ -460,20 +460,22 @@ const frameLoop = () => {
     grid.drawFill();
     grid.draw();
   });
-  grids.map(grid => grid.drawOutLines());
+  
+  grids.map(grid => grid.drawOutLines("same"));
+  grids.map(grid => grid.drawOutLines("dark"));
 
   // Draw the selected grid's outlines
   // if(hoverSegments.length === 0) {
   // }
 
-  grids.map(grid => {
-    if(grid.hovered && !grid.selected) {
-      grid.drawOutLines("hovered");
-    }
-    if(grid.selected) {
-      grid.drawOutLines("selected");
-    }
-  });
+  // grids.map(grid => {
+  //   if(grid.hovered && !grid.selected) {
+  //     grid.drawOutLines("hovered");
+  //   }
+  //   if(grid.selected) {
+  //     grid.drawOutLines("selected");
+  //   }
+  // });
 
 
   drawControls();

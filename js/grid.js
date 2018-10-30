@@ -135,9 +135,19 @@ class Grid {
       ctx.lineCap = "round";
       ctx.strokeStyle = this.outlineColor;
 
+      if(type === "dark") {
+        ctx.strokeStyle = "rgba(0,0,0,.1)";
+        ctx.lineWidth = 1;
+      }
+
+      if(type === "same") {
+        ctx.strokeStyle = this.fillColor;
+        ctx.lineWidth = 1;
+      }
+
+
       if(type === "hovered") {
         ctx.strokeStyle = "rgba(0,0,0,.4)";
-        // ctx.strokeStyle = "#666";
         ctx.lineWidth = 2;
       }
 
