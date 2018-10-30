@@ -26,9 +26,10 @@ class Grid {
 
     draw() {
       this.checkShapeHover();
-      this.drawFill();
-      this.drawFillLines();
-      this.drawOutLines();
+      // this.drawFill();
+      // this.drawFillLines();
+      // this.drawOutLines();
+      // this.drawOutLines();
     }
 
     drawFill() {
@@ -132,9 +133,11 @@ class Grid {
       ctx.lineWidth = this.outlineWidth;
       ctx.strokeStyle = this.fillColor;
       ctx.lineCap = "round";
+      ctx.strokeStyle = this.outlineColor;
 
       if(type === "hovered") {
-        ctx.strokeStyle = "rgba(0,0,0,.25)";
+        ctx.strokeStyle = "rgba(0,0,0,.4)";
+        // ctx.strokeStyle = "#666";
         ctx.lineWidth = 2;
       }
 
@@ -173,12 +176,12 @@ class Grid {
           )
         }
 
-        if(this.outlineWidth > 0) {
-          ctx.stroke();
-          ctx.strokeStyle = this.outlineColor;
+        // if(this.outlineWidth > 0) {
+        ctx.stroke();
+          
           // ctx.strokeStyle = "rgb(0,255,0)";
-          ctx.stroke();
-        }
+          // ctx.stroke();
+        // }
 
         ctx.closePath();
       }

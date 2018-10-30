@@ -1,29 +1,12 @@
 /* TO-DO
 
 
-
 * Bugs
   * When you have triangle mode on, and click on a segment if often makes a new triangle
   ... even when you don't want it. Maybe make it so you have to drag a bit?
   * When clicking planes, you can click two at once (the one below what you clicked)
-  * Beter indication of what's selected etc for colored mode
-
-
-  * When hovering over two lines and extruding, sometimes the wrong one gets selected...
-
-
-  * When saving & loading, the lines aren't in the same directions
-
-
-* Select one plane at a time
-  * Might need z-index for this
-
-
-* Make it clear when vertices will get merged together
 
 * Allow dragging a plane
-* Scale
-* Rotate
 
 */
 
@@ -473,20 +456,25 @@ const frameLoop = () => {
   clearCanvas();
 
   // Draw each grid
-  grids.map(grid => grid.draw());
+  grids.map(grid => {
+    grid.drawFill();
+    grid.draw();
+  });
+  grids.map(grid => grid.drawOutLines());
 
   // Draw the selected grid's outlines
   // if(hoverSegments.length === 0) {
-
-    grids.map(grid => {
-      if(grid.hovered && !grid.selected) {
-        grid.drawOutLines("hovered");
-      }
-      if(grid.selected) {
-        grid.drawOutLines("selected");
-      }
-    });
   // }
+
+  grids.map(grid => {
+    if(grid.hovered && !grid.selected) {
+      grid.drawOutLines("hovered");
+    }
+    if(grid.selected) {
+      grid.drawOutLines("selected");
+    }
+  });
+
 
   drawControls();
 
