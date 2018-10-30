@@ -63,6 +63,7 @@ const drawHoverSegment = () => {
   ctx.lineTo(closestSegment.end.x, closestSegment.end.y);
   ctx.lineWidth = 2;
   ctx.strokeStyle = hoverStrokeStyle;
+  ctx.strokeStyle = "rgba(0,0,0,.4)";
   ctx.stroke();
   ctx.closePath();
 }

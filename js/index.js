@@ -469,7 +469,8 @@ const frameLoop = () => {
   // }
 
   grids.map(grid => {
-    if(grid.hovered && !grid.selected) {
+    
+    if(grid.hovered && !grid.selected && hoverSegments.length == 0) {
       grid.drawOutLines("hovered");
     }
     if(grid.selected) {
