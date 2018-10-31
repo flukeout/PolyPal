@@ -15,6 +15,13 @@ function distToSegmentSquared(p, v, w) {
 function sqr(x) { return x * x }
 function dist2(v, w) { return sqr(v.x - w.x) + sqr(v.y - w.y) }
 
+function distPoints(v, w) { 
+  let deltaX = w.x - v.x;
+  let deltaY = w.y - v.y;
+  return Math.sqrt(Math.pow(deltaX,2 ) + Math.pow(deltaY ,2));
+
+}
+
 
 function getRandom(min, max){
   return min + Math.random() * (max-min);

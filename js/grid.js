@@ -34,6 +34,7 @@ class Grid {
 
     drawFill() {
       if(this.points.length === 0) { return }
+      if(this.mode === "ghost") { return }
 
       ctx.beginPath();
       ctx.moveTo(this.points[0].x, this.points[0].y);
@@ -50,10 +51,6 @@ class Grid {
       }
 
       ctx.fill();
-
-      // if(this.selected) { ctx.fillStyle = "rgba(255,0,0,.15)"; }
-      // ctx.fill();
-
       ctx.closePath();
     }
 
@@ -186,13 +183,7 @@ class Grid {
           )
         }
 
-        // if(this.outlineWidth > 0) {
         ctx.stroke();
-          
-          // ctx.strokeStyle = "rgb(0,255,0)";
-          // ctx.stroke();
-        // }
-
         ctx.closePath();
       }
     }

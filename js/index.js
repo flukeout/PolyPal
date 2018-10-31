@@ -29,6 +29,19 @@ let wobble = false;
 let pointSelected = false;
 let gridSelected = false;
 
+
+let newGrid;
+let distanceTraveled;
+
+let clonedGrid = {
+  newGrid : "",
+  startPoint : {
+    x : 0,
+    y : 0
+  },
+  distanceTraveled : 0
+}
+
 canvas.addEventListener("mousedown", (e) => {
   cloners = [];
   cloning = false;
@@ -153,13 +166,20 @@ canvas.addEventListener("mousedown", (e) => {
     newPoints.push(cloners[1]);
 
     mouse.dragging = false;
+
     // Create a grid tile from it
 
-    let newGrid = new Grid(newPoints, "top")
+    newGrid = new Grid(newPoints, "top");
+    newGrid.mode = "ghost";
     newGrid.fillColor = selectedColor;
+
+    // Keep track of the cloned grid...
+    clonedGrid.grid = newGrid;
+    clonedGrid.distanceTraveled = 0;
+    clonedGrid.startPoint.x = parseInt(mouse.x);
+    clonedGrid.startPoint.y = parseInt(mouse.y);
+
     grids.push(newGrid);
-
-
   }
 
 });
@@ -170,6 +190,15 @@ canvas.addEventListener("mousemove", (e) => {
 
   let dX =  e.offsetX - mouse.x;
   let dY =  e.offsetY - mouse.y;
+
+  if(clonedGrid.grid) {
+    let cloneDist = distPoints(clonedGrid.startPoint, { x: mouse.x, y : mouse.y});
+    if(cloneDist > 18) {
+      clonedGrid.grid.mode = "normal";
+    } else {
+      clonedGrid.grid.mode = "ghost";
+    }
+  }
 
   if(mouse.dragging) {
     mouse.dragZone.end.x += dX;
@@ -212,6 +241,8 @@ canvas.addEventListener("mousemove", (e) => {
 window.addEventListener("mouseup", (e) => {
   mouse.pressed = false;
 
+  console.log(clonedGrid.grid);
+
   for(var i = 0; i < grids.length; i++) {
     let g = grids[i];
   }
@@ -230,11 +261,6 @@ window.addEventListener("mouseup", (e) => {
 
   if(mouse.dragging == true) {
     mouse.dragging = false;
-  } else if(mouse.dragging == false) {
-    // points = points.map(p => {
-    //   p.selected = false;
-    //   return p;
-    // });
   }
 });
 
@@ -341,97 +367,6 @@ const mouse = {
   }
 }
 
-// Check if there are any overlapping points...
-const consolidatePoints = () => {
-
-  let x;
-  let y;
-  let haveNewPoint = false;
-
-  let samePoints = points.filter(thisPoint => {
-    for(var i = 0; i < points.length; i++) {
-      let otherPoint = points[i];
-      if(otherPoint != thisPoint) {
-        if(otherPoint.x == thisPoint.x && otherPoint.y == thisPoint.y) {
-          x = thisPoint.x;
-          y = thisPoint.y;
-          haveNewPoint = true;
-          return thisPoint;
-        }
-      }
-    }
-  });
-
-  if(haveNewPoint == false) {
-    return;
-  }
-
-  // replace with new reference...
-  let newPoint = { x: x, y: y, new: true};
-  let alreadyReturned;
-
-  // this does NOT update the 'grids value'
-  // might as well do it the mapped way...
-
-  points = points.filter(p => {
-    if(p.x == newPoint.x && p.y == newPoint.y) {
-      return false;
-    } else {
-      return true;
-    }
-  });
-
-  grids = grids.map(grid => {
-    grid.points = grid.points.map(p => {
-      if(p.x == newPoint.x && p.y == newPoint.y) {
-        return newPoint;
-      } else {
-        return p;
-      }
-    });
-
-    return grid;
-  })
-
-  points.push(newPoint);
-}
-
-
-// Get rid of shapes with 2 or fewer points
-const cleanupGrids = () => {
-
-  grids = grids.map(grid => {
-    let newPoints = [];
-    grid.points.map(point => {
-      if(newPoints.indexOf(point) === -1) {
-        newPoints.push(point);
-      }
-    });
-    grid.points = newPoints;
-    return grid;
-  });
-
-  grids = grids.filter(grid => {
-    return grid.points.length > 2;
-  })
-}
-
-
-// Filter out points that aren't associated with any shapes
-const cleanupPoints = () => {
-  
-  points = points.filter(p => {
-    let contained = false;
-    for(var i = 0; i < grids.length; i++) {
-      
-      let gridPoints = grids[i].points;
-      if(gridPoints.includes(p)) {
-        contained = true;
-      }
-    }
-    return contained;
-  });
-}
 
 let points = [];
 let grids = [];
@@ -461,15 +396,11 @@ const frameLoop = () => {
     grid.draw();
   });
   
-  grids.map(grid => grid.drawOutLines("same"));
-  grids.map(grid => grid.drawOutLines("dark"));
+  grids.map(grid => grid.drawOutLines("same")); // Fills in gaps between shapes
+  grids.map(grid => grid.drawOutLines("dark")); // Draws lines around shapes
 
-  // Draw the selected grid's outlines
-  // if(hoverSegments.length === 0) {
-  // }
-
+  // Draws hovered or selected lines
   grids.map(grid => {
-    
     if(grid.hovered && !grid.selected && hoverSegments.length == 0) {
       grid.drawOutLines("hovered");
     }
@@ -479,10 +410,11 @@ const frameLoop = () => {
   });
 
 
-  drawControls();
+  drawControls(); // Draws each vertex
+
 
   if(hoveredVertex == false ) {
-    drawHoverSegment();
+    drawHoverSegment(); // Draw the hovered line segment
   }
 
   if(mouse.pressed == false && wobble) {
@@ -494,6 +426,8 @@ const frameLoop = () => {
   }
 
   if(mouse.pressed == false) {
+    killGhosts();        // Kill shapes that are ghosts
+    cleanupPoints();     // Get rid of orphan points
     mergeSamePoints();   // Make points close to each other have the same x,y values
     consolidatePoints(); // Make points with same x,y be the same points
     cleanupGrids();      // Throw out grids with less than 3 points
@@ -559,4 +493,106 @@ const start = () => {
   frameLoop();
 }
 
+
+
+// Check if there are any overlapping points...
+const consolidatePoints = () => {
+
+  let x;
+  let y;
+  let haveNewPoint = false;
+
+  let samePoints = points.filter(thisPoint => {
+    for(var i = 0; i < points.length; i++) {
+      let otherPoint = points[i];
+      if(otherPoint != thisPoint) {
+        if(otherPoint.x == thisPoint.x && otherPoint.y == thisPoint.y) {
+          x = thisPoint.x;
+          y = thisPoint.y;
+          haveNewPoint = true;
+          return thisPoint;
+        }
+      }
+    }
+  });
+
+  if(haveNewPoint == false) {
+    return;
+  }
+
+  // replace with new reference...
+  let newPoint = { x: x, y: y, new: true};
+  let alreadyReturned;
+
+  // this does NOT update the 'grids value'
+  // might as well do it the mapped way...
+
+  points = points.filter(p => {
+    if(p.x == newPoint.x && p.y == newPoint.y) {
+      return false;
+    } else {
+      return true;
+    }
+  });
+
+  grids = grids.map(grid => {
+    grid.points = grid.points.map(p => {
+      if(p.x == newPoint.x && p.y == newPoint.y) {
+        return newPoint;
+      } else {
+        return p;
+      }
+    });
+
+    return grid;
+  })
+
+  points.push(newPoint);
+}
+
+const killGhosts = () => {
+  clonedGrid.grid = false;
+  grids = grids.filter(grid => {
+    return grid.mode != "ghost";
+  });
+
+}
+
+// Get rid of shapes with 2 or fewer points
+const cleanupGrids = () => {
+
+  grids = grids.map(grid => {
+    let newPoints = [];
+    grid.points.map(point => {
+      if(newPoints.indexOf(point) === -1) {
+        newPoints.push(point);
+      }
+    });
+    grid.points = newPoints;
+    return grid;
+  });
+
+  grids = grids.filter(grid => {
+    return grid.points.length > 2;
+  });
+}
+
+// Filter out points that aren't associated with any shapes
+const cleanupPoints = () => {
+  
+  points = points.filter(p => {
+    let contained = false;
+    for(var i = 0; i < grids.length; i++) {
+      let gridPoints = grids[i].points;
+      if(gridPoints.includes(p)) {
+        contained = true;
+      }
+    }
+    return contained;
+  });
+}
+
 start();
+
+
+
