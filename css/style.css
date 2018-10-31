@@ -83,11 +83,17 @@ canvas {
 
 .colors .swatch {
   display: block;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 30px;
-  margin: 5px 0;
+  margin: 3px 0;
   border: solid 2px white;
+  cursor: pointer;
+  transition: scale .2s ease-in-out;
+}
+
+.colors .swatch:hover {
+  transform: scale(1.1);
 }
 
 .colors .swatch.selected {
