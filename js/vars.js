@@ -1,0 +1,2 @@
+let points = [];
+let grids = [];

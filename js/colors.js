@@ -27,6 +27,17 @@ availableColors.map(color => {
 
 const selectColor = color => {
   selectedColor = color;
+  
+  if(grids) {
+    grids = grids.map(grid => {
+      if(grid.selected) {
+        grid.fillColor = color;
+      }
+      return grid;
+    });
+  }
+
+
   document.querySelectorAll(".colors .swatch").forEach(el => {
     el.classList.remove("selected");
     if(selectedColor === el.getAttribute("color")) {

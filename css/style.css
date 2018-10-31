@@ -96,10 +96,18 @@ canvas {
 
 .tools {
   position: absolute;
-  left: 0;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
+  bottom: 0;
+  width: 100vw;
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*flex-direction: column;*/
+  /*justify-content: center;*/
+  text-align: center;
+  margin-bottom: 10px;
 }
+
+.tools button {
+  margin: 0 8px;
+}
+
+

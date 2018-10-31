@@ -28,8 +28,6 @@ let cloners = [];
 let wobble = false;
 let pointSelected = false;
 let gridSelected = false;
-
-
 let newGrid;
 let distanceTraveled;
 
@@ -43,6 +41,16 @@ let clonedGrid = {
 }
 
 canvas.addEventListener("mousedown", (e) => {
+
+  if(selectedTool == "paintbrush") {
+    grids.map(grid => {
+      if(grid.hovered) {
+        grid.fillColor = selectedColor;
+      }
+    });
+    return;
+  }
+
   cloners = [];
   cloning = false;
   mouse.pressed = true;
@@ -240,13 +248,7 @@ canvas.addEventListener("mousemove", (e) => {
 // Deselect all points on mouseup
 window.addEventListener("mouseup", (e) => {
   mouse.pressed = false;
-
-  console.log(clonedGrid.grid);
-
-  for(var i = 0; i < grids.length; i++) {
-    let g = grids[i];
-  }
-
+  mouse.dragging = false;
   cloning = false;
 
   points = points.map(p => {
@@ -257,22 +259,8 @@ window.addEventListener("mouseup", (e) => {
     p.cloning = false;
     return p;
   });
-
-
-  if(mouse.dragging == true) {
-    mouse.dragging = false;
-  }
 });
 
-
-const clearSticky = () => {
-   points = points.map(p => {
-      if(p.stickyHovered) {
-        p.stickyHovered = false;
-      }
-      return p;
-  });
-}
 
 const moveSticky = (dX, dY) => {
    points = points.map(p => {
@@ -368,8 +356,6 @@ const mouse = {
 }
 
 
-let points = [];
-let grids = [];
 let frameCount = 0;
 let hoverSegments = [];
 let hoveredVertex = false;

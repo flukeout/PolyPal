@@ -31,14 +31,7 @@ const drawVertex = (p) => {
     ctx.fillStyle = "rgba(0,0,0,1)";
     ctx.fillRect(p.x - vertexSize/2, p.y - vertexSize/2, vertexSize, vertexSize);
     ctx.closePath();
-
   }
-
-  // Vertex point
-  // ctx.beginPath();
-  // ctx.fillStyle = vertexFillStyle;
-  // ctx.fillRect(p.x - vertexSize/2, p.y - vertexSize/2, vertexSize, vertexSize);
-  // ctx.closePath();
 }
 
 const clearCanvas = () => {
