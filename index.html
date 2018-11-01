@@ -12,6 +12,7 @@
       <button class="load">Load</button>
       <button class="reset">Reset</button>
       <button class="wobble">Wobble</button>
+      <button class="download">Download SVG</button>
       &mdash; 
       Extrude type
       <button class="extrude" type="line">&#9724;</button>
@@ -29,7 +30,14 @@
     <div class="scene">
       <canvas></canvas>
       <div class="svg-canvas">
-        <svg class="svg-image"></svg>
+        <svg 
+    version="1.1"
+     baseProfile="full"
+     width="600" height="500"
+     xmlns="http://www.w3.org/2000/svg"
+        class="svg-image">
+          
+        </svg>
         <svg class="svg-points"></svg>
       </div>
     </div>
@@ -48,6 +56,7 @@
     <script src="js/memory.js"></script>
     <script src="js/index.js"></script>
     <script src="js/listeners.js"></script>
+
 
   </body>
 </html>
