@@ -515,8 +515,7 @@ const start = () => {
 // Check if there are any overlapping points...
 const consolidatePoints = () => {
 
-  let x;
-  let y;
+  let x, y;
   let haveNewPoint = false;
 
   let samePoints = points.filter(thisPoint => {
@@ -538,7 +537,9 @@ const consolidatePoints = () => {
   }
 
   // replace with new reference...
-  let newPoint = { x: x, y: y, new: true};
+  let newPoint = { x: x, y: y};
+  newPoint = createPoint(newPoint);
+  newPoint.new = true;
   let alreadyReturned;
 
   // this does NOT update the 'grids value'
@@ -546,6 +547,7 @@ const consolidatePoints = () => {
 
   points = points.filter(p => {
     if(p.x == newPoint.x && p.y == newPoint.y) {
+      p.svgEl.remove();
       return false;
     } else {
       return true;
