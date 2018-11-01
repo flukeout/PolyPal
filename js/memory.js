@@ -10,16 +10,51 @@ const resetPicture = () => {
     let startX = Math.floor(canvasWidth / 2 - size / 2);
     let startY = Math.floor(canvasHeight / 2 - size / 2 - 20);
 
-    points = [{x : startX, y : startY},
-      {x : startX + size, y : startY},
-      {x : startX + size, y : startY + size},
-      {x : startX, y : startY + size}
+    points = [
+        {x : startX, y : startY},
+        {x : startX + size, y : startY},
+        {x : startX + size, y : startY + size},
+        {x : startX, y : startY + size}
     ];
 
     grids = [];
     let newGrid = new Grid(points);
     newGrid.fillColor = selectedColor;
     grids.push(newGrid);
+}
+
+const createPoint = p => {
+
+  let group = document.createElementNS("http://www.w3.org/2000/svg","svg");
+  group.setAttribute("x", p.x);
+  group.setAttribute("y", p.y);
+
+  let circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
+  circle.setAttribute("cx", 0);
+  circle.classList.add("bigcircle");
+  circle.setAttribute("cy", 0);
+  circle.setAttribute("r", 14);
+  circle.setAttribute("stroke", "rgba(0,0,0,1");
+  circle.setAttribute("stroke-width", 2);
+  circle.setAttribute("fill", "transparent");
+
+  let smallCircle = document.createElementNS("http://www.w3.org/2000/svg","circle");
+  smallCircle.classList.add("smallcircle");
+  smallCircle.setAttribute("cx", 0);
+  smallCircle.setAttribute("cy", 0);
+  smallCircle.setAttribute("r", 3);
+  smallCircle.setAttribute("fill", "#000000");
+
+  group.append(circle);
+  group.append(smallCircle);
+
+  svgPoints.appendChild(group);
+
+  return {
+      x : p.x,
+      y : p.y,
+      svgEl : group
+  }
 }
 
 const loadPicture = () => {
@@ -30,7 +65,9 @@ const loadPicture = () => {
         let savedGrids = pictureData.grids;
         
         grids = [];
-        points = pictureData.points;
+        points = pictureData.points.map(p => {
+            return createPoint(p);
+        });
 
         savedGrids.map(grid => {
             let newArray = [];

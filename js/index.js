@@ -11,17 +11,19 @@
 */
 
 // Basic Config
-const canvasWidth = 900
+const canvasWidth = 500
     , canvasHeight = 600
 
 // Element references
 const bodyEl = document.querySelector("body")
     , canvas = document.querySelector("canvas")
-    , ctx = canvas.getContext("2d", { alpha: false });
+    , ctx = canvas.getContext("2d", { alpha: false })
+    , svgScene = document.querySelector(".svg-canvas")
+    , svgImage = document.querySelector(".svg-image")
+    , svgPoints = document.querySelector(".svg-points");
 
 canvas.setAttribute("height", canvasHeight);
 canvas.setAttribute("width",  canvasWidth);
-
 
 let cloning = false;
 let cloners = [];
@@ -156,16 +158,26 @@ canvas.addEventListener("mousedown", (e) => {
     let newOne, newTwo;
 
     if(settings.extrudeMode == "line") {
-      newOne = { x: parseInt(cloners[0].x), y: parseInt(cloners[0].y), cloning: true}
-      newTwo = { x: parseInt(cloners[1].x), y: parseInt(cloners[1].y), cloning: true}
+      newOne = { x: parseInt(cloners[0].x), y: parseInt(cloners[0].y)}
+      newTwo = { x: parseInt(cloners[1].x), y: parseInt(cloners[1].y)}
+
+      newOne = createPoint(newOne);
+      newTwo = createPoint(newTwo);
+
+      newOne.cloning = true;
+      newTwo.cloning = true;
+
       points.push(newTwo);
       points.push(newOne);
-      
       newPoints.push(newTwo);
       newPoints.push(newOne);
       
     } else if (settings.extrudeMode == "point") {
-      newOne = { x: parseInt(mouse.x), y: parseInt(mouse.y), cloning: true}
+      newOne = { x: parseInt(mouse.x), y: parseInt(mouse.y)}
+
+      newOne = createPoint(newOne);
+      newOne.cloning = true;
+
       points.push(newOne);
       newPoints.push(newOne);
     }
@@ -176,6 +188,7 @@ canvas.addEventListener("mousedown", (e) => {
     mouse.dragging = false;
 
     // Create a grid tile from it
+    // newPoints = newPoints.map(p => createPoint(p));
 
     newGrid = new Grid(newPoints, "top");
     newGrid.mode = "ghost";
@@ -257,8 +270,10 @@ window.addEventListener("mouseup", (e) => {
       p.selected = true;
     }
     p.cloning = false;
+    
     return p;
   });
+
 });
 
 
@@ -313,7 +328,11 @@ window.addEventListener("keydown", e => {
 
 const deleteSelectedGrids = () => {
   grids = grids.filter(grid => {
-    return !grid.selected;
+    let keep = !grid.selected;
+    if(!keep) {
+      grid.svgPoly.remove();
+    }
+    return keep;
   });
 }
 
@@ -328,7 +347,13 @@ const deletePoints = (selectedPoints) => {
   });
   
   points = points.filter(p => {
-    return selectedPoints.indexOf(p) == -1;
+    let shouldKeep = selectedPoints.indexOf(p) == -1;
+    
+    if(shouldKeep == false) {
+      console.log("kill it");
+      p.svgEl.remove();
+    }
+    return shouldKeep;
   });
 }
 
@@ -380,12 +405,14 @@ const frameLoop = () => {
   grids.map(grid => {
     grid.drawFill();
     grid.draw();
+    grid.canvasDraw();
   });
   
   grids.map(grid => grid.drawOutLines("same")); // Fills in gaps between shapes
   grids.map(grid => grid.drawOutLines("dark")); // Draws lines around shapes
 
   // Draws hovered or selected lines
+
   grids.map(grid => {
     if(grid.hovered && !grid.selected && hoverSegments.length == 0) {
       grid.drawOutLines("hovered");
@@ -395,8 +422,12 @@ const frameLoop = () => {
     }
   });
 
-
-  drawControls(); // Draws each vertex
+  points.map(p => {
+    
+    // if(p.selected || p.hovered || p.stickyHovered) {
+      drawVertex(p);
+    // }
+  });
 
 
   if(hoveredVertex == false ) {
@@ -452,9 +483,9 @@ const drawDragZone = () => {
   }
 }
 
-const drawControls = () => {
-  points.map(p => drawVertex(p));
-}
+
+
+
 
 
 const checkDragZone = p => {
@@ -539,10 +570,16 @@ const consolidatePoints = () => {
 const killGhosts = () => {
   clonedGrid.grid = false;
   grids = grids.filter(grid => {
-    return grid.mode != "ghost";
+    let keep = grid.mode != "ghost";
+    if(!keep) {
+      grid.svgPoly.remove();
+    }
+    return keep;
   });
 
 }
+
+
 
 // Get rid of shapes with 2 or fewer points
 const cleanupGrids = () => {
@@ -559,7 +596,11 @@ const cleanupGrids = () => {
   });
 
   grids = grids.filter(grid => {
-    return grid.points.length > 2;
+    let keep = grid.points.length > 2;
+    if(keep == false ) {
+      grid.svgPoly.remove();
+    }
+    return keep;
   });
 }
 
@@ -574,11 +615,12 @@ const cleanupPoints = () => {
         contained = true;
       }
     }
+    if(contained == false) {
+      p.svgEl.remove();
+    }
     return contained;
   });
 }
 
 start();
-
-
 

@@ -22,6 +22,8 @@ class Grid {
 
       this.hovered = false;
       this.selected = false;
+      this.svgCreated = false;
+      this.svgPoly = false;
     }
 
     draw() {
@@ -30,6 +32,45 @@ class Grid {
       // this.drawFillLines();
       // this.drawOutLines();
       // this.drawOutLines();
+    }
+
+    createSvg() {
+      let poly = document.createElementNS("http://www.w3.org/2000/svg","polygon");
+
+      let pointsString = this.points.reduce((string, point) => {
+        return string + parseInt(point.x) + "," + parseInt(point.y) + " ";
+      }, "")
+
+      this.svgCreated = true;
+      this.svgPoly = poly;
+      this.updatePoly();
+
+      svgImage.appendChild(poly);
+    }
+
+    updatePoly() {
+      let pointsString = this.points.reduce((string, point) => {
+        return string + parseInt(point.x) + "," + parseInt(point.y) + " ";
+      }, "");
+      
+      if(this.mode != "ghost") { 
+        this.svgPoly.setAttribute("fill", this.fillColor);
+      } else {
+        this.svgPoly.setAttribute("fill", "transparent");
+      }
+      
+      this.svgPoly.setAttribute("stroke", "rgba(0,0,0,.2");
+      this.svgPoly.setAttribute("points", pointsString);
+
+
+    }
+
+    canvasDraw() {
+      if(this.svgCreated == false ){
+        this.createSvg();
+      } else {
+        this.updatePoly();
+      }
     }
 
     drawFill() {

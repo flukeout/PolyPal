@@ -32,6 +32,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   background: #efefef;
 }
 
@@ -47,24 +48,53 @@ h1 {
   font-weight: 300;
   transform: rotateX(-20deg);
   padding-bottom: 10px;
-
 }
-
 
 .scene {
   position: relative;
   background: white;
-
-  /*transform: scale(.5);*/
-  /*background: #efefef;*/
 }
 
 canvas {
   background: white;
-  display: block;
-  /*outline: solid 1px #DDD;*/
+  display: inline-block;
+  border: solid 1px #DDD;
 }
 
+.svg-canvas {
+  background: white;
+  width: 500px;
+  height: 600px;
+  display: inline-block;
+  border: solid 1px #DDD;
+}
+
+.svg-canvas:after {
+  content: "SVG Test - Preview Only - edit on the left";
+  position: absolute;
+  top: -10px;
+  background: black;
+  color: white;
+  padding: 3px 7px;
+  font-size: 14px;
+  font-family: sans-serif;
+}
+
+.svg-canvas {
+  position: relative;
+}
+
+.svg-points svg {
+  overflow: visible;
+}
+
+.svg-image, .svg-points {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
 .colors {
   display: block;

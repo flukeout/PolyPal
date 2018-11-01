@@ -1,5 +1,7 @@
 const drawVertex = (p) => {
 
+  drawSvgVertex(p);
+
   if(p.hovered) {
     hoveredVertex = true;
   }
@@ -32,6 +34,24 @@ const drawVertex = (p) => {
     ctx.fillRect(p.x - vertexSize/2, p.y - vertexSize/2, vertexSize, vertexSize);
     ctx.closePath();
   }
+}
+
+const drawSvgVertex = (p) => {
+  if(!p.svgEl) { return; }
+
+  if(p.selected) {
+    p.svgEl.querySelector(".bigcircle").setAttribute("stroke", "rgba(0,0,0,1)");
+    p.svgEl.querySelector(".smallcircle").setAttribute("fill", "rgba(0,0,0,1)");
+  } else if (p.hovered) {
+    p.svgEl.querySelector(".bigcircle").setAttribute("stroke", "rgba(0,0,0,.3)");
+    p.svgEl.querySelector(".smallcircle").setAttribute("fill", "rgba(0,0,0,0)");
+  } else {
+    p.svgEl.querySelector(".bigcircle").setAttribute("stroke", "rgba(0,0,0,0)");
+    p.svgEl.querySelector(".smallcircle").setAttribute("fill", "rgba(0,0,0,0)");
+  }
+
+  p.svgEl.setAttribute("x",p.x);
+  p.svgEl.setAttribute("y",p.y);
 }
 
 const clearCanvas = () => {
