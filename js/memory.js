@@ -10,14 +10,19 @@ const resetPicture = () => {
     let startX = Math.floor(canvasWidth / 2 - size / 2);
     let startY = Math.floor(canvasHeight / 2 - size / 2 - 20);
 
-    points = [
+    points = customFilter(points, (()=>false));
+
+    newPoints = [
         {x : startX, y : startY},
         {x : startX + size, y : startY},
         {x : startX + size, y : startY + size},
         {x : startX, y : startY + size}
     ];
 
-    grids = [];
+    points = newPoints.map(p => createPoint(p));
+
+    grids = customFilter(grids, (() => false));
+
     let newGrid = new Grid(points);
     newGrid.fillColor = selectedColor;
     grids.push(newGrid);

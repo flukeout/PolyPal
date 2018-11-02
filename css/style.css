@@ -131,18 +131,18 @@ canvas {
 
 .tools {
   position: absolute;
-  bottom: 0;
-  width: 100vw;
-  /*display: flex;*/
-  /*align-items: center;*/
-  /*flex-direction: column;*/
-  /*justify-content: center;*/
+  left: 0;
+  height: 100vh;
   text-align: center;
   margin-bottom: 10px;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
-.tools button {
-  margin: 0 8px;
+.tools * {
+  margin: 12px ;
+  display: block;
 }
-
-

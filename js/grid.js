@@ -13,7 +13,7 @@ class Grid {
       this.lineWidth = 1;
       this.fillLineColor = "#AAA";
       this.numFillLines = shapeFillLineCount;
-      
+
       this.outlineWidth = shapeOutlineLineWidth;
       this.outlineColor = shapeOutlineColor;
       this.fillStartPoint = 0;
@@ -23,7 +23,7 @@ class Grid {
       this.hovered = false;
       this.selected = false;
       this.svgCreated = false;
-      this.svgPoly = false;
+      this.svgEl = false;
     }
 
     draw() {
@@ -42,7 +42,7 @@ class Grid {
       }, "")
 
       this.svgCreated = true;
-      this.svgPoly = poly;
+      this.svgEl = poly;
       this.updatePoly();
 
       svgImage.appendChild(poly);
@@ -54,13 +54,13 @@ class Grid {
       }, "");
       
       if(this.mode != "ghost") { 
-        this.svgPoly.setAttribute("fill", this.fillColor);
+        this.svgEl.setAttribute("fill", this.fillColor);
       } else {
-        this.svgPoly.setAttribute("fill", "transparent");
+        this.svgEl.setAttribute("fill", "transparent");
       }
       
-      this.svgPoly.setAttribute("stroke", "rgba(0,0,0,.2");
-      this.svgPoly.setAttribute("points", pointsString);
+      this.svgEl.setAttribute("stroke", "rgba(0,0,0,.2");
+      this.svgEl.setAttribute("points", pointsString);
 
 
     }

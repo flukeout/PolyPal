@@ -327,13 +327,17 @@ window.addEventListener("keydown", e => {
 
 
 const deleteSelectedGrids = () => {
-  grids = grids.filter(grid => {
-    let keep = !grid.selected;
-    if(!keep) {
-      grid.svgPoly.remove();
-    }
-    return keep;
-  });
+  
+
+  // grids = grids.filter(grid => {
+  //   let keep = !grid.selected;
+  //   if(!keep) {
+  //     grid.svgEl.remove();
+  //   }
+  //   return keep;
+  // });
+
+  grids = customFilter(grids, (g => !g.selected));
 }
 
 // Delete an array of points
@@ -571,16 +575,8 @@ const consolidatePoints = () => {
 
 const killGhosts = () => {
   clonedGrid.grid = false;
-  grids = grids.filter(grid => {
-    let keep = grid.mode != "ghost";
-    if(!keep) {
-      grid.svgPoly.remove();
-    }
-    return keep;
-  });
-
+  grids = customFilter(grids, (g => g.mode != "ghost"));
 }
-
 
 
 // Get rid of shapes with 2 or fewer points
@@ -600,7 +596,7 @@ const cleanupGrids = () => {
   grids = grids.filter(grid => {
     let keep = grid.points.length > 2;
     if(keep == false ) {
-      grid.svgPoly.remove();
+      grid.svgEl.remove();
     }
     return keep;
   });
