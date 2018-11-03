@@ -19,7 +19,6 @@ tools = tools.map(tool => {
 let toolbarEl = dQ(".tools")
 
 tools.map(tool => {
-  
   let toolEl = document.createElement("button");
   toolEl.classList.add("tool");
   toolEl.classList.add(tool.name);
@@ -42,4 +41,4 @@ const selectTool = toolName => {
   });
 }
 
-selectTool(tools[0].name);
+selectTool("selector");

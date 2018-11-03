@@ -22,6 +22,7 @@ let clonedGrid = {
 }
 
 svgScene.addEventListener("mousedown", (e) => {
+mouse.pressed = true;
 
   if(selectedTool == "paintbrush") {
     grids.map(grid => {
@@ -29,169 +30,169 @@ svgScene.addEventListener("mousedown", (e) => {
         grid.fillColor = selectedColor;
       }
     });
-    return;
   }
 
-  cloners = [];
-  cloning = false;
-  mouse.pressed = true;
-  pointSelected = false;
-  gridSelected = false;
+  if(selectedTool == "selector") {
 
-  let gridClicked = false;
-  let clickedSelectedPoint = false;
+    cloners = [];
+    cloning = false;
+    
+    pointSelected = false;
+    gridSelected = false;
 
-  points.map(p => {
-    if(p.hovered && p.selected) {
-      clickedSelectedPoint = true;
-    }
-  });
+    let gridClicked = false;
+    let clickedSelectedPoint = false;
 
-  // If a non-selected point is clicked, clear all selected points.
-  if(clickedSelectedPoint == false) {
-    points = points.map(p => {
-      p.selected = false;
-      return p;
-    });
-  }
-
-  // Select clicked point.
-  points = points.map(p => {
-    if(p.hovered) {
-      p.selected = true;
-      pointSelected = true;
-    } 
-    return p;
-  });
-
-  if(pointSelected == false) {
-    points = points.map(p => {
-      p.selected = false;
-      p.hovered = false;
-      return p;
-    });
-  }
-
-  if(pointSelected == false) {
-
-      grids.map(grid => {
-
-        // Select grids
-        if(grid.hovered) {
-          grids = grids.map(nGrid => {
-            if(nGrid != grid) {
-              nGrid.selected = false;
-            }
-            return nGrid;
-          });
-          grid.click();
-          gridClicked = true;
-        }
-
-        for(var i = 0; i < grid.points.length; i++){
-
-          let thisP = grid.points[i];
-          let nextP = grid.points[i + 1];
-          let start, end, dist;
-          dist = 0;
-          
-          if(!nextP) {
-            nextP = grid.points[0];
-          }
-
-          start = {x: thisP.x, y: thisP.y};
-          end = {x: nextP.x, y: nextP.y};
-
-          dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
-
-          if(dist <= lineHoverDistance) {
-            if(cloners.length < 2) {
-              cloners.push(thisP);
-              cloners.push(nextP);
-            }
-          }
-        }
-      });
-
-      if(gridClicked == false) {
-        deselectGrids();
+    points.map(p => {
+      if(p.hovered && p.selected) {
+        clickedSelectedPoint = true;
       }
-  } else {
-    deselectGrids();
-  }
+    });
 
-  if(pointSelected == false ) {
-    mouse.dragging = true;
-    mouse.dragZone.start.x = e.offsetX;
-    mouse.dragZone.start.y = e.offsetY;
-    mouse.dragZone.end.x = e.offsetX;
-    mouse.dragZone.end.y = e.offsetY;
-  }
-
-  // For cloning
-  if(cloners.length == 2 && pointSelected == false) {
-    deselectGrids();
-    cloning = true;
-    // Add new points to the points array
-    let newPoints = [];
-    let newOne, newTwo;
-
-    if(settings.extrudeMode == "line") {
-      newOne = { x: parseInt(cloners[0].x), y: parseInt(cloners[0].y)}
-      newTwo = { x: parseInt(cloners[1].x), y: parseInt(cloners[1].y)}
-
-      newOne = createPoint(newOne);
-      newTwo = createPoint(newTwo);
-
-      newOne.cloning = true;
-      newTwo.cloning = true;
-
-      points.push(newTwo);
-      points.push(newOne);
-      newPoints.push(newTwo);
-      newPoints.push(newOne);
-      
-    } else if (settings.extrudeMode == "point") {
-      newOne = { x: parseInt(mouse.x), y: parseInt(mouse.y)}
-
-      newOne = createPoint(newOne);
-      newOne.cloning = true;
-
-      points.push(newOne);
-      newPoints.push(newOne);
+    // If a non-selected point is clicked, clear all selected points.
+    if(clickedSelectedPoint == false) {
+      points = points.map(p => {
+        p.selected = false;
+        return p;
+      });
     }
 
-    newPoints.push(cloners[0]);
-    newPoints.push(cloners[1]);
+    // Select clicked point.
+    points = points.map(p => {
+      if(p.hovered) {
+        p.selected = true;
+        pointSelected = true;
+      } 
+      return p;
+    });
 
-    mouse.dragging = false;
+    if(pointSelected == false) {
+      points = points.map(p => {
+        p.selected = false;
+        p.hovered = false;
+        return p;
+      });
+    }
 
-    // Create a grid tile from it
-    // newPoints = newPoints.map(p => createPoint(p));
+    if(pointSelected == false) {
 
-    newGrid = new Grid(newPoints, "top");
-    newGrid.mode = "ghost";
-    newGrid.fillColor = selectedColor;
+        grids.map(grid => {
 
-    // Keep track of the cloned grid...
-    clonedGrid.grid = newGrid;
-    clonedGrid.distanceTraveled = 0;
-    clonedGrid.startPoint.x = parseInt(mouse.x);
-    clonedGrid.startPoint.y = parseInt(mouse.y);
+          // Select grids
+          if(grid.hovered) {
+            grids = grids.map(nGrid => {
+              if(nGrid != grid) {
+                nGrid.selected = false;
+              }
+              return nGrid;
+            });
+            grid.click();
+            gridClicked = true;
+          }
 
-    grids.push(newGrid);
+          for(var i = 0; i < grid.points.length; i++){
+
+            let thisP = grid.points[i];
+            let nextP = grid.points[i + 1];
+            let start, end, dist;
+            dist = 0;
+            
+            if(!nextP) {
+              nextP = grid.points[0];
+            }
+
+            start = {x: thisP.x, y: thisP.y};
+            end = {x: nextP.x, y: nextP.y};
+
+            dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
+
+            if(dist <= lineHoverDistance) {
+              if(cloners.length < 2) {
+                cloners.push(thisP);
+                cloners.push(nextP);
+              }
+            }
+          }
+        });
+
+        if(gridClicked == false) {
+          deselectGrids();
+        }
+    } else {
+      deselectGrids();
+    }
+
+    if(pointSelected == false ) {
+      mouse.dragging = true;
+      mouse.dragZone.start.x = e.offsetX;
+      mouse.dragZone.start.y = e.offsetY;
+      mouse.dragZone.end.x = e.offsetX;
+      mouse.dragZone.end.y = e.offsetY;
+    }
+
+    // For cloning
+    if(cloners.length == 2 && pointSelected == false) {
+      deselectGrids();
+      cloning = true;
+      // Add new points to the points array
+      let newPoints = [];
+      let newOne, newTwo;
+
+      if(settings.extrudeMode == "line") {
+        newOne = { x: parseInt(cloners[0].x), y: parseInt(cloners[0].y)}
+        newTwo = { x: parseInt(cloners[1].x), y: parseInt(cloners[1].y)}
+
+        newOne = createPoint(newOne);
+        newTwo = createPoint(newTwo);
+
+        newOne.cloning = true;
+        newTwo.cloning = true;
+
+        points.push(newTwo);
+        points.push(newOne);
+        newPoints.push(newTwo);
+        newPoints.push(newOne);
+        
+      } else if (settings.extrudeMode == "point") {
+        newOne = { x: parseInt(mouse.x), y: parseInt(mouse.y)}
+
+        newOne = createPoint(newOne);
+        newOne.cloning = true;
+
+        points.push(newOne);
+        newPoints.push(newOne);
+      }
+
+      newPoints.push(cloners[0]);
+      newPoints.push(cloners[1]);
+
+      mouse.dragging = false;
+
+      // Create a grid tile from it
+      // newPoints = newPoints.map(p => createPoint(p));
+
+      newGrid = new Grid(newPoints, "top");
+      newGrid.mode = "ghost";
+      newGrid.fillColor = selectedColor;
+
+      // Keep track of the cloned grid...
+      clonedGrid.grid = newGrid;
+      clonedGrid.distanceTraveled = 0;
+      clonedGrid.startPoint.x = parseInt(mouse.x);
+      clonedGrid.startPoint.y = parseInt(mouse.y);
+
+      grids.push(newGrid);
+    }
   }
+
 
 });
 
 
-
 window.addEventListener("mousemove", (e) => {
-
 
   let dX =  e.offsetX - mouse.x;
   let dY =  e.offsetY - mouse.y;
-
 
   if(selectedTool === "selector") {
 
@@ -236,12 +237,21 @@ window.addEventListener("mousemove", (e) => {
     });
   }
 
-  if(selectedTool == "move" && mouse.dragging) {
+  if(selectedTool === "move" && mouse.dragging) {
     points = points.map(p => {
       p.x += dX;
       p.y += dY;
       return p;
    });
+  }
+
+  if(selectedTool === "paintbrush" && mouse.pressed) {
+    grids.map(grid => { 
+      if(grid.hovered) {
+        grid.fillColor = selectedColor;
+      }
+      return grid;
+    });
   }
 
   mouse.x = e.offsetX;
@@ -366,7 +376,9 @@ const frameLoop = () => {
 
   // Draw each grid
   grids.map(grid => {
-    grid.checkHoverSegments();
+    if(selectedTool == "selector") {
+      grid.checkHoverSegments();
+    }
     grid.showSelection = hoverSegments.length > 0 ? false : true;
     grid.drawFill();
     grid.draw();
@@ -384,7 +396,10 @@ const frameLoop = () => {
 
   let hoveringSegments = hoverSegments.length > 0 ? true : false;
 
-  drawHoverSegment(); // Draw the hovered line segment closest ot pointer
+  if(selectedTool === "selector") {
+    drawHoverSegment(); // Draw the hovered line segment closest ot pointer  
+  }
+  
 
   if(hoverSegmentSvg) {
     if(hoveredVertex == true) {
