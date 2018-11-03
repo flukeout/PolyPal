@@ -331,11 +331,9 @@ const deleteSelectedGrids = () => {
   grids = customFilter(grids, (g => g.selected));
 }
 
-
 window.addEventListener("keyup", e => {
   let key = getKey(e.keyCode);
 });
-
 
 
 let frameCount = 0;
@@ -343,6 +341,7 @@ let hoverSegments = [];
 let hoveredVertex = false;
 
 const frameLoop = () => {
+  
   hoverSegments = [];
   hoveredVertex = false;
   frameCount++;
@@ -361,20 +360,19 @@ const frameLoop = () => {
     if(selectedTool == "selector") {
       grid.checkHoverSegments();
     }
-    grid.showSelection = hoverSegments.length > 0 ? false : true;
+    // grid.showSelection = hoverSegments.length > 0 ? false : true;
+
+    grid.showHover = hoverSegments.length > 0 ? false : true;
+
     grid.drawFill();
     grid.draw();
     grid.canvasDraw();
   });
 
-
   grids.map(grid => grid.drawOutLines("same")); // Fills in gaps between shapes
   grids.map(grid => grid.drawOutLines("dark")); // Draws lines around shapes
 
-
-  points.map(p => {
-    drawVertex(p);
-  });
+  points.map(p => drawVertex(p) );
 
   let hoveringSegments = hoverSegments.length > 0 ? true : false;
 

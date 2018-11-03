@@ -45,7 +45,7 @@ const drawHoverSegment = () => {
   if(hoverSegmentSvg == false) {
     let attributes = {
       "fill" : "transparent",
-      "stroke-width" : "3",
+      "stroke-width" : "2",
       "stroke" : "rgba(0,0,0,1)"
     }
     hoverSegmentSvg = makeSvg("line", attributes, ".svg-points");
