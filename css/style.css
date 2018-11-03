@@ -54,24 +54,18 @@ h1 {
   background: white;
 }
 
-canvas {
-  background: white;
-  display: block;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  transform: scale(.6);
-  transform-origin: bottom right;
-}
-
 .svg-canvas {
   background: white;
   position: absolute;
-  top: 100px;
-  left: 100px;
+  
+  top: 0;
+  left: 0;
   width: calc(100vw - 200px);
   height: calc(100vh - 200px);
-  display: block;
+  width: 100vw;
+  height: 100vh;
+
+
 }
 
 .svg-points svg {

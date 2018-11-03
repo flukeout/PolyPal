@@ -1,17 +1,13 @@
 // Basic Config
-const canvasWidth = 500
-    , canvasHeight = 600
 
 // Element references
 const bodyEl = document.querySelector("body")
-    , canvas = document.querySelector("canvas")
-    , ctx = canvas.getContext("2d", { alpha: false })
     , svgScene = document.querySelector(".svg-canvas")
     , svgImage = document.querySelector(".svg-image")
     , svgPoints = document.querySelector(".svg-points");
 
-canvas.setAttribute("height", canvasHeight);
-canvas.setAttribute("width",  canvasWidth);
+let canvasWidth = svgImage.getBoundingClientRect().width;
+let canvasHeight = svgImage.getBoundingClientRect().height;
 
 let cloning = false;
 let cloners = [];
@@ -359,8 +355,6 @@ const frameLoop = () => {
     })
   }
 
-  clearCanvas();
-
   // Draw each grid
   grids.map(grid => {
     grid.checkHoverSegments();
@@ -368,25 +362,12 @@ const frameLoop = () => {
     grid.drawFill();
     grid.draw();
     grid.canvasDraw();
-
-
-
   });
 
 
   grids.map(grid => grid.drawOutLines("same")); // Fills in gaps between shapes
   grids.map(grid => grid.drawOutLines("dark")); // Draws lines around shapes
 
-  // Draws hovered or selected lines
-
-  // grids.map(grid => {
-  //   if(grid.hovered && !grid.selected && hoverSegments.length == 0) {
-  //     grid.drawOutLines("hovered");
-  //   }
-  //   if(grid.selected) {
-  //     grid.drawOutLines("selected");
-  //   }
-  // });
 
   points.map(p => {
     drawVertex(p);
@@ -472,16 +453,6 @@ const drawDragZone = () => {
       return string + parseInt(point.x) + "," + parseInt(point.y) + " ";
     }, "");
     dragSvg.setAttribute("points", pointsString);
-
-    // Canvas
-    ctx.beginPath();
-    ctx.fillStyle = dragZoneFillStyle;
-    ctx.moveTo(mouse.dragZone.start.x, mouse.dragZone.start.y);
-    ctx.lineTo(mouse.dragZone.end.x, mouse.dragZone.start.y);
-    ctx.lineTo(mouse.dragZone.end.x, mouse.dragZone.end.y);
-    ctx.lineTo(mouse.dragZone.start.x, mouse.dragZone.end.y);
-    ctx.fill();
-    ctx.closePath();
   }
 }
 
