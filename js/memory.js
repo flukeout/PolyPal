@@ -10,7 +10,7 @@ const resetPicture = () => {
     let startX = Math.floor(canvasWidth / 2 - size / 2);
     let startY = Math.floor(canvasHeight / 2 - size / 2 - 20);
 
-    points = customFilter(points, (()=>false));
+    clearExistingPicture();
 
     newPoints = [
         {x : startX, y : startY},
@@ -21,11 +21,15 @@ const resetPicture = () => {
 
     points = newPoints.map(p => createPoint(p));
 
-    grids = customFilter(grids, (() => false));
-
     let newGrid = new Grid(points);
     newGrid.fillColor = selectedColor;
+  
     grids.push(newGrid);
+}
+
+const clearExistingPicture = () => {
+  points = customFilter(points, (() => true));
+  grids = customFilter(grids, (() => true));
 }
 
 const createPoint = p => {
@@ -64,6 +68,8 @@ const createPoint = p => {
 
 const loadPicture = () => {
    let picture = window.localStorage.getItem("picture");
+
+    clearExistingPicture();
 
     if(picture) {
         let pictureData = JSON.parse(picture);

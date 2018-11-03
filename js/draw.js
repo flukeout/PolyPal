@@ -61,9 +61,10 @@ const clearCanvas = () => {
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 }
 
+
+let hoverSegmentSvg = false;
 // Draw the segment that is being hovered
 const drawHoverSegment = () => {
-  if(hoverSegments.length === 0) { return }
 
   let closestSegment = hoverSegments.reduce((segment, closestSeg) => {
     if(segment.distance < closestSeg.distance) {
@@ -73,12 +74,42 @@ const drawHoverSegment = () => {
     }
   }, hoverSegments[0]);
 
-  ctx.beginPath();
-  ctx.moveTo(closestSegment.start.x, closestSegment.start.y);
-  ctx.lineTo(closestSegment.end.x, closestSegment.end.y);
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = hoverStrokeStyle;
-  ctx.strokeStyle = "rgba(0,0,0,.4)";
-  ctx.stroke();
-  ctx.closePath();
+  if(hoverSegmentSvg == false) {
+    let attributes = {
+      "fill" : "transparent",
+      "stroke-width" : "3",
+      "stroke" : "rgba(0,0,0,1)"
+    }
+    hoverSegmentSvg = makeSvg("line", attributes, ".svg-points");
+  }
+
+  if(closestSegment) {
+    updateHoverSegment({
+      "x1" : closestSegment.start.x,
+      "y1" : closestSegment.start.y,
+      "x2" : closestSegment.end.x,
+      "y2" : closestSegment.end.y,
+    });
+    hoverSegmentSvg.setAttribute("stroke", "rgba(0,0,0,.4");
+  } else {
+    hoverSegmentSvg.setAttribute("stroke", "rgba(0,0,0,0");
+  }
+
+  if(closestSegment) {
+    ctx.beginPath();
+    ctx.moveTo(closestSegment.start.x, closestSegment.start.y);
+    ctx.lineTo(closestSegment.end.x, closestSegment.end.y);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = hoverStrokeStyle;
+    ctx.strokeStyle = "rgba(0,0,0,.4)";
+    ctx.stroke();
+    ctx.closePath();
+  }
+}
+
+const updateHoverSegment = attrs => {
+  hoverSegmentSvg.setAttribute("x1", attrs.x1);
+  hoverSegmentSvg.setAttribute("y1", attrs.y1);
+  hoverSegmentSvg.setAttribute("x2", attrs.x2);
+  hoverSegmentSvg.setAttribute("y2", attrs.y2);
 }

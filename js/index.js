@@ -30,7 +30,7 @@ let clonedGrid = {
   distanceTraveled : 0
 }
 
-canvas.addEventListener("mousedown", (e) => {
+svgScene.addEventListener("mousedown", (e) => {
 
   if(selectedTool == "paintbrush") {
     grids.map(grid => {
@@ -194,8 +194,7 @@ canvas.addEventListener("mousedown", (e) => {
 });
 
 
-
-canvas.addEventListener("mousemove", (e) => {
+window.addEventListener("mousemove", (e) => {
 
   let dX =  e.offsetX - mouse.x;
   let dY =  e.offsetY - mouse.y;
@@ -244,12 +243,15 @@ canvas.addEventListener("mousemove", (e) => {
   mouse.y = e.offsetY;
 });
 
-
-
 // Deselect all points on mouseup
 window.addEventListener("mouseup", (e) => {
   mouse.pressed = false;
   mouse.dragging = false;
+
+  // SVG
+  dragSvg.remove();
+  dragSvg = false;
+
   cloning = false;
 
   points = points.map(p => {
@@ -258,7 +260,6 @@ window.addEventListener("mouseup", (e) => {
       p.selected = true;
     }
     p.cloning = false;
-    
     return p;
   });
 
@@ -296,10 +297,7 @@ window.addEventListener("keydown", e => {
   let key = getKey(e.keyCode);
 
   if(key == "delete") {
-    let selectedPoints = points.filter(p => {
-      return p.selected;
-    });
-    deletePoints(selectedPoints);
+    points = customFilter(points, (p => p.selected));
     deleteSelectedGrids();
   }
 
@@ -315,39 +313,9 @@ window.addEventListener("keydown", e => {
 
 
 const deleteSelectedGrids = () => {
-  
-
-  // grids = grids.filter(grid => {
-  //   let keep = !grid.selected;
-  //   if(!keep) {
-  //     grid.svgEl.remove();
-  //   }
-  //   return keep;
-  // });
-
-  grids = customFilter(grids, (g => !g.selected));
+  grids = customFilter(grids, (g => g.selected));
 }
 
-// Delete an array of points
-const deletePoints = (selectedPoints) => {
-
-  grids = grids.map(grid => {
-    grid.points = grid.points.filter(p => {
-      return selectedPoints.indexOf(p) == -1;
-    });
-    return grid;
-  });
-  
-  points = points.filter(p => {
-    let shouldKeep = selectedPoints.indexOf(p) == -1;
-    
-    if(shouldKeep == false) {
-      console.log("kill it");
-      p.svgEl.remove();
-    }
-    return shouldKeep;
-  });
-}
 
 window.addEventListener("keyup", e => {
   let key = getKey(e.keyCode);
@@ -395,32 +363,43 @@ const frameLoop = () => {
 
   // Draw each grid
   grids.map(grid => {
+    grid.checkHoverSegments();
+    grid.showSelection = hoverSegments.length > 0 ? false : true;
     grid.drawFill();
     grid.draw();
     grid.canvasDraw();
+
+
+
   });
-  
+
+
   grids.map(grid => grid.drawOutLines("same")); // Fills in gaps between shapes
   grids.map(grid => grid.drawOutLines("dark")); // Draws lines around shapes
 
   // Draws hovered or selected lines
 
-  grids.map(grid => {
-    if(grid.hovered && !grid.selected && hoverSegments.length == 0) {
-      grid.drawOutLines("hovered");
-    }
-    if(grid.selected) {
-      grid.drawOutLines("selected");
-    }
-  });
+  // grids.map(grid => {
+  //   if(grid.hovered && !grid.selected && hoverSegments.length == 0) {
+  //     grid.drawOutLines("hovered");
+  //   }
+  //   if(grid.selected) {
+  //     grid.drawOutLines("selected");
+  //   }
+  // });
 
   points.map(p => {
-      drawVertex(p);
+    drawVertex(p);
   });
 
+  let hoveringSegments = hoverSegments.length > 0 ? true : false;
 
-  if(hoveredVertex == false ) {
-    drawHoverSegment(); // Draw the hovered line segment
+  drawHoverSegment(); // Draw the hovered line segment closest ot pointer
+
+  if(hoverSegmentSvg) {
+    if(hoveredVertex == true) {
+      hoverSegmentSvg.setAttribute("stroke", "none");
+    }
   }
 
   if(mouse.pressed == false && wobble) {
@@ -459,8 +438,42 @@ const mergeSamePoints = () => {
   });
 }
 
+let dragSvg = false;
+
 const drawDragZone = () => {
+
+  if(dragSvg == false) {
+    let attributes = {
+      "fill" : "rgba(255,0,0,.2)"
+    }
+    dragSvg = makeSvg("polygon", attributes, ".svg-points");
+  }
+
   if(mouse.dragging) {
+
+    let dragPoints = [
+      {
+        x: mouse.dragZone.start.x,
+        y: mouse.dragZone.start.y
+      },{
+        x: mouse.dragZone.end.x,
+        y: mouse.dragZone.start.y
+      },{
+        x: mouse.dragZone.end.x,
+        y: mouse.dragZone.end.y
+      },{
+        x: mouse.dragZone.start.x,
+        y: mouse.dragZone.end.y
+      },
+    ]
+
+    // SVG
+    let pointsString = dragPoints.reduce((string, point) => {
+      return string + parseInt(point.x) + "," + parseInt(point.y) + " ";
+    }, "");
+    dragSvg.setAttribute("points", pointsString);
+
+    // Canvas
     ctx.beginPath();
     ctx.fillStyle = dragZoneFillStyle;
     ctx.moveTo(mouse.dragZone.start.x, mouse.dragZone.start.y);
@@ -471,11 +484,6 @@ const drawDragZone = () => {
     ctx.closePath();
   }
 }
-
-
-
-
-
 
 const checkDragZone = p => {
   let startX  = Math.min(mouse.dragZone.start.x, mouse.dragZone.end.x);
@@ -498,7 +506,6 @@ const start = () => {
   }
   frameLoop();
 }
-
 
 
 // Check if there are any overlapping points...
@@ -560,36 +567,26 @@ const consolidatePoints = () => {
 
 const killGhosts = () => {
   clonedGrid.grid = false;
-  grids = customFilter(grids, (g => g.mode != "ghost"));
+  grids = customFilter(grids, (g => g.mode === "ghost"));
+  
 }
 
 
 // Get rid of shapes with 2 or fewer points
 const cleanupGrids = () => {
 
+  // Get rid of shapes in a grid that don't exist in the points array
   grids = grids.map(grid => {
-    let newPoints = [];
-    grid.points.map(point => {
-      if(newPoints.indexOf(point) === -1) {
-        newPoints.push(point);
-      }
-    });
-    grid.points = newPoints;
+    grid.points = customFilter(grid.points, (p => points.indexOf(p) === -1));
     return grid;
   });
 
-  grids = grids.filter(grid => {
-    let keep = grid.points.length > 2;
-    if(keep == false ) {
-      grid.svgEl.remove();
-    }
-    return keep;
-  });
+  // Get rid of shapes that have fewer than 3 pints
+  grids = customFilter(grids, (grid => grid.points.length < 3));
 }
 
 // Filter out points that aren't associated with any shapes
 const cleanupPoints = () => {
-  
   points = points.filter(p => {
     let contained = false;
     for(var i = 0; i < grids.length; i++) {
@@ -606,4 +603,3 @@ const cleanupPoints = () => {
 }
 
 start();
-

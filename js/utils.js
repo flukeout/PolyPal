@@ -97,14 +97,30 @@ function shadeColor2(color, percent) {
     return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
 }
 
+// Removes a point or grid from an array, including its
+// * uiEl
+// * svgEl
 const customFilter = (items, conditional) => {
   return items.filter(item => {
-    let keepItem = conditional(item);
-    if(keepItem == false) {
-      item.svgEl.remove();
+    let killItem = conditional(item);
+    if(killItem == true) {
+      if(item.svgEl) {
+        item.svgEl.remove();
+      }
+      if(item.uiEl) {
+        item.uiEl.remove();
+      }
     }
-    return keepItem;
+    return !killItem;
   });
 }
 
 
+const makeSvg = (type = "polygon", options = {}, appendEl) => {
+    let svgEl = document.createElementNS("http://www.w3.org/2000/svg", type);
+    Object.keys(options).forEach(key => {
+      svgEl.setAttribute(key, options[key]);
+    });
+    document.querySelector(appendEl).appendChild(svgEl);
+    return svgEl;
+}

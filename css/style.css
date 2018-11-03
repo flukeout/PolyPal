@@ -56,31 +56,22 @@ h1 {
 
 canvas {
   background: white;
-  display: inline-block;
-  border: solid 1px #DDD;
+  display: block;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  transform: scale(.6);
+  transform-origin: bottom right;
 }
 
 .svg-canvas {
   background: white;
-  width: 500px;
-  height: 600px;
-  display: inline-block;
-  border: solid 1px #DDD;
-}
-
-.svg-canvas:after {
-  content: "SVG Test - Preview Only - edit on the left";
   position: absolute;
-  top: -10px;
-  background: black;
-  color: white;
-  padding: 3px 7px;
-  font-size: 14px;
-  font-family: sans-serif;
-}
-
-.svg-canvas {
-  position: relative;
+  top: 100px;
+  left: 100px;
+  width: calc(100vw - 200px);
+  height: calc(100vh - 200px);
+  display: block;
 }
 
 .svg-points svg {

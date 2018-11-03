@@ -37,9 +37,6 @@ class Grid {
 
     createSvg() {
 
-      let pointsString = this.points.reduce((string, point) => {
-        return string + parseInt(point.x) + "," + parseInt(point.y) + " ";
-      }, "");
       this.svgCreated = true;
 
       // This is the actual image element
@@ -50,7 +47,7 @@ class Grid {
 
       // This is for displaying selections, etc
       this.uiEl = document.createElementNS("http://www.w3.org/2000/svg","polygon");
-      this.uiEl.setAttribute("stroke-width", "2");
+      this.uiEl.setAttribute("stroke-width", "3");
       this.uiEl.setAttribute("stroke-linejoin", "round");
       this.uiEl.setAttribute("fill", "transparent");
       svgPoints.appendChild(this.uiEl);
@@ -58,6 +55,7 @@ class Grid {
       this.updatePoly();
     }
 
+    // Update both the UI element
     updatePoly() {
       let pointsString = this.points.reduce((string, point) => {
         return string + parseInt(point.x) + "," + parseInt(point.y) + " ";
@@ -69,9 +67,9 @@ class Grid {
         this.svgEl.setAttribute("fill", "transparent");
       }
       
-      if(this.selected) { 
+      if(this.selected && this.showSelection) { 
         this.uiEl.setAttribute("stroke", "rgba(0,0,0,1");
-      } else if(this.hovered) { 
+      } else if(this.hovered && this.showSelection) { 
         this.uiEl.setAttribute("stroke", "rgba(0,0,0,.3");
       } else {
         this.uiEl.setAttribute("stroke", "transparent");
@@ -86,7 +84,6 @@ class Grid {
         this.createSvg();
       } 
       this.updatePoly();
-      
     }
 
     drawFill() {
@@ -186,6 +183,35 @@ class Grid {
       ctx.closePath();
     }
 
+    checkHoverSegments() {
+      for(var i = 0; i < this.points.length; i++){
+        
+        let thisP = this.points[i];
+        let nextP = this.points[i + 1];
+        let start, end, dist;
+        dist = 0;
+
+        if(!nextP) {
+          nextP = this.points[0];
+        }
+
+        start = {x: thisP.x, y: thisP.y};
+        end = {x: nextP.x, y: nextP.y};
+
+        dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
+
+        if(dist <= lineHoverDistance) {
+          hoverSegments.push(
+            {
+              start : { x : start.x, y: start.y },
+              end : { x : end.x, y: end.y },
+              distance : dist
+            }
+          )
+        }
+      }
+    }
+
     drawOutLines(type){
       ctx.lineWidth = this.outlineWidth;
       ctx.strokeStyle = this.fillColor;
@@ -221,7 +247,7 @@ class Grid {
         let nextP = this.points[i + 1];
         let start, end, dist;
         dist = 0;
-        
+
         if(!nextP) {
           nextP = this.points[0];
         }
@@ -234,13 +260,13 @@ class Grid {
         dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
 
         if(dist <= lineHoverDistance) {
-          hoverSegments.push(
-            {
-              start : { x : start.x, y: start.y },
-              end : { x : end.x, y: end.y },
-              distance : dist
-            }
-          )
+          // hoverSegments.push(
+          //   {
+          //     start : { x : start.x, y: start.y },
+          //     end : { x : end.x, y: end.y },
+          //     distance : dist
+          //   }
+          // )
         }
 
         ctx.stroke();
