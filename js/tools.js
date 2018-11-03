@@ -1,20 +1,30 @@
-let tools = ["selector", "paintbrush"];
+let tools = [{
+    name : "selector",
+    description: "Select things"
+  },{
+    name : "paintbrush",
+    description: "Fill things with color"
+  },{
+    name : "move",
+    description: "Move the canvas"
+  }];
+
 let selectedTool;
+
 tools = tools.map(tool => {
-  return {
-    name : tool,
-    selected : false
-  }
+  tool.selected = false;
+  return tool;
 });
 
 let toolbarEl = dQ(".tools")
 
 tools.map(tool => {
+  
   let toolEl = document.createElement("button");
   toolEl.classList.add("tool");
+  toolEl.classList.add(tool.name);
   toolEl.style.background = tool.name;
   toolEl.setAttribute("name", tool.name);
-  toolEl.innerText = tool.name;
   toolbarEl.appendChild(toolEl);
   toolEl.addEventListener("click", function(el){
     selectTool(el.target.getAttribute("name"));
@@ -27,6 +37,7 @@ const selectTool = toolName => {
     if(toolName === el.getAttribute("name")) {
       el.classList.add("selected");
       selectedTool = toolName;
+      svgScene.setAttribute("tool", toolName);
     }
   });
 }

@@ -1,10 +1,5 @@
 // Basic Config
 
-// Element references
-const bodyEl = document.querySelector("body")
-    , svgScene = document.querySelector(".svg-canvas")
-    , svgImage = document.querySelector(".svg-image")
-    , svgPoints = document.querySelector(".svg-points");
 
 let canvasWidth = svgImage.getBoundingClientRect().width;
 let canvasHeight = svgImage.getBoundingClientRect().height;
@@ -190,50 +185,64 @@ svgScene.addEventListener("mousedown", (e) => {
 });
 
 
+
 window.addEventListener("mousemove", (e) => {
+
 
   let dX =  e.offsetX - mouse.x;
   let dY =  e.offsetY - mouse.y;
 
-  if(clonedGrid.grid) {
-    let cloneDist = distPoints(clonedGrid.startPoint, { x: mouse.x, y : mouse.y});
-    if(cloneDist > 18) {
-      clonedGrid.grid.mode = "normal";
-    } else {
-      clonedGrid.grid.mode = "ghost";
-    }
-  }
 
-  if(mouse.dragging) {
-    mouse.dragZone.end.x += dX;
-    mouse.dragZone.end.y += dY;
-  }
+  if(selectedTool === "selector") {
 
-  points = points.map(p => {
-
-    if(mouse.dragging) {
-      p.hovered = false;
-      p.stickyHovered = checkDragZone(p);
-    }
-
-    if(mouse.dragging == false) {
-      let distance = Math.sqrt(Math.pow(p.x - mouse.x, 2) + Math.pow(p.y - mouse.y, 2));
-
-      if(distance < hoverRadius) {
-        p.hovered = true;
+    if(clonedGrid.grid) {
+      let cloneDist = distPoints(clonedGrid.startPoint, { x: mouse.x, y : mouse.y});
+      if(cloneDist > 18) {
+        clonedGrid.grid.mode = "normal";
       } else {
-        p.hovered = false;
+        clonedGrid.grid.mode = "ghost";
       }
     }
 
-    if((p.selected || p.cloning) && mouse.pressed) {
-      p.x += dX;
-      p.y += dY;
-      moveSticky(dX,dY);
+    if(mouse.dragging) {
+      mouse.dragZone.end.x += dX;
+      mouse.dragZone.end.y += dY;
     }
 
-    return p;
-  });
+    points = points.map(p => {
+
+      if(mouse.dragging) {
+        p.hovered = false;
+        p.stickyHovered = checkDragZone(p);
+      }
+
+      if(mouse.dragging == false) {
+        let distance = Math.sqrt(Math.pow(p.x - mouse.x, 2) + Math.pow(p.y - mouse.y, 2));
+
+        if(distance < hoverRadius) {
+          p.hovered = true;
+        } else {
+          p.hovered = false;
+        }
+      }
+
+      if((p.selected || p.cloning) && mouse.pressed) {
+        p.x += dX;
+        p.y += dY;
+        moveSticky(dX,dY);
+      }
+
+      return p;
+    });
+  }
+
+  if(selectedTool == "move" && mouse.dragging) {
+    points = points.map(p => {
+      p.x += dX;
+      p.y += dY;
+      return p;
+   });
+  }
 
   mouse.x = e.offsetX;
   mouse.y = e.offsetY;

@@ -1,3 +1,11 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  user-select: none;
+}
+
 
 .top-ui {
   position: absolute;
@@ -23,17 +31,7 @@ button.selected {
   box-shadow: 0px 0px  0px 3px rgba(0,255,0,.6);
 }
 
-body {
-  margin: 0;
-  overflow: hidden;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  background: #efefef;
-}
+
 
 h1 {
   position: absolute;
@@ -84,7 +82,6 @@ h1 {
   display: block;
   height: 100%;
   position: absolute;
-  padding: 10px;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -96,38 +93,84 @@ h1 {
 }
 
 .colors .swatch {
-  display: block;
-  width: 26px;
-  height: 26px;
-  border-radius: 30px;
-  margin: 3px 0;
-  border: solid 2px white;
-  cursor: pointer;
-  transition: scale .2s ease-in-out;
 }
 
-.colors .swatch:hover {
-  transform: scale(1.1);
-}
 
 .colors .swatch.selected {
-  transform: scale(1.2);
+  border: solid 3px rgba(0,0,0,.2);
 }
+
+.colors .swatch.selected:after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  left: calc(50% - 3px);
+  top: calc(50% - 3px);
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0px 1px 0px rgba(0,0,0,.2);
+}
+
 
 .tools {
   position: absolute;
   left: 0;
+  padding-left: 25px;
   height: 100vh;
   text-align: center;
-  margin-bottom: 10px;
-  
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
 
-.tools * {
-  margin: 12px ;
+.tools button {
   display: block;
+  background: white;
+  border: solid 1px #BBB;
+  color: white;
+  box-shadow: none;
+  border-radius: 50%;
+  color: black;
+}
+
+.tools button.selected {
+  background: black;
+  color: white;
+  border: solid 1px black;
+}
+
+.colors .swatch, .tools button {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+  display: block;
+  cursor: pointer;
+  position: relative;
+  border-radius: 50%;
+}
+
+.tools button.selector:after {
+  content: "S";
+}
+
+.tools button.paintbrush:after {
+  content: "B";
+}
+
+.tools button.move:after {
+  content: "M";
+}
+
+.svg-canvas[tool="selector"] {
+  cursor: default;
+}
+
+.svg-canvas[tool="paintbrush"] {
+  cursor: cell;
+}
+
+.svg-canvas[tool="move"] {
+  cursor: move;
 }
