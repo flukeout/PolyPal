@@ -14,7 +14,6 @@ const drawVertex = (p) => {
     ctx.strokeStyle = "rgba(0,0,0,.4)";
     ctx.lineWidth = 2;
     ctx.stroke();
-    // ctx.fill();
     ctx.closePath();
 
   } else if (p.selected) {

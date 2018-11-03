@@ -24,6 +24,7 @@ class Grid {
       this.selected = false;
       this.svgCreated = false;
       this.svgEl = false;
+      this.uiEl = false;
     }
 
     draw() {
@@ -35,42 +36,57 @@ class Grid {
     }
 
     createSvg() {
-      let poly = document.createElementNS("http://www.w3.org/2000/svg","polygon");
 
       let pointsString = this.points.reduce((string, point) => {
         return string + parseInt(point.x) + "," + parseInt(point.y) + " ";
-      }, "")
-
+      }, "");
       this.svgCreated = true;
-      this.svgEl = poly;
-      this.updatePoly();
 
-      svgImage.appendChild(poly);
+      // This is the actual image element
+      this.svgEl = document.createElementNS("http://www.w3.org/2000/svg","polygon");
+      this.svgEl.setAttribute("stroke-width", "1");
+      this.svgEl.setAttribute("stroke", "rgba(0,0,0,.2");
+      svgImage.appendChild(this.svgEl);
+
+      // This is for displaying selections, etc
+      this.uiEl = document.createElementNS("http://www.w3.org/2000/svg","polygon");
+      this.uiEl.setAttribute("stroke-width", "2");
+      this.uiEl.setAttribute("stroke-linejoin", "round");
+      this.uiEl.setAttribute("fill", "transparent");
+      svgPoints.appendChild(this.uiEl);
+
+      this.updatePoly();
     }
 
     updatePoly() {
       let pointsString = this.points.reduce((string, point) => {
         return string + parseInt(point.x) + "," + parseInt(point.y) + " ";
       }, "");
-      
+
       if(this.mode != "ghost") { 
         this.svgEl.setAttribute("fill", this.fillColor);
       } else {
         this.svgEl.setAttribute("fill", "transparent");
       }
       
-      this.svgEl.setAttribute("stroke", "rgba(0,0,0,.2");
+      if(this.selected) { 
+        this.uiEl.setAttribute("stroke", "rgba(0,0,0,1");
+      } else if(this.hovered) { 
+        this.uiEl.setAttribute("stroke", "rgba(0,0,0,.3");
+      } else {
+        this.uiEl.setAttribute("stroke", "transparent");
+      }
+
       this.svgEl.setAttribute("points", pointsString);
-
-
+      this.uiEl.setAttribute("points", pointsString);
     }
 
     canvasDraw() {
       if(this.svgCreated == false ){
         this.createSvg();
-      } else {
-        this.updatePoly();
-      }
+      } 
+      this.updatePoly();
+      
     }
 
     drawFill() {
@@ -108,6 +124,9 @@ class Grid {
       // this.fillStartPoint++;
       this.selected = !this.selected;
 
+      if(this.selected) {
+        selectedGrids.push(this);
+      }
       // if(this.fillStartPoint >= this.points.length) {
       //   this.fillStartPoint = 0;
       // }

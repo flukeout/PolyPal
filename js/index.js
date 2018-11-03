@@ -1,15 +1,3 @@
-/* TO-DO
-
-
-* Bugs
-  * When you have triangle mode on, and click on a segment if often makes a new triangle
-  ... even when you don't want it. Maybe make it so you have to drag a bit?
-  * When clicking planes, you can click two at once (the one below what you clicked)
-
-* Allow dragging a plane
-
-*/
-
 // Basic Config
 const canvasWidth = 500
     , canvasHeight = 600
@@ -427,10 +415,7 @@ const frameLoop = () => {
   });
 
   points.map(p => {
-    
-    // if(p.selected || p.hovered || p.stickyHovered) {
       drawVertex(p);
-    // }
   });
 
 
