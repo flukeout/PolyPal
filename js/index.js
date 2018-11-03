@@ -237,7 +237,7 @@ window.addEventListener("mousemove", (e) => {
     });
   }
 
-  if(selectedTool === "move" && mouse.dragging) {
+  if(selectedTool === "move" && mouse.pressed) {
     points = points.map(p => {
       p.x += dX;
       p.y += dY;
@@ -336,24 +336,6 @@ window.addEventListener("keyup", e => {
   let key = getKey(e.keyCode);
 });
 
-const mouse = {
-  x : 0,
-  y: 0,
-
-  pressed : false,
-  dragging : false,
-
-  dragZone : {
-    start : {
-      x : 0,
-      y : 0,
-    },
-    end : {
-      x : 0,
-      y : 0
-    }
-  }
-}
 
 
 let frameCount = 0;

@@ -31,8 +31,6 @@ button.selected {
   box-shadow: 0px 0px  0px 3px rgba(0,255,0,.6);
 }
 
-
-
 h1 {
   position: absolute;
   width: 100%;
@@ -125,7 +123,7 @@ h1 {
   flex-direction: column;
 }
 
-.tools button {
+.tools .tool {
   display: block;
   background: white;
   border: solid 1px #BBB;
@@ -133,15 +131,17 @@ h1 {
   box-shadow: none;
   border-radius: 50%;
   color: black;
+  font-family: sans-serif;
+  font-weight: bold;
 }
 
-.tools button.selected {
+.tools .tool.selected {
   background: black;
   color: white;
   border: solid 1px black;
 }
 
-.colors .swatch, .tools button {
+.colors .swatch, .tools .tool {
   width: 40px;
   height: 40px;
   margin-bottom: 10px;
@@ -151,15 +151,46 @@ h1 {
   border-radius: 50%;
 }
 
-.tools button.selector:after {
+.tools .tool:after {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding-top: 12px;
+}
+
+.tools .tool .label {
+  position: absolute;
+  left: 50px;
+  background: #DDD;
+  padding: 13px 15px 12px 15px;
+  color: black;
+  border-radius: 20px;
+  display: none;
+  text-transform: capitalize;
+  white-space: nowrap;
+  font-weight: normal;
+}
+
+.tools .tool.selected .label {
+  /*display: block;*/
+}
+
+.tools .tool:hover .label {
+  display: block;
+  opacity: .4;
+}
+
+
+.tools .tool.selector:after {
   content: "S";
 }
 
-.tools button.paintbrush:after {
+.tools .tool.paintbrush:after {
   content: "B";
 }
 
-.tools button.move:after {
+.tools .tool.move:after {
   content: "M";
 }
 
