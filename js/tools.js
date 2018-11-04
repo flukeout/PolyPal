@@ -1,6 +1,6 @@
 let tools = [{
     name : "selector",
-    description: "Select things"
+    description: "Select & Build"
   },{
     name : "paintbrush",
     description: "Fill things with color"
@@ -30,8 +30,6 @@ tools.map(tool => {
   toolLabelEl.classList.add("label");
   toolLabelEl.innerText = tool.description;
   toolEl.appendChild(toolLabelEl);
-
-
 
   toolbarEl.appendChild(toolEl);
   toolEl.addEventListener("click", function(el){

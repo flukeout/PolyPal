@@ -11,14 +11,14 @@ const drawSvgVertex = (p) => {
   if(!p.svgEl) { return }
 
   if(p.selected) {
-    p.svgEl.querySelector(".bigcircle").setAttribute("stroke", "rgba(0,0,0,1)");
+    p.svgEl.querySelector(".bigcircle").setAttribute("stroke", "rgba(0,0,0,.2)");
     p.svgEl.querySelector(".smallcircle").setAttribute("fill", "rgba(0,0,0,1)");
   } else if (p.hovered) {
-    p.svgEl.querySelector(".bigcircle").setAttribute("stroke", "rgba(0,0,0,.3)");
+    p.svgEl.querySelector(".bigcircle").setAttribute("stroke", "rgba(0,0,0,.2)");
     p.svgEl.querySelector(".smallcircle").setAttribute("fill", "none");
   } else if (p.stickyHovered) {
-    p.svgEl.querySelector(".bigcircle").setAttribute("stroke", "none");
-    p.svgEl.querySelector(".smallcircle").setAttribute("fill", "rgba(0,0,0,.5)");
+    p.svgEl.querySelector(".bigcircle").setAttribute("stroke", "rgba(0,0,0,0)");
+    p.svgEl.querySelector(".smallcircle").setAttribute("fill", "rgba(0,0,0,.3)");
   } else {
     p.svgEl.querySelector(".bigcircle").setAttribute("stroke", "none");
     p.svgEl.querySelector(".smallcircle").setAttribute("fill", "none");
@@ -45,8 +45,8 @@ const drawHoverSegment = () => {
   if(hoverSegmentSvg == false) {
     let attributes = {
       "fill" : "transparent",
-      "stroke-width" : "2",
-      "stroke" : "rgba(0,0,0,1)"
+      "stroke-width" : "4",
+      "stroke-linecap" : "round"
     }
     hoverSegmentSvg = makeSvg("line", attributes, ".svg-points");
   }

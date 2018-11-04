@@ -21,10 +21,9 @@ const resetPicture = () => {
 
     points = newPoints.map(p => createPoint(p));
 
-    let newGrid = new Grid(points);
-    newGrid.fillColor = selectedColor;
-  
-    grids.push(newGrid);
+    grids.push(
+      createGrid(points, {fillColor : selectedColor})
+    );
 }
 
 const clearExistingPicture = () => {
@@ -74,27 +73,26 @@ const loadPicture = () => {
     if(picture) {
         let pictureData = JSON.parse(picture);
         let savedGrids = pictureData.grids;
-        
+
         grids = [];
         points = pictureData.points.map(p => {
             return createPoint(p);
         });
 
         savedGrids.map(grid => {
-            let newArray = [];
+          let newArray = [];
 
-            grid.points = grid.points.map(p => {
-                for(var i = 0; i < points.length; i++) {
-                    let existingPoint = points[i];
-                    if(comparePoints(p,existingPoint)) {
-                        return existingPoint;
-                    }
-                }
-            });
-            let newGrid = new Grid(grid.points, "top")
-            newGrid.fillColor = grid.fillColor;
-            grids.push(newGrid);
-
+          grid.points = grid.points.map(p => {
+              for(var i = 0; i < points.length; i++) {
+                  let existingPoint = points[i];
+                  if(comparePoints(p,existingPoint)) {
+                      return existingPoint;
+                  }
+              }
+          });
+          grids.push(
+            createGrid(grid.points, { fillColor : grid.fillColor})
+          );
         });
         return true;
     } else {
@@ -118,18 +116,17 @@ saveButton.addEventListener("click", () => {
 });
 
 loadButton.addEventListener("click", () => {
-    loadPicture();
+  loadPicture();
 });
 
 wobbleButton.addEventListener("mousedown", () => {
-    wobble = true;
+  wobble = true;
 });
 
 wobbleButton.addEventListener("mouseup", () => {
-    wobble = false;
+  wobble = false;
 });
 
 resetButton.addEventListener("click", () => {
-    resetPicture();
+  resetPicture();
 });
-

@@ -22,7 +22,8 @@ let clonedGrid = {
 }
 
 svgScene.addEventListener("mousedown", (e) => {
-mouse.pressed = true;
+
+  mouse.pressed = true;
 
   if(selectedTool == "paintbrush") {
     grids.map(grid => {
@@ -74,11 +75,15 @@ mouse.pressed = true;
       });
     }
 
+    
     if(pointSelected == false) {
 
+        let clickedGrids = [];
         grids.map(grid => {
 
-          // Select grids
+          // Select the grids that are hovered
+          // let hoveredGrids = 
+
           if(grid.hovered) {
             grids = grids.map(nGrid => {
               if(nGrid != grid) {
@@ -86,9 +91,9 @@ mouse.pressed = true;
               }
               return nGrid;
             });
-            grid.click();
-            gridClicked = true;
+            clickedGrids.push(grid);
           }
+
 
           for(var i = 0; i < grid.points.length; i++){
 
@@ -114,6 +119,14 @@ mouse.pressed = true;
             }
           }
         });
+
+        if(clickedGrids.length > 0) {
+          clickedGrids = clickedGrids.sort((a,b) => {
+            return a.zIndex < b.zIndex ? 1 : -1;
+          });
+          clickedGrids[0].click();
+          gridClicked = true;
+        }
 
         if(gridClicked == false) {
           deselectGrids();
@@ -169,11 +182,10 @@ mouse.pressed = true;
       mouse.dragging = false;
 
       // Create a grid tile from it
-      // newPoints = newPoints.map(p => createPoint(p));
-
-      newGrid = new Grid(newPoints, "top");
-      newGrid.mode = "ghost";
-      newGrid.fillColor = selectedColor;
+      let newGrid = createGrid(newPoints, {
+        fillColor : selectedColor,
+        mode : "ghost"
+      });
 
       // Keep track of the cloned grid...
       clonedGrid.grid = newGrid;
@@ -184,8 +196,6 @@ mouse.pressed = true;
       grids.push(newGrid);
     }
   }
-
-
 });
 
 
@@ -360,17 +370,26 @@ const frameLoop = () => {
     if(selectedTool == "selector") {
       grid.checkHoverSegments();
     }
-    // grid.showSelection = hoverSegments.length > 0 ? false : true;
 
     grid.showHover = hoverSegments.length > 0 ? false : true;
 
     grid.drawFill();
     grid.draw();
+
+    let hoveredGrids = grids.filter(g => g.hovered);
+
+    grid.showHovered = false;
+
+    if(hoveredGrids.length > 0) {
+      hoveredGrids = hoveredGrids.sort((a,b) => {
+        return a.zIndex < b.zIndex ? 1 : -1;
+      });
+      hoveredGrids[0].showHovered = true;
+    }
+
     grid.canvasDraw();
   });
 
-  grids.map(grid => grid.drawOutLines("same")); // Fills in gaps between shapes
-  grids.map(grid => grid.drawOutLines("dark")); // Draws lines around shapes
 
   points.map(p => drawVertex(p) );
 
@@ -379,7 +398,6 @@ const frameLoop = () => {
   if(selectedTool === "selector") {
     drawHoverSegment(); // Draw the hovered line segment closest ot pointer  
   }
-  
 
   if(hoverSegmentSvg) {
     if(hoveredVertex == true) {
@@ -578,3 +596,4 @@ const cleanupPoints = () => {
 }
 
 start();
+

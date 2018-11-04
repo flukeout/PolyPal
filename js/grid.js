@@ -39,11 +39,18 @@ class Grid {
       this.svgEl = document.createElementNS("http://www.w3.org/2000/svg","polygon");
       this.svgEl.setAttribute("stroke-width", "1");
       this.svgEl.setAttribute("stroke", "rgba(0,0,0,.2");
+
+      this.zIndex = (svgImage.querySelectorAll("polygon").length || 0)+ 1;
+
+      this.svgEl.setAttribute("z-index", this.zIndex);
+
       svgImage.appendChild(this.svgEl);
+
+
 
       // This is for displaying selections, etc
       this.uiEl = document.createElementNS("http://www.w3.org/2000/svg","polygon");
-      this.uiEl.setAttribute("stroke-width", "2");
+      this.uiEl.setAttribute("stroke-width", "4");
       this.uiEl.setAttribute("stroke-linejoin", "round");
       this.uiEl.setAttribute("fill", "transparent");
       svgPoints.appendChild(this.uiEl);
@@ -65,7 +72,7 @@ class Grid {
       
       if(this.selected) { 
         this.uiEl.setAttribute("stroke", "rgba(0,0,0,1");
-      } else if(this.hovered && this.showHover) { 
+      } else if(this.showHovered && this.showHover) { 
         this.uiEl.setAttribute("stroke", "rgba(0,0,0,.3");
       } else {
         this.uiEl.setAttribute("stroke", "transparent");
@@ -76,6 +83,7 @@ class Grid {
     }
 
     canvasDraw() {
+
       if(this.svgCreated == false ){
         this.createSvg();
       } 
@@ -132,7 +140,4 @@ class Grid {
       }
     }
 
-    drawOutLines(type){
-
-    }
 }

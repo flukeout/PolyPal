@@ -117,10 +117,16 @@ const customFilter = (items, conditional) => {
 
 
 const makeSvg = (type = "polygon", options = {}, appendEl) => {
-    let svgEl = document.createElementNS("http://www.w3.org/2000/svg", type);
-    Object.keys(options).forEach(key => {
-      svgEl.setAttribute(key, options[key]);
-    });
-    document.querySelector(appendEl).appendChild(svgEl);
-    return svgEl;
+  let svgEl = document.createElementNS("http://www.w3.org/2000/svg", type);
+  Object.keys(options).forEach(key => {
+    svgEl.setAttribute(key, options[key]);
+  });
+  document.querySelector(appendEl).appendChild(svgEl);
+  return svgEl;
+}
+
+const createGrid = (points, options) => {
+  let newGrid = new Grid(points);
+  Object.keys(options).forEach(key => newGrid[key] = options[key]);
+  return newGrid;
 }
