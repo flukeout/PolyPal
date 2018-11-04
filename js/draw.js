@@ -34,18 +34,18 @@ let hoverSegmentSvg = false;
 // Draw the segment that is being hovered
 const drawHoverSegment = () => {
 
-  let closestSegment = hoverSegments.reduce((segment, closestSeg) => {
+  let closestSegment = hoveredSegments.reduce((segment, closestSeg) => {
     if(segment.distance < closestSeg.distance) {
       return segment;
     } else {
       return closestSeg;
     }
-  }, hoverSegments[0]);
+  }, hoveredSegments[0]);
 
   if(hoverSegmentSvg == false) {
     let attributes = {
       "fill" : "transparent",
-      "stroke-width" : "4",
+      "stroke-width" : "2",
       "stroke-linecap" : "round"
     }
     hoverSegmentSvg = makeSvg("line", attributes, ".svg-points");

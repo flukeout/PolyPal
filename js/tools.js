@@ -25,7 +25,7 @@ tools.map(tool => {
   toolEl.classList.add(tool.name);
   toolEl.style.background = tool.name;
   toolEl.setAttribute("name", tool.name);
-  
+
   let toolLabelEl = document.createElement("div");
   toolLabelEl.classList.add("label");
   toolLabelEl.innerText = tool.description;
@@ -46,6 +46,7 @@ const selectTool = toolName => {
       svgScene.setAttribute("tool", toolName);
     }
   });
+  deselectGrids();
 }
 
 selectTool("selector");

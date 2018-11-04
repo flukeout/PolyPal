@@ -136,3 +136,11 @@ const highestZIndexItem = items => {
   });
   return sortedItems[0];
 }
+
+
+const deselectGrids = () => {
+  grids = grids.map(grid => {
+    grid.selected = false;
+    return grid;
+  });
+}

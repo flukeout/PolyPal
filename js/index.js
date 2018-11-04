@@ -227,9 +227,7 @@ window.addEventListener("mousemove", (e) => {
       if(mouse.dragging) {
         p.hovered = false;
         p.stickyHovered = checkDragZone(p);
-      }
-
-      if(mouse.dragging == false) {
+      } else {
         let distance = Math.sqrt(Math.pow(p.x - mouse.x, 2) + Math.pow(p.y - mouse.y, 2));
 
         if(distance < hoverRadius) {
@@ -352,12 +350,12 @@ window.addEventListener("keyup", e => {
 
 
 let frameCount = 0;
-let hoverSegments = [];
 let hoveredVertex = false;
-
+let hoveredSegments;
+let hoveredGrids;
 const frameLoop = () => {
   
-  hoverSegments = [];
+  
   hoveredVertex = false;
   frameCount++;
 
@@ -370,19 +368,22 @@ const frameLoop = () => {
     })
   }
 
-  // Draw each grid
-  grids.map(grid => {
-    if(selectedTool == "selector") {
+  hoveredSegments = [];
+  hoveredGrids = [];
+  // Get all the hover segments
+
+  if(selectedTool == "selector" || selectedTool == "paintbrush") {
+    grids.map(grid => {
       grid.checkHoverSegments();
-    }
-
-    grid.showHover = hoverSegments.length > 0 ? false : true;
-
-    grid.drawFill();
+      if(grid.hovered) {
+        hoveredGrids.push(grid);
+      }
+    });
+  }
+  
+  grids.map(grid => {
+    grid.showHover = hoveredSegments.length > 0 ? false : true;
     grid.draw();
-
-    let hoveredGrids = grids.filter(g => g.hovered);
-
     grid.showHovered = false;
 
     if(hoveredGrids.length > 0) {
@@ -392,12 +393,18 @@ const frameLoop = () => {
       hoveredGrids[0].showHovered = true;
     }
 
+    if(selectedTool == "paintbrush") {
+      grid.showHover = true;
+    }
+
     grid.canvasDraw();
   });
+  
 
-  points.map(p => drawVertex(p) );
 
-  let hoveringSegments = hoverSegments.length > 0 ? true : false;
+  points.map(p => drawVertex(p)); // These are just UI points
+
+  let hoveringSegments = hoveredSegments.length > 0 ? true : false;
 
   if(selectedTool === "selector") {
     drawHoverSegment(); // Draw the hovered line segment closest ot pointer  

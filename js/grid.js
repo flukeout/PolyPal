@@ -1,9 +1,3 @@
-const deselectGrids = () => {
-  grids = grids.map(grid => {
-    grid.selected = false;
-    return grid;
-  });
-}
 
 class Grid {
 
@@ -50,7 +44,7 @@ class Grid {
 
       // This is for displaying selections, etc
       this.uiEl = document.createElementNS("http://www.w3.org/2000/svg","polygon");
-      this.uiEl.setAttribute("stroke-width", "4");
+      this.uiEl.setAttribute("stroke-width", "2");
       this.uiEl.setAttribute("stroke-linejoin", "round");
       this.uiEl.setAttribute("fill", "transparent");
       svgPoints.appendChild(this.uiEl);
@@ -129,7 +123,7 @@ class Grid {
         dist = distToSegment({x : mouse.x, y : mouse.y}, start, end);
 
         if(dist <= lineHoverDistance) {
-          hoverSegments.push(
+          hoveredSegments.push(
             {
               start : { x : start.x, y: start.y },
               end : { x : end.x, y: end.y },
