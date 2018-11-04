@@ -144,3 +144,10 @@ const deselectGrids = () => {
     return grid;
   });
 }
+
+const deselectPoints = () => {
+  points = points.map(point => {
+    point.selected = false;
+    return point;
+  });
+}

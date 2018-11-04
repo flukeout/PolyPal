@@ -47,6 +47,7 @@ const selectTool = toolName => {
     }
   });
   deselectGrids();
+  deselectPoints();
 }
 
 selectTool("selector");

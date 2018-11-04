@@ -203,6 +203,7 @@ svgScene.addEventListener("mousedown", (e) => {
 
 window.addEventListener("mousemove", (e) => {
 
+
   let dX =  e.offsetX - mouse.x;
   let dY =  e.offsetY - mouse.y;
 
@@ -269,6 +270,8 @@ window.addEventListener("mousemove", (e) => {
 
   mouse.x = e.offsetX;
   mouse.y = e.offsetY;
+
+  frameLoop();
 });
 
 // Deselect all points on mouseup
@@ -290,7 +293,7 @@ window.addEventListener("mouseup", (e) => {
     p.cloning = false;
     return p;
   });
-
+  frameLoop();
 });
 
 
@@ -303,41 +306,6 @@ const moveSticky = (dX, dY) => {
       return p;
   });
 }
-
-const keyMap = {
-  37 : "left",
-  38 : "up",
-  39 : "right",
-  40 : "down",
-  16 : "shift",
-  68 : "delete",
-  8  : "delete",
-  187 : "plus",
-  189 : "minus",
-}
-
-const getKey = keyCode => {
-  return keyMap[keyCode];
-}
-
-window.addEventListener("keydown", e => {
-
-  let key = getKey(e.keyCode);
-
-  if(key == "delete") {
-    points = customFilter(points, (p => p.selected));
-    deleteSelectedGrids();
-  }
-
-  if(key == "plus") {
-    scalePoints(.05);
-  }
-
-  if(key == "minus") {
-    scalePoints(-.05);
-  }
-
-});
 
 
 const deleteSelectedGrids = () => {
@@ -353,9 +321,9 @@ let frameCount = 0;
 let hoveredVertex = false;
 let hoveredSegments;
 let hoveredGrids;
+
 const frameLoop = () => {
-  
-  
+
   hoveredVertex = false;
   frameCount++;
 
@@ -383,7 +351,7 @@ const frameLoop = () => {
   
   grids.map(grid => {
     grid.showHover = hoveredSegments.length > 0 ? false : true;
-    grid.draw();
+    grid.checkShapeHover(); // sets 'grid.hovered'
     grid.showHovered = false;
 
     if(hoveredGrids.length > 0) {
@@ -396,17 +364,17 @@ const frameLoop = () => {
     if(selectedTool == "paintbrush") {
       grid.showHover = true;
     }
+    if(mouse.dragging) {
+      grid.showHover = false;
+    }
 
     grid.canvasDraw();
   });
-  
-
 
   points.map(p => drawVertex(p)); // These are just UI points
 
-  let hoveringSegments = hoveredSegments.length > 0 ? true : false;
 
-  if(selectedTool === "selector") {
+  if(selectedTool === "selector" && mouse.dragging == false) {
     drawHoverSegment(); // Draw the hovered line segment closest ot pointer  
   }
 
@@ -434,7 +402,7 @@ const frameLoop = () => {
   }
 
   drawDragZone();
-  requestAnimationFrame(frameLoop);
+  // requestAnimationFrame(frameLoop);
 }
 
 const mergeSamePoints = () => {

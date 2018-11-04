@@ -21,10 +21,6 @@ class Grid {
       this.uiEl = false;
     }
 
-    draw() {
-      this.checkShapeHover();
-    }
-
     createSvg() {
 
       this.svgCreated = true;
@@ -33,14 +29,12 @@ class Grid {
       this.svgEl = document.createElementNS("http://www.w3.org/2000/svg","polygon");
       this.svgEl.setAttribute("stroke-width", "1");
       this.svgEl.setAttribute("stroke", "rgba(0,0,0,.2");
+      this.svgEl.setAttribute("stroke-linejoin", "round");
 
       this.zIndex = (svgImage.querySelectorAll("polygon").length || 0)+ 1;
-
       this.svgEl.setAttribute("z-index", this.zIndex);
 
       svgImage.appendChild(this.svgEl);
-
-
 
       // This is for displaying selections, etc
       this.uiEl = document.createElementNS("http://www.w3.org/2000/svg","polygon");
@@ -84,9 +78,6 @@ class Grid {
       this.updatePoly();
     }
 
-    drawFill() {
-    }
-
     checkShapeHover() {
       let shapePoints = [];
       for(var i = 0; i < this.points.length; i++) {
@@ -104,10 +95,9 @@ class Grid {
       }
     }
 
-  
     checkHoverSegments() {
       for(var i = 0; i < this.points.length; i++){
-        
+
         let thisP = this.points[i];
         let nextP = this.points[i + 1];
         let start, end, dist;

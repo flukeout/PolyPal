@@ -18,7 +18,7 @@ const drawSvgVertex = (p) => {
     p.svgEl.querySelector(".smallcircle").setAttribute("fill", "none");
   } else if (p.stickyHovered) {
     p.svgEl.querySelector(".bigcircle").setAttribute("stroke", "rgba(0,0,0,0)");
-    p.svgEl.querySelector(".smallcircle").setAttribute("fill", "rgba(0,0,0,.3)");
+    p.svgEl.querySelector(".smallcircle").setAttribute("fill", "rgba(0,0,0,.65)");
   } else {
     p.svgEl.querySelector(".bigcircle").setAttribute("stroke", "none");
     p.svgEl.querySelector(".smallcircle").setAttribute("fill", "none");
@@ -27,7 +27,6 @@ const drawSvgVertex = (p) => {
   p.svgEl.setAttribute("x",p.x);
   p.svgEl.setAttribute("y",p.y);
 }
-
 
 
 let hoverSegmentSvg = false;

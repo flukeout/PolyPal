@@ -183,16 +183,45 @@ h1 {
 
 
 .tools .tool.selector:after {
-  content: "S";
+  /*content: "S";*/
 }
+
+.tool.selector {
+  background-image: url(../images/icon-selector.svg);
+}
+
+.tool.selector.selected {
+  background-image: url(../images/icon-selector-selected.svg);
+}
+
 
 .tools .tool.paintbrush:after {
-  content: "B";
+  /*content: "B";*/
 }
 
-.tools .tool.move:after {
-  content: "M";
+.tool.paintbrush {
+  background-image: url(../images/icon-paintbrush.svg);
 }
+
+.tool.paintbrush.selected {
+  background-image: url(../images/icon-paintbrush-selected.svg);
+}
+
+
+
+.tools .tool.move:after {
+  /*content: "M";*/
+}
+
+.tool.move {
+  background-image: url(../images/icon-move.svg);
+}
+
+.tool.move.selected {
+  background-image: url(../images/icon-paintbrush-selected.svg);
+}
+
+
 
 .svg-canvas[tool="selector"] {
   cursor: default;
@@ -205,3 +234,5 @@ h1 {
 .svg-canvas[tool="move"] {
   cursor: move;
 }
+
+
