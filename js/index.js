@@ -26,24 +26,29 @@ svgScene.addEventListener("mousedown", (e) => {
   mouse.pressed = true;
 
   if(selectedTool == "paintbrush") {
-    grids.map(grid => {
+    let clickedGrids = [];
+    grids.map(grid => { 
       if(grid.hovered) {
-        grid.fillColor = selectedColor;
+        clickedGrids.push(grid)
       }
     });
+    if(clickedGrids.length >0 ) {
+      highestZIndexItem(clickedGrids).fillColor = selectedColor;
+    }
   }
 
   if(selectedTool == "selector") {
 
     cloners = [];
     cloning = false;
-    
+
     pointSelected = false;
     gridSelected = false;
 
     let gridClicked = false;
     let clickedSelectedPoint = false;
 
+    // Check if we are clicking a selected
     points.map(p => {
       if(p.hovered && p.selected) {
         clickedSelectedPoint = true;
@@ -67,6 +72,7 @@ svgScene.addEventListener("mousedown", (e) => {
       return p;
     });
 
+
     if(pointSelected == false) {
       points = points.map(p => {
         p.selected = false;
@@ -75,15 +81,13 @@ svgScene.addEventListener("mousedown", (e) => {
       });
     }
 
-    
     if(pointSelected == false) {
 
         let clickedGrids = [];
+
         grids.map(grid => {
 
-          // Select the grids that are hovered
-          // let hoveredGrids = 
-
+          // Push all the clicked grids into an array
           if(grid.hovered) {
             grids = grids.map(nGrid => {
               if(nGrid != grid) {
@@ -94,7 +98,7 @@ svgScene.addEventListener("mousedown", (e) => {
             clickedGrids.push(grid);
           }
 
-
+          // Figure out segment hovering
           for(var i = 0; i < grid.points.length; i++){
 
             let thisP = grid.points[i];
@@ -118,13 +122,11 @@ svgScene.addEventListener("mousedown", (e) => {
               }
             }
           }
-        });
+        }); // end grid.map...
 
+        // Click the Grid with the highest z index
         if(clickedGrids.length > 0) {
-          clickedGrids = clickedGrids.sort((a,b) => {
-            return a.zIndex < b.zIndex ? 1 : -1;
-          });
-          clickedGrids[0].click();
+          highestZIndexItem(clickedGrids).click();
           gridClicked = true;
         }
 
@@ -256,12 +258,15 @@ window.addEventListener("mousemove", (e) => {
   }
 
   if(selectedTool === "paintbrush" && mouse.pressed) {
+    let clickedGrids = [];
     grids.map(grid => { 
       if(grid.hovered) {
-        grid.fillColor = selectedColor;
+        clickedGrids.push(grid)
       }
-      return grid;
     });
+    if(clickedGrids.length >0 ) {
+      highestZIndexItem(clickedGrids).fillColor = selectedColor;
+    }
   }
 
   mouse.x = e.offsetX;
@@ -389,7 +394,6 @@ const frameLoop = () => {
 
     grid.canvasDraw();
   });
-
 
   points.map(p => drawVertex(p) );
 
