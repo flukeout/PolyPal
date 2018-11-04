@@ -113,11 +113,7 @@ h1 {
   height: 30px;
   left: calc(50% - 15px);
   top: calc(50% - 15px);
-  /*background: white;*/
-  /*border-radius: 50%;*/
-  /*box-shadow: 0px 1px 0px rgba(0,0,0,.2);*/
   background-image: url(../images/icon-paintbrush-selected.svg);
-
 }
 
 
