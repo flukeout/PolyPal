@@ -156,8 +156,6 @@ svgScene.addEventListener("mousedown", (e) => {
       frameLoop();
       cloning = true;
 
-
-
       // Add new points to the points array
       let newPoints = [];
       let newOne, newTwo;
@@ -168,9 +166,6 @@ svgScene.addEventListener("mousedown", (e) => {
 
         newOne = createPoint(newOne);
         newTwo = createPoint(newTwo);
-
-        newOne.selected = true;
-        newTwo.selected = true;
 
         newOne.cloning = true;
         newTwo.cloning = true;
@@ -184,7 +179,6 @@ svgScene.addEventListener("mousedown", (e) => {
         newOne = { x: parseInt(mouse.x), y: parseInt(mouse.y)}
 
         newOne = createPoint(newOne);
-        newOne.selected = true;
         newOne.cloning = true;
 
         points.push(newOne);
@@ -550,6 +544,9 @@ const consolidatePoints = () => {
 }
 
 const killGhosts = () => {
+  if(clonedGrid.grid) {
+    clonedGrid.grid.click();
+  }
   clonedGrid.grid = false;
   grids = customFilter(grids, (g => g.mode === "ghost"));
   
