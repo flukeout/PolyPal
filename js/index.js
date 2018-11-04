@@ -21,6 +21,10 @@ let clonedGrid = {
   distanceTraveled : 0
 }
 
+window.addEventListener("mousedown", e => {
+  frameLoop();
+})
+
 svgScene.addEventListener("mousedown", (e) => {
 
   mouse.pressed = true;
@@ -198,6 +202,7 @@ svgScene.addEventListener("mousedown", (e) => {
       grids.push(newGrid);
     }
   }
+
 });
 
 
@@ -271,7 +276,7 @@ window.addEventListener("mousemove", (e) => {
   mouse.x = e.offsetX;
   mouse.y = e.offsetY;
 
-  frameLoop();
+  // frameLoop();
 });
 
 // Deselect all points on mouseup
@@ -293,6 +298,7 @@ window.addEventListener("mouseup", (e) => {
     p.cloning = false;
     return p;
   });
+
   frameLoop();
 });
 
@@ -323,7 +329,7 @@ let hoveredSegments;
 let hoveredGrids;
 
 const frameLoop = () => {
-
+  console.log("frameLoop");
   hoveredVertex = false;
   frameCount++;
 

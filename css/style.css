@@ -109,13 +109,15 @@ h1 {
 .colors .swatch.selected:after {
   content: "";
   position: absolute;
-  width: 8px;
-  height: 8px;
-  left: calc(50% - 3px);
-  top: calc(50% - 3px);
-  background: white;
-  border-radius: 50%;
-  box-shadow: 0px 1px 0px rgba(0,0,0,.2);
+  width: 30px;
+  height: 30px;
+  left: calc(50% - 15px);
+  top: calc(50% - 15px);
+  /*background: white;*/
+  /*border-radius: 50%;*/
+  /*box-shadow: 0px 1px 0px rgba(0,0,0,.2);*/
+  background-image: url(../images/icon-paintbrush-selected.svg);
+
 }
 
 
@@ -214,8 +216,6 @@ h1 {
 .tool.paintbrush.selected {
   background-image: url(../images/icon-paintbrush-selected.svg);
 }
-
-
 
 .tools .tool.move:after {
   content: "M";

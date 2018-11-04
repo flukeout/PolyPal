@@ -27,6 +27,7 @@ const scalePoints = (scalar) => {
     }
     return p;
   });
+  frameLoop();
 }
 
 
@@ -70,5 +71,5 @@ const rotatePoints = (angle) => {
     }
     return p;
   });
-
+  frameLoop();
 }

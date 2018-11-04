@@ -44,8 +44,6 @@ window.addEventListener("keydown", e => {
 
 
 window.addEventListener("keyup", e => {
-
-  
   frameLoop();
 });
 
