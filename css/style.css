@@ -232,7 +232,7 @@ h1 {
 }
 
 .svg-canvas[tool="paintbrush"] {
-  cursor: cell;
+  cursor: crosshair;
 }
 
 .svg-canvas[tool="move"] {
