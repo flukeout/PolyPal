@@ -20,5 +20,5 @@ let shapeOutlineColor = "rgba(255,255,255,.2)";
 shapeOutlineColor = "rgba(0,0,0,.1)";
 
 let settings = {
-  extrudeMode : "line"
+  extrudeMode : "point"
 };

@@ -11,7 +11,7 @@ const setExtrudeMode = (mode) => {
   dQ(".extrude[type='"+mode+"']").classList.add("selected");
 }
 
-setExtrudeMode("line");
+setExtrudeMode("point");
 
 document.querySelectorAll(".extrude").forEach((el) => {
   el.addEventListener("click", (e) => setExtrudeMode(e.target.getAttribute("type")));

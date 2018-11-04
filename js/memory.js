@@ -42,7 +42,7 @@ const createPoint = p => {
   circle.classList.add("bigcircle");
   circle.setAttribute("cy", 0);
   circle.setAttribute("r", 14);
-  circle.setAttribute("stroke", "rgba(0,0,0,1");
+  circle.setAttribute("stroke", "transparent");
   circle.setAttribute("stroke-width", 2);
   circle.setAttribute("fill", "transparent");
 
@@ -51,7 +51,7 @@ const createPoint = p => {
   smallCircle.setAttribute("cx", 0);
   smallCircle.setAttribute("cy", 0);
   smallCircle.setAttribute("r", 3);
-  smallCircle.setAttribute("fill", "#000000");
+  smallCircle.setAttribute("fill", "transparent");
 
   group.append(circle);
   group.append(smallCircle);

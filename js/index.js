@@ -152,7 +152,11 @@ svgScene.addEventListener("mousedown", (e) => {
     // For cloning
     if(cloners.length == 2 && pointSelected == false) {
       deselectGrids();
+      deselectPoints();
       cloning = true;
+
+      
+
       // Add new points to the points array
       let newPoints = [];
       let newOne, newTwo;
@@ -163,6 +167,9 @@ svgScene.addEventListener("mousedown", (e) => {
 
         newOne = createPoint(newOne);
         newTwo = createPoint(newTwo);
+
+        newOne.selected = true;
+        newTwo.selected = true;
 
         newOne.cloning = true;
         newTwo.cloning = true;
@@ -176,6 +183,7 @@ svgScene.addEventListener("mousedown", (e) => {
         newOne = { x: parseInt(mouse.x), y: parseInt(mouse.y)}
 
         newOne = createPoint(newOne);
+        newOne.selected = true;
         newOne.cloning = true;
 
         points.push(newOne);
@@ -207,7 +215,6 @@ svgScene.addEventListener("mousedown", (e) => {
 
 
 window.addEventListener("mousemove", (e) => {
-
 
   let dX =  e.offsetX - mouse.x;
   let dY =  e.offsetY - mouse.y;
@@ -287,7 +294,6 @@ window.addEventListener("mouseup", (e) => {
   // SVG
   dragSvg.remove();
   dragSvg = false;
-
   cloning = false;
 
   points = points.map(p => {
@@ -302,7 +308,6 @@ window.addEventListener("mouseup", (e) => {
   frameLoop();
 });
 
-
 const moveSticky = (dX, dY) => {
    points = points.map(p => {
       if(p.stickyHovered && !p.selected) {
@@ -312,7 +317,6 @@ const moveSticky = (dX, dY) => {
       return p;
   });
 }
-
 
 const deleteSelectedGrids = () => {
   grids = customFilter(grids, (g => g.selected));
@@ -369,17 +373,19 @@ const frameLoop = () => {
     if(selectedTool == "paintbrush") {
       grid.showHover = true;
     }
-    if(mouse.dragging) {
+
+    if(mouse.dragging || cloning) {
       grid.showHover = false;
     }
 
     grid.canvasDraw();
   });
 
-  points.map(p => drawVertex(p)); // These are just UI points
+  if(cloning == false) {
+    points.map(p => drawVertex(p)); // These are just UI points  
+  }
 
-
-  if(selectedTool === "selector" && mouse.dragging == false) {
+  if(selectedTool === "selector" && mouse.dragging == false && cloning == false) {
     drawHoverSegment(); // Draw the hovered line segment closest ot pointer  
   }
 
@@ -580,4 +586,3 @@ const cleanupPoints = () => {
 }
 
 start();
-
