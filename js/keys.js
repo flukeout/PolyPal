@@ -38,4 +38,14 @@ window.addEventListener("keydown", e => {
   if(key == "minus") {
     scalePoints(-.05);
   }
+
+  frameLoop();
 });
+
+
+window.addEventListener("keyup", e => {
+
+  
+  frameLoop();
+});
+
