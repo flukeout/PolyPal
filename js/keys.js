@@ -14,7 +14,7 @@ const keyMap = {
 }
 
 const getKey = keyCode => {
-  console.log(keyCode);
+  // console.log(keyCode);
   return keyMap[keyCode];
 }
 

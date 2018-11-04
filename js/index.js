@@ -329,7 +329,6 @@ let hoveredSegments;
 let hoveredGrids;
 
 const frameLoop = () => {
-  console.log("frameLoop");
   hoveredVertex = false;
   frameCount++;
 
