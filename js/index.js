@@ -153,9 +153,10 @@ svgScene.addEventListener("mousedown", (e) => {
     if(cloners.length == 2 && pointSelected == false) {
       deselectGrids();
       deselectPoints();
+      frameLoop();
       cloning = true;
 
-      
+
 
       // Add new points to the points array
       let newPoints = [];

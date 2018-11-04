@@ -119,13 +119,13 @@ loadButton.addEventListener("click", () => {
   loadPicture();
 });
 
-wobbleButton.addEventListener("mousedown", () => {
-  wobble = true;
-});
+// wobbleButton.addEventListener("mousedown", () => {
+//   wobble = true;
+// });
 
-wobbleButton.addEventListener("mouseup", () => {
-  wobble = false;
-});
+// wobbleButton.addEventListener("mouseup", () => {
+//   wobble = false;
+// });
 
 resetButton.addEventListener("click", () => {
   resetPicture();

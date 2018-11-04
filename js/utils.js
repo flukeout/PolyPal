@@ -146,12 +146,10 @@ const deselectGrids = () => {
 }
 
 const deselectPoints = () => {
-  console.log("why");
   points = points.map(point => {
     point.selected = false;
     point.hovered = false;
     point.stickyHovered = false;
     return point;
   });
-  frameLoop();
 }
