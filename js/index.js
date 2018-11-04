@@ -276,7 +276,7 @@ window.addEventListener("mousemove", (e) => {
   mouse.x = e.offsetX;
   mouse.y = e.offsetY;
 
-  // frameLoop();
+  frameLoop();
 });
 
 // Deselect all points on mouseup
