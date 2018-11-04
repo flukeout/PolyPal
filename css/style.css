@@ -123,21 +123,10 @@ h1 {
   flex-direction: column;
 }
 
-.tools .tool {
-  display: block;
-  background: white;
-  border: solid 1px #BBB;
-  color: white;
-  box-shadow: none;
-  border-radius: 50%;
-  color: black;
-  font-family: sans-serif;
-  font-weight: bold;
-}
+
 
 .tools .tool.selected {
   background: black;
-  color: white;
   border: solid 1px black;
 }
 
@@ -151,12 +140,28 @@ h1 {
   border-radius: 50%;
 }
 
+.tools .tool {
+  display: block;
+  margin-bottom: 18px;
+  background: white;
+  border: solid 1px #BBB;
+  box-shadow: none;
+  border-radius: 50%;
+  color: black;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+
 .tools .tool:after {
-  width: 100%;
   position: absolute;
-  left: 0;
-  top: 0;
-  padding-top: 12px;
+  bottom: -9px;
+  right: -9px;
+  font-size: 12px;
+  border: solid 1px #BBB;
+  padding: 3px 5px 2px 5px;
+  background: white;
+  border-radius: 12px;
 }
 
 .tools .tool .label {
@@ -172,18 +177,13 @@ h1 {
   font-weight: normal;
 }
 
-.tools .tool.selected .label {
-  /*display: block;*/
-}
-
 .tools .tool:hover .label {
   display: block;
   opacity: .4;
 }
 
-
 .tools .tool.selector:after {
-  /*content: "S";*/
+  content: "S";
 }
 
 .tool.selector {
@@ -196,7 +196,7 @@ h1 {
 
 
 .tools .tool.paintbrush:after {
-  /*content: "B";*/
+  content: "B";
 }
 
 .tool.paintbrush {
@@ -210,7 +210,7 @@ h1 {
 
 
 .tools .tool.move:after {
-  /*content: "M";*/
+  content: "M";
 }
 
 .tool.move {
