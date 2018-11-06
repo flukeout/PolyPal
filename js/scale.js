@@ -3,7 +3,7 @@ const scalePoints = (scalar) => {
   let selectedPoints = points.filter(p => p.selected);
 
   if(selectedPoints.length == 1) {
-    return;
+    deselectPoints();
   }
 
   let midX = canvasWidth / 2;
@@ -16,7 +16,7 @@ const scalePoints = (scalar) => {
   }
 
   points = points.map(p => {
-    if(selectedPoints.length === 0 ) {
+    if(selectedPoints.length < 2 ) {
       p.x = p.x + (p.x - midX) * scalar;
       p.y = p.y + (p.y - midY) * scalar;
     } else {
@@ -27,6 +27,7 @@ const scalePoints = (scalar) => {
     }
     return p;
   });
+
   frameLoop();
 }
 
@@ -39,7 +40,7 @@ const rotatePoints = (angle) => {
   let selectedPoints = points.filter(p => p.selected);
 
   if(selectedPoints.length === 1) {
-    return;
+    deselectPoints();
   }
 
   if(selectedPoints.length > 1) {
@@ -60,7 +61,7 @@ const rotatePoints = (angle) => {
         nx = (cos * (x - cx)) + (sin * (y - cy)) + cx,
         ny = (cos * (y - cy)) - (sin * (x - cx)) + cy;
 
-    if(selectedPoints.length === 0) {
+    if(selectedPoints.length < 2) {
       p.x = nx;
       p.y = ny;
     } else {

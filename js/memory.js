@@ -24,6 +24,7 @@ const resetPicture = () => {
     grids.push(
       createGrid(points, {fillColor : selectedColor})
     );
+    frameLoop();
 }
 
 const clearExistingPicture = () => {
@@ -66,38 +67,41 @@ const createPoint = p => {
 }
 
 const loadPicture = () => {
-   let picture = window.localStorage.getItem("picture");
+ let picture = window.localStorage.getItem("picture");
 
-    clearExistingPicture();
+  clearExistingPicture();
 
-    if(picture) {
-        let pictureData = JSON.parse(picture);
-        let savedGrids = pictureData.grids;
+  if(picture) {
+    let pictureData = JSON.parse(picture);
+    let savedGrids = pictureData.grids;
 
-        grids = [];
-        points = pictureData.points.map(p => {
-            return createPoint(p);
-        });
+    grids = [];
+    points = pictureData.points.map(p => {
+        return createPoint(p);
+    });
 
-        savedGrids.map(grid => {
-          let newArray = [];
+    savedGrids.map(grid => {
+      let newArray = [];
 
-          grid.points = grid.points.map(p => {
-              for(var i = 0; i < points.length; i++) {
-                  let existingPoint = points[i];
-                  if(comparePoints(p,existingPoint)) {
-                      return existingPoint;
-                  }
+      grid.points = grid.points.map(p => {
+          for(var i = 0; i < points.length; i++) {
+              let existingPoint = points[i];
+              if(comparePoints(p,existingPoint)) {
+                  return existingPoint;
               }
-          });
-          grids.push(
-            createGrid(grid.points, { fillColor : grid.fillColor})
-          );
-        });
-        return true;
-    } else {
-        return false;
-    }
+          }
+      });
+      grids.push(
+        createGrid(grid.points, { fillColor : grid.fillColor})
+      );
+    });
+    frameLoop();
+    return true;
+
+  } else {
+    return false;
+  }
+
 }
 
 saveButton.addEventListener("click", () => {
