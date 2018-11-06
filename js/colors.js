@@ -1,4 +1,11 @@
-let availableColors = ["#8F3D61","#B94B5D", "#DD7E5F", "#EB9762", "#EDBD77", "#DDDDDD"];
+let availableColors = [
+  "#8F3D61",
+  "#B94B5D",
+  "#DD7E5F",
+  "#EB9762",
+  "#EDBD77",
+  "#DDDDDD"
+];
 
 // availableColors = [
 // "#D3C663",
@@ -26,7 +33,7 @@ availableColors.map(color => {
 
 const selectColor = color => {
   selectedColor = color;
-  
+
   if(grids) {
     grids = grids.map(grid => {
       if(grid.selected) {
@@ -42,7 +49,10 @@ const selectColor = color => {
       el.classList.add("selected");
     }
   });
-  frameLoop();
+
+  if(typeof frameLoop !== "undefined") {
+    frameLoop();
+  }
 }
 
 selectColor(selectedColor);
