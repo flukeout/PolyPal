@@ -4,6 +4,7 @@ body {
   width: 100vw;
   height: 100vh;
   user-select: none;
+  -moz-user-select: none;
 }
 
 
@@ -46,7 +47,6 @@ body {
   margin-right: 5px;
 }
 
-
 button {
   padding: 3px 10px;
   margin: 0 3px;
@@ -83,15 +83,12 @@ h1 {
 .svg-canvas {
   background: white;
   position: absolute;
-  
   top: 0;
   left: 0;
   width: calc(100vw - 200px);
   height: calc(100vh - 200px);
   width: 100vw;
   height: 100vh;
-
-
 }
 
 .svg-points svg {
@@ -120,10 +117,6 @@ h1 {
   padding-right: 25px;
 }
 
-.colors .swatch {
-}
-
-
 .colors .swatch.selected {
   border: solid 3px rgba(0,0,0,.2);
 }
@@ -138,7 +131,6 @@ h1 {
   background-image: url(../images/icon-paintbrush-selected.svg);
 }
 
-
 .tools {
   position: absolute;
   left: 0;
@@ -150,8 +142,6 @@ h1 {
   justify-content: center;
   flex-direction: column;
 }
-
-
 
 .tools .tool.selected {
   background: black;
@@ -179,7 +169,6 @@ h1 {
   font-family: sans-serif;
   font-weight: bold;
 }
-
 
 .tools .tool:after {
   position: absolute;

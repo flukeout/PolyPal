@@ -42,6 +42,7 @@ const selectColor = color => {
       el.classList.add("selected");
     }
   });
+  frameLoop();
 }
 
 selectColor(selectedColor);

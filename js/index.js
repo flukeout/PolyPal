@@ -211,8 +211,8 @@ svgScene.addEventListener("mousedown", (e) => {
 
 window.addEventListener("mousemove", (e) => {
 
-  let dX =  e.offsetX - mouse.x;
-  let dY =  e.offsetY - mouse.y;
+  let dX =  e.clientX - mouse.x;
+  let dY =  e.clientY - mouse.y;
 
   if(selectedTool === "selector") {
 
@@ -275,8 +275,8 @@ window.addEventListener("mousemove", (e) => {
     }
   }
 
-  mouse.x = e.offsetX;
-  mouse.y = e.offsetY;
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
 
   frameLoop();
 });
