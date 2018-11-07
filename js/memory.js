@@ -6,24 +6,50 @@ const saveButton = document.querySelector(".save")
     , wobbleButton = document.querySelector(".wobble");
 
 const resetPicture = () => {
-    let size = 85;
-    let startX = Math.floor(canvasWidth / 2 - size / 2);
-    let startY = Math.floor(canvasHeight / 2 - size / 2 - 20);
+    // let size = 85;
+    let startX = Math.floor(canvasWidth / 2);
+    let startY = Math.floor(canvasHeight / 2);
 
     clearExistingPicture();
 
-    newPoints = [
-        {x : startX, y : startY},
-        {x : startX + size, y : startY},
-        {x : startX + size, y : startY + size},
-        {x : startX, y : startY + size}
-    ];
+    // newPoints = gem;
+    // console.log(gemGrids);
+    // points = newPoints.map(p => createPoint(p));
 
-    points = newPoints.map(p => createPoint(p));
+    grids = [];
+    points = [];
 
-    grids.push(
-      createGrid(points, {fillColor : selectedColor})
-    );
+    gemGrids.map(grid => {
+      grid.points.map(p => {
+        let found = false;
+        for(var i = 0; i < points.length; i++) {
+          if(comparePoints(p, points[i])) {
+            found = true;
+          }
+        }
+        if(found == false) {
+          points.push(createPoint(p));
+        }
+      });
+    });
+
+    gemGrids.map(grid => {
+      let newArray = [];
+
+      grid.points = grid.points.map(p => {
+        for(var i = 0; i < points.length; i++) {
+          let existingPoint = points[i];
+          if(comparePoints(p,existingPoint)) {
+            return existingPoint;
+          }
+        }
+      });
+
+      grids.push(
+        createGrid(grid.points, { fillColor : grid.fillColor})
+      );
+    });
+
     frameLoop();
 }
 
@@ -67,6 +93,7 @@ const createPoint = p => {
 }
 
 const loadPicture = () => {
+ 
  let picture = window.localStorage.getItem("picture");
 
   clearExistingPicture();
@@ -76,28 +103,47 @@ const loadPicture = () => {
     let savedGrids = pictureData.grids;
 
     grids = [];
-    points = pictureData.points.map(p => {
-        return createPoint(p);
+
+    let newPoints = [];
+
+    points = pictureData.grids.map(grid => {
+      grid.points.map(p => {
+        let thisPoint = { x : p.x, y: p.y};
+        let found = false;
+        for(var i = 0; i < newPoints.length; i++) {
+          if(comparePoints(thisPoint, newPoints[i])) {
+            found = true;
+          }
+        }
+        if(found == false) {
+          newPoints.push(thisPoint);
+        }
+      });
     });
+
+    points = newPoints.map(p => {
+      return createPoint(p);
+    });
+
 
     savedGrids.map(grid => {
       let newArray = [];
 
       grid.points = grid.points.map(p => {
-          for(var i = 0; i < points.length; i++) {
-              let existingPoint = points[i];
-              if(comparePoints(p,existingPoint)) {
-                  return existingPoint;
-              }
+        for(var i = 0; i < points.length; i++) {
+          let existingPoint = points[i];
+          if(comparePoints(p,existingPoint)) {
+            return existingPoint;
           }
+        }
       });
+
       grids.push(
         createGrid(grid.points, { fillColor : grid.fillColor})
       );
     });
     frameLoop();
     return true;
-
   } else {
     return false;
   }
@@ -106,17 +152,20 @@ const loadPicture = () => {
 
 saveButton.addEventListener("click", () => {
 
-    let savedGrids = grids.map(grid => {
-        return {
-          points : grid.points,
-          fillColor : grid.fillColor
-        }
-    });
+  let savedGrids = grids.map(grid => {
+    return {
+      points : grid.points.map(p => {
+        return { x: p.x, y: p.y};
+      }),
+      fillColor : grid.fillColor
+    }
+  });
 
-    window.localStorage.setItem("picture", JSON.stringify({
-        grids : savedGrids,
-        points : points
-    }));
+  console.log(JSON.stringify(savedGrids));
+
+  window.localStorage.setItem("picture", JSON.stringify({
+      grids : savedGrids
+  }));
 });
 
 loadButton.addEventListener("click", () => {

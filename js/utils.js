@@ -125,6 +125,7 @@ const makeSvg = (type = "polygon", options = {}, appendEl) => {
 }
 
 const createGrid = (points, options) => {
+  // console.log("cg",points);
   let newGrid = new Grid(points);
   Object.keys(options).forEach(key => newGrid[key] = options[key]);
   return newGrid;
@@ -152,4 +153,13 @@ const deselectPoints = () => {
     point.stickyHovered = false;
     return point;
   });
+}
+
+
+const roundPoints = () => {
+  points = points.map(p => {
+    p.x = Math.round(p.x);
+    p.y = Math.round(p.y);
+    return p;
+  })
 }
