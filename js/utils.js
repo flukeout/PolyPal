@@ -140,6 +140,7 @@ const highestZIndexItem = items => {
 
 
 const deselectGrids = () => {
+  console.log("deselectGrids()");
   grids = grids.map(grid => {
     grid.selected = false;
     return grid;

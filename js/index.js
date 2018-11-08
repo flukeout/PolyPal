@@ -86,22 +86,19 @@ svgScene.addEventListener("mousedown", (e) => {
       });
     }
 
-    if(pointSelected == false && mouse.shiftPressed == false) {
+
+    // If no points are selected
+    if(pointSelected == false) {
 
         let clickedGrids = [];
 
-        grids.map(grid => {
+        clickedGrids = grids.filter(grid => grid.hovered );
 
-          // Push all the clicked grids into an array
-          if(grid.hovered) {
-            grids = grids.map(nGrid => {
-              if(nGrid != grid) {
-                nGrid.selected = false;
-              }
-              return nGrid;
-            });
-            clickedGrids.push(grid);
-          }
+        if(mouse.shiftPressed == false ) {
+          deselectGrids();
+        }
+
+        grids.map(grid => {
 
           // Figure out segment hovering
           for(var i = 0; i < grid.points.length; i++){
@@ -135,11 +132,8 @@ svgScene.addEventListener("mousedown", (e) => {
           gridClicked = true;
         }
 
-        if(gridClicked == false) {
-          deselectGrids();
-        }
     } else {
-      deselectGrids();
+        deselectGrids();
     }
 
     if(pointSelected == false) {
@@ -152,6 +146,7 @@ svgScene.addEventListener("mousedown", (e) => {
 
     // For cloning
     if(cloners.length == 2 && pointSelected == false) {
+      console.log('oh');
       deselectGrids();
       deselectPoints();
       frameLoop();
@@ -330,6 +325,16 @@ let hoveredSegments;
 let hoveredGrids;
 
 const frameLoop = () => {
+
+  if(mouse.pressed == false) {
+    killGhosts();        // Kill shapes that are ghosts
+    cleanupPoints();     // Get rid of orphan points
+    mergeSamePoints();   // Make points close to each other have the same x,y values
+    consolidatePoints(); // Make points with same x,y be the same points
+    cleanupGrids();      // Throw out grids with less than 3 points
+    cleanupPoints();     // Get rid of orphan points
+  }
+
   hoveredVertex = false;
   frameCount++;
 
@@ -378,9 +383,7 @@ const frameLoop = () => {
     grid.canvasDraw();
   });
 
-  if(cloning == false) {
-    points.map(p => drawVertex(p)); // These are just UI points  
-  }
+  points.map(p => drawVertex(p)); // These are just UI points
 
   if(selectedTool === "selector" && mouse.dragging == false && cloning == false) {
     drawHoverSegment(); // Draw the hovered line segment closest ot pointer  
@@ -400,14 +403,7 @@ const frameLoop = () => {
     })
   }
 
-  if(mouse.pressed == false) {
-    killGhosts();        // Kill shapes that are ghosts
-    cleanupPoints();     // Get rid of orphan points
-    mergeSamePoints();   // Make points close to each other have the same x,y values
-    consolidatePoints(); // Make points with same x,y be the same points
-    cleanupGrids();      // Throw out grids with less than 3 points
-    cleanupPoints();     // Get rid of orphan points
-  }
+
 
   drawDragZone();
   // requestAnimationFrame(frameLoop);

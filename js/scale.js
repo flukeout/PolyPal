@@ -1,6 +1,6 @@
 const scalePoints = (scalar) => {
 
-  let selectedPoints = points.filter(p => p.selected);
+  let selectedPoints = getSelectedPoints();
 
   if(selectedPoints.length == 1) {
     deselectPoints();
@@ -20,7 +20,7 @@ const scalePoints = (scalar) => {
       p.x = p.x + (p.x - midX) * scalar;
       p.y = p.y + (p.y - midY) * scalar;
     } else {
-      if(p.selected) {
+      if(p.selected || selectedPoints.indexOf(p) > -1) {
         p.x = p.x + (p.x - midX) * scalar;
         p.y = p.y + (p.y - midY) * scalar;
       }
@@ -37,7 +37,7 @@ const rotatePoints = (angle) => {
   let midX = canvasWidth / 2;
   let midY = canvasHeight / 2;
 
-  let selectedPoints = points.filter(p => p.selected);
+  let selectedPoints = getSelectedPoints();
 
   if(selectedPoints.length === 1) {
     deselectPoints();
@@ -65,7 +65,7 @@ const rotatePoints = (angle) => {
       p.x = nx;
       p.y = ny;
     } else {
-      if(p.selected) {
+      if(p.selected || selectedPoints.indexOf(p) > -1) {
         p.x = nx;
         p.y = ny;
       }
@@ -73,4 +73,21 @@ const rotatePoints = (angle) => {
     return p;
   });
   frameLoop();
+}
+
+
+const getSelectedPoints = () => {
+  let selectedPoints = points.filter(p => p.selected);
+
+  // Try loading girds
+  if(selectedPoints.length === 0) {
+      grids.map(grid => {
+      if(grid.selected) {
+        grid.points.map(p => {
+          selectedPoints.push(p);
+        });
+      }
+    })
+  }
+  return selectedPoints;
 }
