@@ -14,7 +14,8 @@ let mouse = {
 
   pressed : false,
   dragging : false,
-
+  shiftPressed : false, 
+  
   dragZone : {
     start : {
       x : 0,

@@ -11,10 +11,11 @@ const keyMap = {
   83 : "selector",
   66 : "paintbrush",
   77 : "move",
+  16 : "shift",
 }
 
 const getKey = keyCode => {
-  // console.log(keyCode);
+  console.log(keyCode);
   return keyMap[keyCode];
 }
 
@@ -24,6 +25,10 @@ window.addEventListener("keydown", e => {
 
   if(key == "selector" || key == "paintbrush" || key == "move") {
     selectTool(key);
+  }
+
+  if(key == "shift") {
+    mouse.shiftPressed = true;
   }
 
   if(key == "delete") {
@@ -44,6 +49,7 @@ window.addEventListener("keydown", e => {
 
 
 window.addEventListener("keyup", e => {
+  mouse.shiftPressed = false;
   frameLoop();
 });
 

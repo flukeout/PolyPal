@@ -59,8 +59,9 @@ svgScene.addEventListener("mousedown", (e) => {
       }
     });
 
-    // If a non-selected point is clicked, clear all selected points.
-    if(clickedSelectedPoint == false) {
+    // If a non-selected point is clicked
+    // clear all selected points.
+    if(clickedSelectedPoint == false && mouse.shiftPressed == false) {
       points = points.map(p => {
         p.selected = false;
         return p;
@@ -77,7 +78,7 @@ svgScene.addEventListener("mousedown", (e) => {
     });
 
 
-    if(pointSelected == false) {
+    if(pointSelected == false && mouse.shiftPressed == false) {
       points = points.map(p => {
         p.selected = false;
         p.hovered = false;
@@ -85,7 +86,7 @@ svgScene.addEventListener("mousedown", (e) => {
       });
     }
 
-    if(pointSelected == false) {
+    if(pointSelected == false && mouse.shiftPressed == false) {
 
         let clickedGrids = [];
 
@@ -141,7 +142,7 @@ svgScene.addEventListener("mousedown", (e) => {
       deselectGrids();
     }
 
-    if(pointSelected == false ) {
+    if(pointSelected == false) {
       mouse.dragging = true;
       mouse.dragZone.start.x = e.offsetX;
       mouse.dragZone.start.y = e.offsetY;
@@ -245,7 +246,7 @@ window.addEventListener("mousemove", (e) => {
         }
       }
 
-      if((p.selected || p.cloning) && mouse.pressed) {
+      if((p.selected || p.cloning) && mouse.pressed && mouse.shiftPressed == false) {
         p.x += dX;
         p.y += dY;
         moveSticky(dX,dY);
