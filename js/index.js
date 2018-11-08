@@ -257,8 +257,8 @@ window.addEventListener("mousemove", (e) => {
 
   if(selectedTool === "move" && mouse.pressed) {
     points = points.map(p => {
-      p.x += dX + 10;
-      p.y += dY + 10;
+      p.x += dX;
+      p.y += dY;
       return p;
    });
   }
