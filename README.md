@@ -7,9 +7,9 @@
 
 * Create & save real SVG files right to your computer's hard-drive!
 * Undo things up to 20 times!
-* Keeps your image intact when you refresh the browser!
 * Rotate, scale, and move things!
 * A neat color palette!
+* ...and more to come!
 
 
 
