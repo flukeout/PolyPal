@@ -9,6 +9,8 @@ let grids = [];
 let selectedGrids = [];
 let pictureHistory = [];
 
+let snapshotTaken;
+
 let mouse = {
   x : 0,
   y: 0,

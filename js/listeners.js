@@ -38,15 +38,25 @@ let previousScale = 0;
 document.querySelector(".bottom-ui .scale").addEventListener("input",function(e){
   let scale = e.target.value;
   let scaleDelta =  scale - previousScale;
-  scalePoints(scaleDelta);
+  scalePoints(scaleDelta, false); // false is to not take a history snapshot
   previousScale = scale;
 })
 
 let previousRotation = 0;
+
+document.querySelector(".bottom-ui .rotate").addEventListener("mousedown", function(e){
+  pushHistory();
+});
+
+document.querySelector(".bottom-ui .scale").addEventListener("mousedown", function(e){
+  pushHistory();
+});
+
+
 document.querySelector(".bottom-ui .rotate").addEventListener("input",function(e){
   let rotation = e.target.value;
   let rotationDelta = rotation - previousRotation;
-  rotatePoints(rotationDelta);
+  rotatePoints(rotationDelta, false); // False is to not push history
   previousRotation = rotation;
 });
 

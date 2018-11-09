@@ -1,4 +1,8 @@
-const scalePoints = (scalar) => {
+const scalePoints = (scalar, shouldPushHistory) => {
+  if(shouldPushHistory != false) {
+    pushHistory();
+  }
+
 
   let selectedPoints = getSelectedPoints();
 
@@ -32,7 +36,10 @@ const scalePoints = (scalar) => {
 }
 
 
-const rotatePoints = (angle) => {
+const rotatePoints = (angle, shouldPushHistory) => {
+  if(shouldPushHistory != false) {
+    pushHistory();
+  }
 
   let midX = canvasWidth / 2;
   let midY = canvasHeight / 2;

@@ -79,7 +79,6 @@ svgScene.addEventListener("mousedown", (e) => {
       return p;
     });
 
-
     if(pointSelected == false && mouse.shiftPressed == false) {
       points = points.map(p => {
         p.selected = false;
@@ -199,14 +198,24 @@ svgScene.addEventListener("mousedown", (e) => {
       clonedGrid.startPoint.x = parseInt(mouse.x);
       clonedGrid.startPoint.y = parseInt(mouse.y);
 
+      pushHistory();
+
+
       grids.push(newGrid);
     }
   }
+
+  snapshotTaken = false;
 
 });
 
 
 window.addEventListener("mousemove", (e) => {
+
+  if(mouse.pressed && snapshotTaken == false && clonedGrid.grid == false) {
+    pushHistory();
+    snapshotTaken = true;
+  }
 
   let dX =  e.clientX - mouse.x;
   let dY =  e.clientY - mouse.y;
@@ -297,6 +306,8 @@ window.addEventListener("mouseup", (e) => {
     p.cloning = false;
     return p;
   });
+
+  
 
   roundPoints();
   frameLoop();

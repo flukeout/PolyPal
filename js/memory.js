@@ -92,18 +92,20 @@ const undo = () => {
   console.log("undo()");
 
   if(pictureHistory.length > 0) {
-    console.log("undo(): Undoing.")
+    console.log("undo(): Undoing last change")
     clearExistingPicture();
     let lastStep = pictureHistory[pictureHistory.length - 1];
     loadPicture(lastStep);
     pictureHistory.pop();
   } else {
-    console.log("undo(): No undo states.")
+    console.log("undo(): No undo states left");
   }
 }
 
+
 const pushHistory = () => {
   console.log("pushHistory()");
+
   let currentState = { grids : getPictureData() }
   pictureHistory.push(JSON.stringify(currentState));
   if(pictureHistory.length > 20) {
