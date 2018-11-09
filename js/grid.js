@@ -88,14 +88,7 @@ class Grid {
     }
 
     click() {
-      
       this.selected = !this.selected;
-
-      console.log("hello", this.zIndex);
-      console.log(this.selected);
-      if(this.selected) {
-        // selectedGrids.push(this);
-      }
     }
 
     checkHoverSegments() {

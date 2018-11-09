@@ -7,15 +7,21 @@ const bodyEl = document.querySelector("body")
 let points = [];
 let grids = [];
 let selectedGrids = [];
+let pictureHistory = [];
 
 let mouse = {
   x : 0,
   y: 0,
 
   pressed : false,
+
+  // For keeping track of clicks anywhere
+  // like when you are using the scale slider, so points dont merge
+  pressedAnywhere : false,
+
   dragging : false,
-  shiftPressed : false, 
-  
+  shiftPressed : false,
+
   dragZone : {
     start : {
       x : 0,

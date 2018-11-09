@@ -12,6 +12,7 @@ const keyMap = {
   66 : "paintbrush",
   77 : "move",
   16 : "shift",
+  90 : "z",
 }
 
 const getKey = keyCode => {
@@ -29,6 +30,10 @@ window.addEventListener("keydown", e => {
 
   if(key == "shift") {
     mouse.shiftPressed = true;
+  }
+
+  if(key == "z") {
+    undo();
   }
 
   if(key == "delete") {

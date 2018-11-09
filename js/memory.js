@@ -6,15 +6,11 @@ const saveButton = document.querySelector(".save")
     , wobbleButton = document.querySelector(".wobble");
 
 const resetPicture = () => {
-    // let size = 85;
+
     let startX = Math.floor(canvasWidth / 2);
     let startY = Math.floor(canvasHeight / 2);
 
     clearExistingPicture();
-
-    // newPoints = gem;
-    // console.log(gemGrids);
-    // points = newPoints.map(p => createPoint(p));
 
     grids = [];
     points = [];
@@ -92,10 +88,53 @@ const createPoint = p => {
   }
 }
 
-const loadPicture = () => {
- 
- let picture = window.localStorage.getItem("picture");
+const undo = () => {
+  console.log("undo()");
 
+  if(pictureHistory.length > 0) {
+    console.log("undo(): Undoing.")
+    clearExistingPicture();
+    let lastStep = pictureHistory[pictureHistory.length - 1];
+    loadPicture(lastStep);
+    pictureHistory.pop();
+  } else {
+    console.log("undo(): No undo states.")
+  }
+}
+
+const pushHistory = () => {
+  console.log("pushHistory()");
+  let currentState = { grids : getPictureData() }
+  pictureHistory.push(JSON.stringify(currentState));
+  if(pictureHistory.length > 20) {
+    console.log("pushHistory(): More than 20 snapshots, nuking one.");
+    pictureHistory.shift();
+  }
+}
+
+const getPictureData = () => {
+  return grids.map(grid => {
+    return {
+      points : grid.points.map(p => {
+        return { x: p.x, y: p.y};
+      }),
+      fillColor : grid.fillColor
+    }
+  });
+}
+
+
+const savePicture = () => {
+  let savedGrids = getPictureData();
+
+  window.localStorage.setItem("picture", JSON.stringify({
+    grids : savedGrids
+  }));
+}
+
+
+const loadPicture = (picture) => {
+  console.log("loadPicture()");
   clearExistingPicture();
 
   if(picture) {
@@ -125,7 +164,6 @@ const loadPicture = () => {
       return createPoint(p);
     });
 
-
     savedGrids.map(grid => {
       let newArray = [];
 
@@ -147,29 +185,15 @@ const loadPicture = () => {
   } else {
     return false;
   }
-
 }
 
 saveButton.addEventListener("click", () => {
-
-  let savedGrids = grids.map(grid => {
-    return {
-      points : grid.points.map(p => {
-        return { x: p.x, y: p.y};
-      }),
-      fillColor : grid.fillColor
-    }
-  });
-
-  console.log(JSON.stringify(savedGrids));
-
-  window.localStorage.setItem("picture", JSON.stringify({
-      grids : savedGrids
-  }));
+  savePicture();
 });
 
 loadButton.addEventListener("click", () => {
-  loadPicture();
+  let picture = window.localStorage.getItem("picture");
+  loadPicture(picture);
 });
 
 // wobbleButton.addEventListener("mousedown", () => {

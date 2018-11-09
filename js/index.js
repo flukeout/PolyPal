@@ -22,8 +22,9 @@ let clonedGrid = {
 }
 
 window.addEventListener("mousedown", e => {
+  mouse.pressedAnywhere = true; 
   frameLoop();
-})
+});
 
 svgScene.addEventListener("mousedown", (e) => {
 
@@ -37,6 +38,7 @@ svgScene.addEventListener("mousedown", (e) => {
       }
     });
     if(clickedGrids.length >0 ) {
+      pushHistory();
       highestZIndexItem(clickedGrids).fillColor = selectedColor;
     }
   }
@@ -146,7 +148,6 @@ svgScene.addEventListener("mousedown", (e) => {
 
     // For cloning
     if(cloners.length == 2 && pointSelected == false) {
-      console.log('oh');
       deselectGrids();
       deselectPoints();
       frameLoop();
@@ -281,7 +282,8 @@ window.addEventListener("mousemove", (e) => {
 window.addEventListener("mouseup", (e) => {
   mouse.pressed = false;
   mouse.dragging = false;
-
+  mouse.pressedAnywhere = false;
+  
   // SVG
   dragSvg.remove();
   dragSvg = false;
@@ -325,8 +327,8 @@ let hoveredSegments;
 let hoveredGrids;
 
 const frameLoop = () => {
-
-  if(mouse.pressed == false) {
+  
+  if(mouse.pressed == false && mouse.pressedAnywhere == false) {
     killGhosts();        // Kill shapes that are ghosts
     cleanupPoints();     // Get rid of orphan points
     mergeSamePoints();   // Make points close to each other have the same x,y values
