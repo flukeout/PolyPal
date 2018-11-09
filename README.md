@@ -1,4 +1,5 @@
-# PolyPal - An SVG editor for low-poly style illustrations
+# PolyPal
+### An SVG editor for low-poly style illustrations
 
 <img src="https://flukeout.github.io/gridplanes/images/screenshot.png" width="512"/>
 
