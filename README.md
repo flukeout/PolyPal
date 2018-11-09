@@ -1,5 +1,8 @@
-# Draw pictures with planes & triangles
+# PolyPal - An SVG editor for low-poly style illustrations
 
-<img src="https://flukeout.github.io/gridplanes/images/screenshot.png" width="500"/>
+<img src="https://flukeout.github.io/gridplanes/images/screenshot.png" width="512"/>
 
-Try it [https://flukeout.github.io/gridplanes/](https://flukeout.github.io/gridplanes/)
+[Try it out!](https://flukeout.github.io/PolyPal/)
+
+
+
