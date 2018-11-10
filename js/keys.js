@@ -37,6 +37,7 @@ window.addEventListener("keydown", e => {
   }
 
   if(key == "delete") {
+    e.preventDefault();
     points = customFilter(points, (p => p.selected));
     deleteSelectedGrids();
   }
