@@ -102,7 +102,6 @@ const undo = () => {
   }
 }
 
-
 const pushHistory = () => {
   console.log("pushHistory()");
 
@@ -125,7 +124,6 @@ const getPictureData = () => {
   });
 }
 
-
 const savePicture = () => {
   let savedGrids = getPictureData();
 
@@ -133,7 +131,6 @@ const savePicture = () => {
     grids : savedGrids
   }));
 }
-
 
 const loadPicture = (picture) => {
   console.log("loadPicture()");
