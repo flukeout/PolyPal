@@ -6,7 +6,7 @@ const saveButton = document.querySelector(".save")
     , wobbleButton = document.querySelector(".wobble");
 
 const resetPicture = () => {
-
+    console.log("resetPicture()");
     let startX = Math.floor(canvasWidth / 2);
     let startY = Math.floor(canvasHeight / 2);
 

@@ -489,10 +489,13 @@ const checkDragZone = p => {
 }
 
 const start = () => {
-  let loaded = loadPicture();
+  let picture = window.localStorage.getItem("picture");
+  let loaded = loadPicture(picture);
+
   if(loaded == false) {
     resetPicture();
   }
+
   frameLoop();
 }
 
