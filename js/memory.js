@@ -15,6 +15,18 @@ const resetPicture = () => {
     grids = [];
     points = [];
 
+    availableColors = [
+      "#8F3D61",
+      "#B94B5D",
+      "#DD7E5F",
+      "#EB9762",
+      "#EDBD77",
+      "#DDDDDD"
+    ];
+
+    updateColors();
+
+
     gemGrids.map(grid => {
       grid.points.map(p => {
         let found = false;
@@ -52,40 +64,6 @@ const resetPicture = () => {
 const clearExistingPicture = () => {
   points = customFilter(points, (() => true));
   grids = customFilter(grids, (() => true));
-}
-
-const createPoint = p => {
-
-  let group = document.createElementNS("http://www.w3.org/2000/svg","svg");
-  group.setAttribute("x", p.x);
-  group.setAttribute("y", p.y);
-
-  let circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
-  circle.setAttribute("cx", 0);
-  circle.classList.add("bigcircle");
-  circle.setAttribute("cy", 0);
-  circle.setAttribute("r", 14);
-  circle.setAttribute("stroke", "transparent");
-  circle.setAttribute("stroke-width", 2);
-  circle.setAttribute("fill", "transparent");
-
-  let smallCircle = document.createElementNS("http://www.w3.org/2000/svg","circle");
-  smallCircle.classList.add("smallcircle");
-  smallCircle.setAttribute("cx", 0);
-  smallCircle.setAttribute("cy", 0);
-  smallCircle.setAttribute("r", 3);
-  smallCircle.setAttribute("fill", "transparent");
-
-  group.append(circle);
-  group.append(smallCircle);
-
-  svgPoints.appendChild(group);
-
-  return {
-      x : p.x,
-      y : p.y,
-      svgEl : group
-  }
 }
 
 const undo = () => {
@@ -128,17 +106,26 @@ const savePicture = () => {
   let savedGrids = getPictureData();
 
   window.localStorage.setItem("picture", JSON.stringify({
-    grids : savedGrids
+    grids : savedGrids,
+    colors : availableColors
   }));
 }
 
 const loadPicture = (picture) => {
   console.log("loadPicture()");
+
   clearExistingPicture();
 
   if(picture) {
     let pictureData = JSON.parse(picture);
     let savedGrids = pictureData.grids;
+
+    console.log(pictureData.colors);
+    if(pictureData.colors) {
+      availableColors = pictureData.colors;
+      updateColors();
+    }
+    
 
     grids = [];
 

@@ -164,3 +164,37 @@ const roundPoints = () => {
     return p;
   })
 }
+
+const createPoint = p => {
+
+  let group = document.createElementNS("http://www.w3.org/2000/svg","svg");
+  group.setAttribute("x", p.x);
+  group.setAttribute("y", p.y);
+
+  let circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
+  circle.setAttribute("cx", 0);
+  circle.classList.add("bigcircle");
+  circle.setAttribute("cy", 0);
+  circle.setAttribute("r", 14);
+  circle.setAttribute("stroke", "transparent");
+  circle.setAttribute("stroke-width", 2);
+  circle.setAttribute("fill", "transparent");
+
+  let smallCircle = document.createElementNS("http://www.w3.org/2000/svg","circle");
+  smallCircle.classList.add("smallcircle");
+  smallCircle.setAttribute("cx", 0);
+  smallCircle.setAttribute("cy", 0);
+  smallCircle.setAttribute("r", 3);
+  smallCircle.setAttribute("fill", "transparent");
+
+  group.append(circle);
+  group.append(smallCircle);
+
+  svgPoints.appendChild(group);
+
+  return {
+      x : p.x,
+      y : p.y,
+      svgEl : group
+  }
+}
