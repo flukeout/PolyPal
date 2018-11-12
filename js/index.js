@@ -39,7 +39,7 @@ svgScene.addEventListener("mousedown", (e) => {
     });
     if(clickedGrids.length >0 ) {
       pushHistory();
-      highestZIndexItem(clickedGrids).fillColor = selectedColor;
+      highestZIndexItem(clickedGrids).fillColorIndex = selectedColorIndex;
     }
   }
 
@@ -188,7 +188,7 @@ svgScene.addEventListener("mousedown", (e) => {
 
       // Create a grid tile from it
       let newGrid = createGrid(newPoints, {
-        fillColor : selectedColor,
+        fillColorIndex : selectedColorIndex,
         mode : "ghost"
       });
 
@@ -277,7 +277,7 @@ window.addEventListener("mousemove", (e) => {
       }
     });
     if(clickedGrids.length >0 ) {
-      highestZIndexItem(clickedGrids).fillColor = selectedColor;
+      highestZIndexItem(clickedGrids).fillColorIndex = selectedColorIndex;
     }
   }
 

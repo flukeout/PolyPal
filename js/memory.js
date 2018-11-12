@@ -42,7 +42,7 @@ const resetPicture = () => {
       });
 
       grids.push(
-        createGrid(grid.points, { fillColor : grid.fillColor})
+        createGrid(grid.points, { fillColorIndex : grid.fillColorIndex})
       );
     });
 
@@ -119,7 +119,7 @@ const getPictureData = () => {
       points : grid.points.map(p => {
         return { x: p.x, y: p.y};
       }),
-      fillColor : grid.fillColor
+      fillColorIndex : grid.fillColorIndex
     }
   });
 }
@@ -176,7 +176,7 @@ const loadPicture = (picture) => {
       });
 
       grids.push(
-        createGrid(grid.points, { fillColor : grid.fillColor})
+        createGrid(grid.points, { fillColorIndex : grid.fillColorIndex})
       );
     });
     frameLoop();

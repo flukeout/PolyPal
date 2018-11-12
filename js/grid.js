@@ -12,7 +12,7 @@ class Grid {
       this.outlineColor = shapeOutlineColor;
       this.fillStartPoint = 0;
 
-      this.fillColor = "grid";
+      this.fillColorIndex = 0;
 
       this.hovered = false;
       this.selected = false;
@@ -53,7 +53,7 @@ class Grid {
       }, "");
 
       if(this.mode != "ghost") { 
-        this.svgEl.setAttribute("fill", this.fillColor);
+        this.svgEl.setAttribute("fill", availableColors[this.fillColorIndex]);
       } else {
         this.svgEl.setAttribute("fill", "transparent");
       }

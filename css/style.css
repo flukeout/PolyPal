@@ -114,7 +114,33 @@ h1 {
   right: 0;
   bottom: 0;
   top: 0;
-  padding-right: 25px;
+  padding-right: 40px;
+}
+
+.colors .color-wrapper {
+  position: relative;
+    margin-bottom: 10px;
+}
+
+.colors .colorpicker-wrapper {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: -30px;
+  background: #ddd;
+  top: calc(50% - 10px);
+  border-radius: 50%;
+}
+
+.colors .colorpicker-wrapper input {
+  position: absolute;
+  opacity: 0;
+  background: none;
+  border: none;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 .colors .swatch.selected {
@@ -148,7 +174,18 @@ h1 {
   border: solid 1px black;
 }
 
-.colors .swatch, .tools .tool {
+.colors .swatch {
+  width: 40px;
+  height: 40px;
+  display: block;
+  cursor: pointer;
+  position: relative;
+  border-radius: 50%;
+}
+
+
+
+.tools .tool {
   width: 40px;
   height: 40px;
   margin-bottom: 10px;
