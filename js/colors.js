@@ -22,6 +22,7 @@ let selectedColor = availableColors[0];
 let selectedColorIndex = 0;
 
 let index = 0;
+
 availableColors.map(color => {
   let colorEl = document.createElement("div");
   colorEl.classList.add("color-wrapper");
@@ -82,7 +83,7 @@ const selectColor = colorIndex => {
   if(grids) {
     grids = grids.map(grid => {
       if(grid.selected) {
-        grid.fillColorIncex = colorIndex;
+        grid.fillColorIndex = colorIndex;
       }
       return grid;
     });
