@@ -120,12 +120,11 @@ const loadPicture = (picture) => {
     let pictureData = JSON.parse(picture);
     let savedGrids = pictureData.grids;
 
-    console.log(pictureData.colors);
     if(pictureData.colors) {
       availableColors = pictureData.colors;
       updateColors();
     }
-    
+
 
     grids = [];
 
