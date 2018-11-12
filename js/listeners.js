@@ -56,7 +56,7 @@ document.querySelector(".bottom-ui .scale").addEventListener("mousedown", functi
 document.querySelector(".bottom-ui .rotate").addEventListener("input",function(e){
   let rotation = e.target.value;
   let rotationDelta = rotation - previousRotation;
-  rotatePoints(rotationDelta, false); // False is to not push history
+  rotatePoints(-rotationDelta, false); // False is to not push history
   previousRotation = rotation;
 });
 
