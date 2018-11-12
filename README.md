@@ -7,7 +7,7 @@
 
 * Create & save real SVG files right to your computer's hard-drive!
 * Customize the color palette!
-* The color palette indexed...
+* The color palette is indexed...
   * Change a swatch in the palette and all shapes of that color also get changed!
 * Undo things up to 20 times!
 * Rotate, scale, and move things!
