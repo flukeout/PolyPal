@@ -87,11 +87,8 @@ const buildColorUI = () => {
 }
 
 const addColor = index => {
-  console.log(availableColors);
   currentColor = availableColors[index];
-  console.log(currentColor);
   availableColors.splice(index, 0, currentColor);
-
 
   grids = grids.map(grid => {
 
