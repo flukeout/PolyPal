@@ -7,6 +7,7 @@ const saveButton = document.querySelector(".save")
 
 const resetPicture = () => {
     console.log("resetPicture()");
+
     let startX = Math.floor(canvasWidth / 2);
     let startY = Math.floor(canvasHeight / 2);
 
@@ -24,8 +25,8 @@ const resetPicture = () => {
       "#DDDDDD"
     ];
 
-    updateColors();
-
+    buildColorUI();
+    // updateColors();
 
     gemGrids.map(grid => {
       grid.points.map(p => {
@@ -104,7 +105,6 @@ const getPictureData = () => {
 
 const savePicture = () => {
   let savedGrids = getPictureData();
-
   window.localStorage.setItem("picture", JSON.stringify({
     grids : savedGrids,
     colors : availableColors
@@ -112,7 +112,7 @@ const savePicture = () => {
 }
 
 const loadPicture = (picture) => {
-  console.log("loadPicture()");
+
 
   clearExistingPicture();
 
@@ -124,7 +124,6 @@ const loadPicture = (picture) => {
       availableColors = pictureData.colors;
       updateColors();
     }
-
 
     grids = [];
 
@@ -165,6 +164,9 @@ const loadPicture = (picture) => {
         createGrid(grid.points, { fillColorIndex : grid.fillColorIndex})
       );
     });
+
+    buildColorUI();
+
     frameLoop();
     return true;
   } else {

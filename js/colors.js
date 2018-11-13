@@ -21,44 +21,111 @@ let colorWrapper = dQ(".colors");
 let selectedColor = availableColors[0];
 let selectedColorIndex = 0;
 
-let index = 0;
 
-availableColors.map(color => {
-  let colorEl = document.createElement("div");
-  colorEl.classList.add("color-wrapper");
+const buildColorUI = () => {
+  let index = 0;
 
-  let swatchEl = document.createElement("div");
-  swatchEl.classList.add("swatch");
-  swatchEl.style.background = color;
-  swatchEl.setAttribute("color", color);
-  swatchEl.setAttribute("index", index);
+  colorWrapper.innerHTML = "";
 
-  let colorPickerWrapper = document.createElement("div");
-  colorPickerWrapper.classList.add("colorpicker-wrapper");
+  availableColors.map(color => {
 
-  let colorPicker = document.createElement("input");
-  colorPicker.setAttribute("type", "color");
-  colorPicker.setAttribute("index", index);
-  colorPicker.value = color;
-  
-  colorPickerWrapper.append(colorPicker);
+    let html = `
+      <div class="delete color-ui" title="Delete this color"></div>
+      <div class="add color-ui" title="Clone this color"></div>
+      <div class="colorpicker-wrapper color-ui" title="Change this color">
+        <input class="colorpicker" type="color" value="${color}" index="${index}"/>
+      </div>
+      <div
+        class="swatch"
+        color="${color}"
+        index="${index}"
+        style="background: ${color}"
+      >
+      </div>
+    `;
 
-  colorEl.append(colorPickerWrapper);
-  colorEl.append(swatchEl);
+    let colorEl = document.createElement("div");
+    colorEl.classList.add("color-wrapper");
+    if(index === selectedColorIndex) {
+      colorEl.classList.add("selected");
+    }
+    colorEl.innerHTML = html;
+    colorEl.setAttribute("index", index);
 
-  colorWrapper.appendChild(colorEl);
+    // Set up clickable swatch
+    let swatchEl = colorEl.querySelector(".swatch");
+    swatchEl.addEventListener("click", function(el){
+      selectColor(el.target.getAttribute("index"));
+    });
 
-  swatchEl.addEventListener("click", function(el){
-    selectColor(el.target.getAttribute("index"));
+    let deleteEl = colorEl.querySelector(".delete");
+    deleteEl.addEventListener("click", function(el){
+      let parent = el.target.closest(".color-wrapper");
+      let index = parseInt(parent.getAttribute("index"));
+      deleteColor(index);
+    });
+
+    let addEl = colorEl.querySelector(".add");
+    addEl.addEventListener("click", function(el){
+      let parent = el.target.closest(".color-wrapper");
+      let index = parseInt(parent.getAttribute("index"));
+      addColor(index);
+    });
+
+
+    // Set up colorpicker input
+    let colorPicker = colorEl.querySelector("input");
+    colorPicker.addEventListener("change",function(e){
+      let index = parseInt(e.target.getAttribute("index"));
+      changeColor(index, e.target.value);
+    });
+
+    colorWrapper.appendChild(colorEl);
+    index++;
   });
 
-  colorPicker.addEventListener("change",function(e){
-    let index = parseInt(e.target.getAttribute("index"));
-    changeColor(index, e.target.value);
-  });
-  index++;
+}
 
-});
+const addColor = index => {
+  console.log(availableColors);
+  currentColor = availableColors[index];
+  console.log(currentColor);
+  availableColors.splice(index, 0, currentColor);
+
+
+  grids = grids.map(grid => {
+
+    if(grid.fillColorIndex > index) {
+      grid.fillColorIndex++;
+    }
+
+    return grid;
+   })
+
+   buildColorUI();
+   frameLoop();
+}
+
+const deleteColor = index => {
+   availableColors.splice(index, 1);
+   console.log(availableColors);
+   
+   grids = grids.map(grid => {
+
+    if(grid.fillColorIndex == index) {
+      grid.fillColorIndex = false;
+    }
+
+    if(grid.fillColorIndex >= index) {
+      grid.fillColorIndex--;
+    }
+    return grid;
+   })
+
+   buildColorUI();
+   // updateColors();//
+   frameLoop();
+}
 
 const changeColor = (index, value) => {
   availableColors[index] = value;
@@ -89,7 +156,7 @@ const selectColor = colorIndex => {
     });
   }
 
-  document.querySelectorAll(".colors .swatch").forEach(el => {
+  document.querySelectorAll(".colors .color-wrapper").forEach(el => {
     el.classList.remove("selected");
     if(selectedColorIndex === parseInt(el.getAttribute("index"))) {
       el.classList.add("selected");
@@ -100,5 +167,7 @@ const selectColor = colorIndex => {
     frameLoop();
   }
 }
+
+buildColorUI();
 
 selectColor(selectedColorIndex);

@@ -108,29 +108,22 @@ h1 {
   height: 100%;
   position: absolute;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   flex-direction: column;
   justify-content: center;
   right: 0;
   bottom: 0;
   top: 0;
-  padding-right: 40px;
+  padding-right: 20px;
 }
 
 .colors .color-wrapper {
   position: relative;
-    margin-bottom: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
 }
 
-.colors .colorpicker-wrapper {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  right: -30px;
-  background: #ddd;
-  top: calc(50% - 10px);
-  border-radius: 50%;
-}
 
 .colors .colorpicker-wrapper input {
   position: absolute;
@@ -143,11 +136,51 @@ h1 {
   margin: 0;
 }
 
-.colors .swatch.selected {
-  border: solid 3px rgba(0,0,0,.2);
+.colors .color-ui {
+  width: 25px;
+  height: 25px;
+  margin: 0 5px;
+  border-radius: 50%;
+  position: relative;
+  align-self: center;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: .2;
+  cursor: pointer;
+  display: none;
 }
 
-.colors .swatch.selected:after {
+
+.colors .selected .color-ui {
+  display: block;
+}
+
+
+.colors .delete {
+  background-image: url(../images/icon-delete.svg);
+}
+
+.colors .add {
+  background-image: url(../images/icon-add.svg);
+}
+
+.colors .colorpicker-wrapper {
+  background-image: url(../images/icon-pick.svg);
+}
+
+.colors .color-ui:hover {
+  opacity: .5;
+}
+
+.colors .color-wrapper:only-child .delete {
+  display: none;
+}
+
+
+
+
+.colors .selected .swatch:after {
   content: "";
   position: absolute;
   width: 30px;
@@ -175,15 +208,19 @@ h1 {
 }
 
 .colors .swatch {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
+  margin: 0 5px;
   display: block;
   cursor: pointer;
   position: relative;
   border-radius: 50%;
+  border: solid 2px transparent;
 }
 
-
+.colors .selected .swatch {
+  border: solid 2px rgba(0, 0, 0, .2);
+}
 
 .tools .tool {
   width: 40px;

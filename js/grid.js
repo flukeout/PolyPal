@@ -53,7 +53,8 @@ class Grid {
       }, "");
 
       if(this.mode != "ghost") { 
-        this.svgEl.setAttribute("fill", availableColors[this.fillColorIndex]);
+        let color = availableColors[this.fillColorIndex] || "rgba(255,255,255,0)"
+        this.svgEl.setAttribute("fill", color);
       } else {
         this.svgEl.setAttribute("fill", "transparent");
       }

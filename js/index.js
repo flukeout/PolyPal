@@ -1,6 +1,4 @@
 // Basic Config
-
-
 let canvasWidth = svgImage.getBoundingClientRect().width;
 let canvasHeight = svgImage.getBoundingClientRect().height;
 
