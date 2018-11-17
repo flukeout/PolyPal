@@ -202,7 +202,6 @@ svgScene.addEventListener("mousedown", (e) => {
 
       pushHistory();
 
-
       grids.push(newGrid);
     }
   }
@@ -359,14 +358,14 @@ const frameLoop = () => {
   hoveredVertex = false;
   frameCount++;
 
-  if(mouse.pressed == false && wobble) {
-    points = points.map(p => {
-      let delta = Math.sin(p.x/100 + frameCount/10) * 10;
-      p.delta = delta;
-      p.y = p.y + delta;
-      return p;
-    })
-  }
+  // if(mouse.pressed == false && wobble) {
+  //   points = points.map(p => {
+  //     let delta = Math.sin(p.x/100 + frameCount/10) * 10;
+  //     p.delta = delta;
+  //     p.y = p.y + delta;
+  //     return p;
+  //   })
+  // }
 
   hoveredSegments = [];
   hoveredGrids = [];
@@ -406,9 +405,13 @@ const frameLoop = () => {
 
   points.map(p => drawVertex(p)); // These are just UI points
 
+  // Draw the hovered line segment closest ot pointer
+  let showHoverSegment = false;
   if(selectedTool === "selector" && mouse.dragging == false && cloning == false) {
-    drawHoverSegment(); // Draw the hovered line segment closest ot pointer  
+    showHoverSegment = true;
   }
+
+  drawHoverSegment(showHoverSegment);
 
   if(hoverSegmentSvg) {
     if(hoveredVertex == true) {

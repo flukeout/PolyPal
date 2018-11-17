@@ -128,7 +128,7 @@ const undo = () => {
     console.log("undo(): Undoing last change")
     clearExistingPicture();
     let lastStep = pictureHistory[pictureHistory.length - 1];
-    loadPicture(lastStep);
+    loadPicture(JSON.parse(lastStep));
     pictureHistory.pop();
   } else {
     console.log("undo(): No undo states left");

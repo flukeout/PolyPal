@@ -31,7 +31,7 @@ const drawSvgVertex = (p) => {
 
 let hoverSegmentSvg = false;
 // Draw the segment that is being hovered
-const drawHoverSegment = () => {
+const drawHoverSegment = (show) => {
 
   let closestSegment = hoveredSegments.reduce((segment, closestSeg) => {
     if(segment.distance < closestSeg.distance) {
