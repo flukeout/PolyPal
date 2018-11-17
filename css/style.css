@@ -290,6 +290,20 @@ h1 {
   content: "B";
 }
 
+.tool.creator {
+  background-image: url(../images/icon-creator.svg);
+}
+
+.tool.creator.selected {
+  background-image: url(../images/icon-creator-selected.svg);
+}
+
+.tools .tool.creator:after {
+  content: "C";
+}
+
+
+
 .tool.paintbrush {
   background-image: url(../images/icon-paintbrush.svg);
 }
@@ -310,6 +324,9 @@ h1 {
   background-image: url(../images/icon-move-selected.svg);
 }
 
+.svg-canvas[tool="creator"] {
+  cursor: pointer;
+}
 
 
 .svg-canvas[tool="selector"] {

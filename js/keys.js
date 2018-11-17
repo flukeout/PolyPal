@@ -13,6 +13,7 @@ const keyMap = {
   77 : "move",
   16 : "shift",
   90 : "z",
+  67 : "creator",
 }
 
 const getKey = keyCode => {
@@ -24,7 +25,7 @@ window.addEventListener("keydown", e => {
 
   let key = getKey(e.keyCode);
 
-  if(key == "selector" || key == "paintbrush" || key == "move") {
+  if(key == "selector" || key == "paintbrush" || key == "move" ||  key == "creator") {
     selectTool(key);
   }
 

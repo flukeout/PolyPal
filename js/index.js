@@ -41,6 +41,10 @@ svgScene.addEventListener("mousedown", (e) => {
     }
   }
 
+  if(selectedTool == "creator") {
+    toolCreate.mouseDown(e);
+  }
+
   if(selectedTool == "selector") {
 
     cloners = [];
@@ -91,7 +95,7 @@ svgScene.addEventListener("mousedown", (e) => {
 
         let clickedGrids = [];
 
-        clickedGrids = grids.filter(grid => grid.hovered );
+        clickedGrids = grids.filter(grid => grid.hovered);
 
         if(mouse.shiftPressed == false ) {
           deselectGrids();
@@ -218,6 +222,10 @@ window.addEventListener("mousemove", (e) => {
   let dX =  e.clientX - mouse.x;
   let dY =  e.clientY - mouse.y;
 
+  if(selectedTool === "creator" && mouse.pressed == true) {
+    toolCreate.mouseMove(e);
+  }
+
   if(selectedTool === "selector") {
 
     if(clonedGrid.grid) {
@@ -305,7 +313,9 @@ window.addEventListener("mouseup", (e) => {
     return p;
   });
 
-  
+  if(selectedTool === "creator") {
+    toolCreate.mouseUp(e);
+  }
 
   roundPoints();
   frameLoop();
@@ -488,7 +498,7 @@ const checkDragZone = p => {
 
 const start = () => {
   let picture = window.localStorage.getItem("picture");
-  let loaded = loadPicture(picture);
+  let loaded = loadPicture(JSON.parse(picture));
 
   if(loaded == false) {
     resetPicture();
@@ -566,6 +576,7 @@ const killGhosts = () => {
 
 
 // Get rid of shapes with 2 or fewer points
+// If a shape has two points that are the same..., consolidate those too?
 const cleanupGrids = () => {
 
   // Get rid of shapes in a grid that don't exist in the points array
@@ -573,6 +584,35 @@ const cleanupGrids = () => {
     grid.points = customFilter(grid.points, (p => points.indexOf(p) === -1));
     return grid;
   });
+  
+  // Filter out duplicate points from grids
+  grids = grids.map(grid => {
+    
+    let dupeIndexes = [];
+
+    for(var i = 0; i < grid.points.length; i++) {
+      let thisPoint = grid.points[i];
+      for(var j = 0; j < grid.points.length; j++) {
+        let otherPoint = grid.points[j];
+        if(i != j && thisPoint == otherPoint) {
+          if(dupeIndexes.indexOf(i) < 0 && dupeIndexes.indexOf(j) < 0) {
+            dupeIndexes.push(i);
+          }
+        }
+      }
+    }
+
+    let mapIndex = -1;
+    grid.points = grid.points.filter(p => {
+      mapIndex++;
+      if(dupeIndexes.indexOf(mapIndex) > -1) {
+        return false;
+      } else {
+        return true;
+      }
+    })
+    return grid;
+  })
 
   // Get rid of shapes that have fewer than 3 pints
   grids = customFilter(grids, (grid => grid.points.length < 3));

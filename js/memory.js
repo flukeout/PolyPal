@@ -3,9 +3,10 @@
 const saveButton = document.querySelector(".save")
     , loadButton = document.querySelector(".load")
     , resetButton = document.querySelector(".reset")
+    , gemButton = document.querySelector(".gem")
     , wobbleButton = document.querySelector(".wobble");
 
-const resetPicture = () => {
+const loadGem = () => {
     console.log("resetPicture()");
 
     let startX = Math.floor(canvasWidth / 2);
@@ -62,6 +63,59 @@ const resetPicture = () => {
     frameLoop();
 }
 
+
+const resetPicture = () => {
+    loadPicture(blankPic);
+    // let data = blankPic;
+    // console.log(data);
+
+    // let startX = Math.floor(canvasWidth / 2);
+    // let startY = Math.floor(canvasHeight / 2);
+
+    // clearExistingPicture();
+
+    // grids = [];
+    // points = [];
+
+    // availableColors = data.colors;
+
+    // buildColorUI();
+    // // updateColors();
+
+    // gemGrids.map(grid => {
+    //   grid.points.map(p => {
+    //     let found = false;
+    //     for(var i = 0; i < points.length; i++) {
+    //       if(comparePoints(p, points[i])) {
+    //         found = true;
+    //       }
+    //     }
+    //     if(found == false) {
+    //       points.push(createPoint(p));
+    //     }
+    //   });
+    // });
+
+    // gemGrids.map(grid => {
+    //   let newArray = [];
+
+    //   grid.points = grid.points.map(p => {
+    //     for(var i = 0; i < points.length; i++) {
+    //       let existingPoint = points[i];
+    //       if(comparePoints(p,existingPoint)) {
+    //         return existingPoint;
+    //       }
+    //     }
+    //   });
+
+    //   grids.push(
+    //     createGrid(grid.points, { fillColorIndex : grid.fillColorIndex})
+    //   );
+    // });
+
+    frameLoop();
+}
+
 const clearExistingPicture = () => {
   points = customFilter(points, (() => true));
   grids = customFilter(grids, (() => true));
@@ -112,12 +166,12 @@ const savePicture = () => {
 }
 
 const loadPicture = (picture) => {
-
+  console.log(picture);
 
   clearExistingPicture();
 
   if(picture) {
-    let pictureData = JSON.parse(picture);
+    let pictureData = picture;
     let savedGrids = pictureData.grids;
 
     if(pictureData.colors) {
@@ -180,7 +234,7 @@ saveButton.addEventListener("click", () => {
 
 loadButton.addEventListener("click", () => {
   let picture = window.localStorage.getItem("picture");
-  loadPicture(picture);
+  loadPicture(JSON.parse(picture));
 });
 
 // wobbleButton.addEventListener("mousedown", () => {
@@ -194,3 +248,8 @@ loadButton.addEventListener("click", () => {
 resetButton.addEventListener("click", () => {
   resetPicture();
 });
+
+gemButton.addEventListener("click", () => {
+  loadGem();
+});
+

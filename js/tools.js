@@ -1,4 +1,8 @@
-let tools = [{
+let tools = [
+  {
+    name : "creator",
+    description: "Create a shape"
+  },{
     name : "selector",
     description: "Select & Build"
   },{
