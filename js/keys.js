@@ -39,9 +39,7 @@ window.addEventListener("keydown", e => {
 
   if(key == "delete") {
     e.preventDefault();
-    pushHistory();
-    points = customFilter(points, (p => p.selected));
-    deleteSelectedGrids();
+    deleteSelected();
   }
 
   if(key == "plus") {

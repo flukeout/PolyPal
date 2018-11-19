@@ -1,8 +1,8 @@
-dQ(".plus").addEventListener("click",  () => scalePoints(.05));
-dQ(".minus").addEventListener("click", () => scalePoints(-.05));
+// dQ(".plus").addEventListener("click",  () => scalePoints(.05));
+// dQ(".minus").addEventListener("click", () => scalePoints(-.05));
 
-dQ(".rotate[type='left'").addEventListener("click", () => rotatePoints(10));
-dQ(".rotate[type='right'").addEventListener("click", () => rotatePoints(-10));
+// dQ(".rotate[type='left'").addEventListener("click", () => rotatePoints(10));
+// dQ(".rotate[type='right'").addEventListener("click", () => rotatePoints(-10));
 
 const setExtrudeMode = (mode) => {
   settings.extrudeMode = mode;

@@ -3,8 +3,10 @@
 const saveButton = document.querySelector(".save")
     , loadButton = document.querySelector(".load")
     , resetButton = document.querySelector(".reset")
-    , gemButton = document.querySelector(".gem")
-    , wobbleButton = document.querySelector(".wobble");
+    , undoButton = dQ(".undo")
+    , deleteButton = dQ(".delete");
+    // , gemButton = document.querySelector(".gem")
+    // , wobbleButton = document.querySelector(".wobble");
 
 const loadGem = () => {
     console.log("resetPicture()");
@@ -249,7 +251,23 @@ resetButton.addEventListener("click", () => {
   resetPicture();
 });
 
-gemButton.addEventListener("click", () => {
-  loadGem();
+undoButton.addEventListener("click", () => {
+  undo();
 });
 
+deleteButton.addEventListener("click", () => {
+  deleteSelected();
+});
+
+
+// gemButton.addEventListener("click", () => {
+//   loadGem();
+// });
+
+
+
+const deleteSelected = () => {
+    pushHistory();
+    points = customFilter(points, (p => p.selected));
+    deleteSelectedGrids();
+}
