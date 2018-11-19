@@ -20,7 +20,7 @@ let clonedGrid = {
 }
 
 window.addEventListener("mousedown", e => {
-  mouse.pressedAnywhere = true; 
+  mouse.pressedAnywhere = true;
   frameLoop();
 });
 
@@ -148,7 +148,7 @@ svgScene.addEventListener("mousedown", (e) => {
     }
 
     // For cloning
-    if(cloners.length == 2 && pointSelected == false) {
+    if(cloners.length == 2 && pointSelected == false && mouse.shiftPressed == false) {
       deselectGrids();
       deselectPoints();
       frameLoop();
@@ -373,12 +373,16 @@ const frameLoop = () => {
 
   if(selectedTool == "selector" || selectedTool == "paintbrush") {
     grids.map(grid => {
-      grid.checkHoverSegments();
+      if(mouse.shiftPressed == false) {
+        grid.checkHoverSegments();  
+      }
       if(grid.hovered) {
         hoveredGrids.push(grid);
       }
     });
   }
+
+
   
   grids.map(grid => {
     grid.showHover = hoveredSegments.length > 0 ? false : true;

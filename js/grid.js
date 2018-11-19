@@ -92,6 +92,7 @@ class Grid {
       this.selected = !this.selected;
     }
 
+    // Add hovered segments 
     checkHoverSegments() {
       for(var i = 0; i < this.points.length; i++){
 
