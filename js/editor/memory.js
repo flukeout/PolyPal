@@ -5,72 +5,12 @@ const saveButton = document.querySelector(".save")
     , resetButton = document.querySelector(".reset")
     , undoButton = dQ(".undo")
     , deleteButton = dQ(".delete");
-    // , gemButton = document.querySelector(".gem")
-    // , wobbleButton = document.querySelector(".wobble");
-
-const loadGem = () => {
-    console.log("resetPicture()");
-
-    let startX = Math.floor(canvasWidth / 2);
-    let startY = Math.floor(canvasHeight / 2);
-
-    clearExistingPicture();
-
-    grids = [];
-    points = [];
-
-    availableColors = [
-      "#8F3D61",
-      "#B94B5D",
-      "#DD7E5F",
-      "#EB9762",
-      "#EDBD77",
-      "#DDDDDD"
-    ];
-
-    buildColorUI();
-    // updateColors();
-
-    gemGrids.map(grid => {
-      grid.points.map(p => {
-        let found = false;
-        for(var i = 0; i < points.length; i++) {
-          if(comparePoints(p, points[i])) {
-            found = true;
-          }
-        }
-        if(found == false) {
-          points.push(createPoint(p));
-        }
-      });
-    });
-
-    gemGrids.map(grid => {
-      let newArray = [];
-
-      grid.points = grid.points.map(p => {
-        for(var i = 0; i < points.length; i++) {
-          let existingPoint = points[i];
-          if(comparePoints(p,existingPoint)) {
-            return existingPoint;
-          }
-        }
-      });
-
-      grids.push(
-        createGrid(grid.points, { fillColorIndex : grid.fillColorIndex})
-      );
-    });
-
-    frameLoop();
-}
-
 
 const resetPicture = () => {
-    // loadPicture(blankPic);
-    clearExistingPicture();
-    selectTool("creator");
-    frameLoop();
+  console.log("resetPicture()");
+  clearExistingPicture();
+  selectTool("creator");
+  frameLoop();
 }
 
 const clearExistingPicture = () => {
@@ -214,9 +154,6 @@ deleteButton.addEventListener("click", () => {
 });
 
 
-// gemButton.addEventListener("click", () => {
-//   loadGem();
-// });
 
 
 
