@@ -67,54 +67,9 @@ const loadGem = () => {
 
 
 const resetPicture = () => {
-    loadPicture(blankPic);
-    // let data = blankPic;
-    // console.log(data);
-
-    // let startX = Math.floor(canvasWidth / 2);
-    // let startY = Math.floor(canvasHeight / 2);
-
-    // clearExistingPicture();
-
-    // grids = [];
-    // points = [];
-
-    // availableColors = data.colors;
-
-    // buildColorUI();
-    // // updateColors();
-
-    // gemGrids.map(grid => {
-    //   grid.points.map(p => {
-    //     let found = false;
-    //     for(var i = 0; i < points.length; i++) {
-    //       if(comparePoints(p, points[i])) {
-    //         found = true;
-    //       }
-    //     }
-    //     if(found == false) {
-    //       points.push(createPoint(p));
-    //     }
-    //   });
-    // });
-
-    // gemGrids.map(grid => {
-    //   let newArray = [];
-
-    //   grid.points = grid.points.map(p => {
-    //     for(var i = 0; i < points.length; i++) {
-    //       let existingPoint = points[i];
-    //       if(comparePoints(p,existingPoint)) {
-    //         return existingPoint;
-    //       }
-    //     }
-    //   });
-
-    //   grids.push(
-    //     createGrid(grid.points, { fillColorIndex : grid.fillColorIndex})
-    //   );
-    // });
-
+    // loadPicture(blankPic);
+    clearExistingPicture();
+    selectTool("creator");
     frameLoop();
 }
 
@@ -168,8 +123,7 @@ const savePicture = () => {
 }
 
 const loadPicture = (picture) => {
-  console.log(picture);
-
+  
   clearExistingPicture();
 
   if(picture) {

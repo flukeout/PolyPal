@@ -4,7 +4,7 @@ let tools = [
     description: "Create a shape"
   },{
     name : "selector",
-    description: "Select & Build"
+    description: "Select & Extrude"
   },{
     name : "paintbrush",
     description: "Fill things with color"
@@ -46,6 +46,9 @@ const selectTool = toolName => {
     el.classList.remove("selected");
     if(toolName === el.getAttribute("name")) {
       el.classList.add("selected");
+      if(selectedTool === "selector" && toolName === "selector") {
+        toggleExtrudeMode();
+      }
       selectedTool = toolName;
       svgScene.setAttribute("tool", toolName);
     }

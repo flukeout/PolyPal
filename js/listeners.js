@@ -11,6 +11,14 @@ const setExtrudeMode = (mode) => {
   dQ(".extrude[type='"+mode+"']").classList.add("selected");
 }
 
+const toggleExtrudeMode = () => {
+  if(settings.extrudeMode == "point") {
+    setExtrudeMode("line");
+  } else {
+    setExtrudeMode("point");;
+  }
+}
+
 setExtrudeMode("point");
 
 document.querySelectorAll(".extrude").forEach((el) => {

@@ -205,6 +205,19 @@ h1 {
 .tools .tool.selected {
   background: black;
   border: solid 1px black;
+  animation: boop .2s ease-in-out;
+}
+
+@keyframes boop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(.8);
+  }
+    75% {
+    transform: scale(1.1);
+  }
 }
 
 .colors .swatch {
