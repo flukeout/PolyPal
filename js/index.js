@@ -8,6 +8,7 @@ let wobble = false;
 let pointSelected = false;
 let gridSelected = false;
 let newGrid;
+let clickedGrids;
 let distanceTraveled;
 
 let clonedGrid = {
@@ -27,9 +28,11 @@ window.addEventListener("mousedown", e => {
 svgScene.addEventListener("mousedown", (e) => {
 
   mouse.pressed = true;
+  cloning = false;
+  clickedGrids = [];
 
   if(selectedTool == "paintbrush") {
-    let clickedGrids = [];
+    clickedGrids = [];
     grids.map(grid => { 
       if(grid.hovered) {
         clickedGrids.push(grid)
@@ -93,7 +96,7 @@ svgScene.addEventListener("mousedown", (e) => {
     // If no points are selected
     if(pointSelected == false) {
 
-        let clickedGrids = [];
+        clickedGrids = [];
 
         clickedGrids = grids.filter(grid => grid.hovered);
 
@@ -103,7 +106,7 @@ svgScene.addEventListener("mousedown", (e) => {
 
         grids.map(grid => {
 
-          // Figure out segment hovering
+          // Figure out segment hovering - !
           for(var i = 0; i < grid.points.length; i++){
 
             let thisP = grid.points[i];
@@ -122,6 +125,7 @@ svgScene.addEventListener("mousedown", (e) => {
 
             if(dist <= lineHoverDistance) {
               if(cloners.length < 2) {
+                console.log("starting a clone here");
                 cloners.push(thisP);
                 cloners.push(nextP);
               }
@@ -130,7 +134,7 @@ svgScene.addEventListener("mousedown", (e) => {
         }); // end grid.map...
 
         // Click the Grid with the highest z index
-        if(clickedGrids.length > 0) {
+        if(clickedGrids.length > 0 && cloners.length === 0) {
           highestZIndexItem(clickedGrids).click();
           gridClicked = true;
         }
@@ -149,6 +153,7 @@ svgScene.addEventListener("mousedown", (e) => {
 
     // For cloning
     if(cloners.length == 2 && pointSelected == false && mouse.shiftPressed == false) {
+      
       deselectGrids();
       deselectPoints();
       frameLoop();
@@ -191,7 +196,7 @@ svgScene.addEventListener("mousedown", (e) => {
       // Create a grid tile from it
       let newGrid = createGrid(newPoints, {
         fillColorIndex : selectedColorIndex,
-        mode : "ghost"
+        mode : "invisible"
       });
 
       // Keep track of the cloned grid...
@@ -229,6 +234,7 @@ window.addEventListener("mousemove", (e) => {
 
     if(clonedGrid.grid) {
       let cloneDist = distPoints(clonedGrid.startPoint, { x: mouse.x, y : mouse.y});
+      console.log(cloneDist);
       if(cloneDist > 18) {
         clonedGrid.grid.mode = "normal";
       } else {
@@ -275,13 +281,13 @@ window.addEventListener("mousemove", (e) => {
   }
 
   if(selectedTool === "paintbrush" && mouse.pressed) {
-    let clickedGrids = [];
+    clickedGrids = [];
     grids.map(grid => { 
       if(grid.hovered) {
         clickedGrids.push(grid)
       }
     });
-    if(clickedGrids.length >0 ) {
+    if(clickedGrids.length > 0) {
       highestZIndexItem(clickedGrids).fillColorIndex = selectedColorIndex;
     }
   }
@@ -298,6 +304,14 @@ window.addEventListener("mouseup", (e) => {
   mouse.dragging = false;
   mouse.pressedAnywhere = false;
   
+  // If we were cloning, but didn't create a new grid,
+  // select the original grid we clicked instead.
+  if(cloning && clickedGrids.length > 0) {
+    if(clonedGrid.grid.mode == "invisible") {
+      highestZIndexItem(clickedGrids).click();  
+    }
+  }
+
   // SVG
   dragSvg.remove();
   dragSvg = false;
@@ -410,9 +424,9 @@ const frameLoop = () => {
   points.map(p => drawVertex(p)); // These are just UI points
 
   // Draw the hovered line segment closest ot pointer
-  let showHoverSegment = false;
-  if(selectedTool === "selector" && mouse.dragging == false && cloning == false) {
-    showHoverSegment = true;
+  let showHoverSegment = true;
+  if(selectedTool === "selector" && cloning == true) {
+    showHoverSegment = false;
   }
 
   drawHoverSegment(showHoverSegment);
@@ -577,7 +591,7 @@ const killGhosts = () => {
     clonedGrid.grid.click();
   }
   clonedGrid.grid = false;
-  grids = customFilter(grids, (g => g.mode === "ghost"));
+  grids = customFilter(grids, (g => g.mode === "ghost" || g.mode === "invisible"));
   
 }
 

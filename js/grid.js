@@ -28,7 +28,7 @@ class Grid {
       // This is the actual image element
       this.svgEl = document.createElementNS("http://www.w3.org/2000/svg","polygon");
       this.svgEl.setAttribute("stroke-width", "1");
-      this.svgEl.setAttribute("stroke", "rgba(0,0,0,.2");
+      this.svgEl.setAttribute("stroke", "rgba(0,0,0,0");
       this.svgEl.setAttribute("stroke-linejoin", "round");
 
       this.zIndex = (svgImage.querySelectorAll("polygon").length || 0)+ 1;
@@ -48,22 +48,33 @@ class Grid {
 
     // Update both the UI element
     updatePoly() {
+      this.uiEl.setAttribute("stroke-width", "1");
       let pointsString = this.points.reduce((string, point) => {
         return string + parseInt(point.x) + "," + parseInt(point.y) + " ";
       }, "");
 
-      if(this.mode != "ghost") { 
+      if(this.mode == "ghost") { 
+        this.svgEl.setAttribute("fill", "transparent");
+        this.svgEl.setAttribute("stroke", "rgba(0,0,0,.2");
+      } else if (this.mode == "invisible") {
+        this.svgEl.setAttribute("fill", "transparent");
+      } else {
         let color = availableColors[this.fillColorIndex] || "rgba(255,255,255,0)"
         this.svgEl.setAttribute("fill", color);
-      } else {
-        this.svgEl.setAttribute("fill", "transparent");
+        this.svgEl.setAttribute("stroke", "rgba(0,0,0,.2");
       }
       
       if(this.selected) { 
+        this.uiEl.setAttribute("stroke-width", "2");
         this.uiEl.setAttribute("stroke", "rgba(0,0,0,1");
       } else if(this.showHovered && this.showHover) { 
+        this.uiEl.setAttribute("stroke-width", "1");
         this.uiEl.setAttribute("stroke", "rgba(0,0,0,.3");
+      } else if(this.mode == "invisible") { 
+        this.uiEl.setAttribute("stroke-width", "0");
+        this.uiEl.setAttribute("stroke", "red");
       } else {
+        this.uiEl.setAttribute("stroke-width", "1");
         this.uiEl.setAttribute("stroke", "transparent");
       }
 

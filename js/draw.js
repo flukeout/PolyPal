@@ -50,14 +50,14 @@ const drawHoverSegment = (show) => {
     hoverSegmentSvg = makeSvg("line", attributes, ".svg-points");
   }
 
-  if(closestSegment) {
+  if(closestSegment && show) {
+    hoverSegmentSvg.setAttribute("stroke", "rgba(0,0,0,.4");
     updateHoverSegment({
       "x1" : closestSegment.start.x,
       "y1" : closestSegment.start.y,
       "x2" : closestSegment.end.x,
       "y2" : closestSegment.end.y,
     });
-    hoverSegmentSvg.setAttribute("stroke", "rgba(0,0,0,.4");
   } else {
     hoverSegmentSvg.setAttribute("stroke", "rgba(0,0,0,0");
   }
