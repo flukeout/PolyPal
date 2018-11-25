@@ -55,6 +55,7 @@ const getPictureData = () => {
 }
 
 const savePicture = () => {
+  console.log("savePicture()");
   let savedGrids = getPictureData();
   window.localStorage.setItem("picture", JSON.stringify({
     grids : savedGrids,
@@ -63,7 +64,7 @@ const savePicture = () => {
 }
 
 const loadPicture = (picture) => {
-  
+  console.log("loadPicture()");
   clearExistingPicture();
 
   if(picture) {
@@ -125,14 +126,14 @@ const loadPicture = (picture) => {
   }
 }
 
-saveButton.addEventListener("click", () => {
-  savePicture();
-});
+// saveButton.addEventListener("click", () => {
+//   savePicture();
+// });
 
-loadButton.addEventListener("click", () => {
-  let picture = window.localStorage.getItem("picture");
-  loadPicture(JSON.parse(picture));
-});
+// loadButton.addEventListener("click", () => {
+//   let picture = window.localStorage.getItem("picture");
+//   loadPicture(JSON.parse(picture));
+// });
 
 resetButton.addEventListener("click", () => {
   resetPicture();
@@ -146,25 +147,3 @@ deleteButton.addEventListener("click", () => {
   deleteSelected();
 });
 
-const deleteSelected = () => {
-  let anythingSelected = false;
-
-  points.map(p => {
-    if(p.selected) {
-      anythingSelected = true;
-    }
-  });
-
-  grids.map(g => {
-    if(g.selected) {
-      anythingSelected = true;
-    }
-  })
-
-  if(anythingSelected) {
-    pushHistory();
-  }
-
-  points = customFilter(points, (p => p.selected));
-  deleteSelectedGrids();
-}

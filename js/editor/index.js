@@ -332,6 +332,7 @@ window.addEventListener("mouseup", (e) => {
 
   roundPoints();
   frameLoop();
+  savePicture();
 });
 
 const moveSticky = (dX, dY) => {
@@ -371,15 +372,6 @@ const frameLoop = () => {
 
   hoveredVertex = false;
   frameCount++;
-
-  // if(mouse.pressed == false && wobble) {
-  //   points = points.map(p => {
-  //     let delta = Math.sin(p.x/100 + frameCount/10) * 10;
-  //     p.delta = delta;
-  //     p.y = p.y + delta;
-  //     return p;
-  //   })
-  // }
 
   hoveredSegments = [];
   hoveredGrids = [];
@@ -437,34 +429,9 @@ const frameLoop = () => {
     }
   }
 
-  if(mouse.pressed == false && wobble) {
-    points = points.map(p => {
-      p.y = p.y - p.delta;
-      p.delta = 0;
-      return p;
-    })
-  }
-
-
-
   drawDragZone();
-  // requestAnimationFrame(frameLoop);
 }
 
-const mergeSamePoints = () => {
-  points = points.map(p => {
-    points.map(otherP => {
-      if(p != otherP) {
-        let distance = Math.sqrt(Math.pow(p.x - otherP.x, 2) + Math.pow(p.y - otherP.y, 2));
-        if(distance <= mergeDistance) {
-          p.x = otherP.x;
-          p.y = otherP.y;
-        }
-      }
-    })
-    return p;
-  });
-}
 
 let dragSvg = false;
 
@@ -529,131 +496,5 @@ const start = () => {
 }
 
 
-// Check if there are any overlapping points...
-const consolidatePoints = () => {
-
-  let x, y;
-  let haveNewPoint = false;
-
-  let samePoints = points.filter(thisPoint => {
-    for(var i = 0; i < points.length; i++) {
-      let otherPoint = points[i];
-      if(otherPoint != thisPoint) {
-        if(otherPoint.x == thisPoint.x && otherPoint.y == thisPoint.y) {
-          x = thisPoint.x;
-          y = thisPoint.y;
-          haveNewPoint = true;
-          return thisPoint;
-        }
-      }
-    }
-  });
-
-  if(haveNewPoint == false) {
-    return;
-  }
-
-  // replace with new reference...
-  let newPoint = { x: x, y: y};
-  newPoint = createPoint(newPoint);
-  newPoint.new = true;
-  let alreadyReturned;
-
-  // this does NOT update the 'grids value'
-  // might as well do it the mapped way...
-
-  points = points.filter(p => {
-    if(p.x == newPoint.x && p.y == newPoint.y) {
-      p.svgEl.remove();
-      return false;
-    } else {
-      return true;
-    }
-  });
-
-  grids = grids.map(grid => {
-    grid.points = grid.points.map(p => {
-      if(p.x == newPoint.x && p.y == newPoint.y) {
-        return newPoint;
-      } else {
-        return p;
-      }
-    });
-
-    return grid;
-  })
-
-  points.push(newPoint);
-}
-
-const killGhosts = () => {
-  if(clonedGrid.grid) {
-    clonedGrid.grid.click();
-  }
-  clonedGrid.grid = false;
-  grids = customFilter(grids, (g => g.mode === "ghost" || g.mode === "invisible"));
-  
-}
-
-
-// Get rid of shapes with 2 or fewer points
-// If a shape has two points that are the same..., consolidate those too?
-const cleanupGrids = () => {
-
-  // Get rid of shapes in a grid that don't exist in the points array
-  grids = grids.map(grid => {
-    grid.points = customFilter(grid.points, (p => points.indexOf(p) === -1));
-    return grid;
-  });
-  
-  // Filter out duplicate points from grids
-  grids = grids.map(grid => {
-    
-    let dupeIndexes = [];
-
-    for(var i = 0; i < grid.points.length; i++) {
-      let thisPoint = grid.points[i];
-      for(var j = 0; j < grid.points.length; j++) {
-        let otherPoint = grid.points[j];
-        if(i != j && thisPoint == otherPoint) {
-          if(dupeIndexes.indexOf(i) < 0 && dupeIndexes.indexOf(j) < 0) {
-            dupeIndexes.push(i);
-          }
-        }
-      }
-    }
-
-    let mapIndex = -1;
-    grid.points = grid.points.filter(p => {
-      mapIndex++;
-      if(dupeIndexes.indexOf(mapIndex) > -1) {
-        return false;
-      } else {
-        return true;
-      }
-    })
-    return grid;
-  })
-
-  // Get rid of shapes that have fewer than 3 pints
-  grids = customFilter(grids, (grid => grid.points.length < 3));
-}
-
-// Filter out points that aren't associated with any shapes
-const cleanupPoints = () => {
-  points = points.filter(p => {
-    let contained = false;
-    for(var i = 0; i < grids.length; i++) {
-      let gridPoints = grids[i].points;
-      if(gridPoints.includes(p)) {
-        contained = true;
-      }
-    }
-    if(contained == false) {
-      p.svgEl.remove();
-    }
-    return contained;
-  });
-}
 
 start();

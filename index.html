@@ -5,10 +5,8 @@
     <title>PolyPal SVG Editor</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="images/favicon.png" />
-
   </head>
   <body>
-
     <div class="svg-canvas">
       <svg 
         version="1.1"
@@ -24,8 +22,11 @@
     <div class="top-ui">
       <span class="logo">PolyPal Editor</span>
 
+      <!--
       <button class="save"    text="Save this picture, it will be here when you come back.">Save</button>
       <button class="load"    text="Load the last-saved picture.">Load</button>
+      -->
+
       <button class="reset"   text="Delete everything and start over.">Reset</button>
 
       <button class="download" text="Download this image as an SVG.">Download SVG</button>
@@ -54,9 +55,9 @@
     <div class="tools"></div>
 
     <!-- Code -->
+    <script src="js/editor/utils.js"></script>
     <script src="js/editor/savedpics.js"></script>
     <script src="js/editor/vars.js"></script>
-    <script src="js/editor/utils.js"></script>
     <script src="js/editor/tools.js"></script>
     <script src="js/editor/zindex.js"></script>
     <script src="js/editor/settings.js"></script>
