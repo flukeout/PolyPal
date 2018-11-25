@@ -10,6 +10,7 @@ _PolyPal is a work in progress—it might have bugs!!_
 * Create & save real SVG files right to your computer's hard-drive!
 * Customize, indexed color palette!
   * Change a color in the palette and all shapes of that color also get changed!
+* Change the z-index of shapes!
 * Undo things up to 20 times!
 * Rotate, scale, and move things!
 * A neat color palette!
