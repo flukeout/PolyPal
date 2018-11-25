@@ -391,7 +391,7 @@ h1 {
 .top-ui button:hover:after {
   position: absolute;
   top: 44px;
-  padding: 10px;
+  padding: 8px 12px;
   content: attr(text);
   left: calc(50% - 60px);
   width: 120px;

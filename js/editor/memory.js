@@ -146,12 +146,25 @@ deleteButton.addEventListener("click", () => {
   deleteSelected();
 });
 
-
-
-
-
 const deleteSelected = () => {
+  let anythingSelected = false;
+
+  points.map(p => {
+    if(p.selected) {
+      anythingSelected = true;
+    }
+  });
+
+  grids.map(g => {
+    if(g.selected) {
+      anythingSelected = true;
+    }
+  })
+
+  if(anythingSelected) {
     pushHistory();
-    points = customFilter(points, (p => p.selected));
-    deleteSelectedGrids();
+  }
+
+  points = customFilter(points, (p => p.selected));
+  deleteSelectedGrids();
 }
