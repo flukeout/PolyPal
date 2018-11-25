@@ -21,10 +21,11 @@ const changeZindex = (direction) => {
       let nextElement = dQ(".svg-image polygon:nth-child("+ nextZindex+")");
 
       if(nextElement) {
+        pushHistory();
+
         let nextGrid = findGridByElement(nextElement);
         let type = direction == "up" ? "afterend" : "beforebegin";
         nextElement.insertAdjacentElement(type, thisEl);
-
         if(direction == "up") {
           nextGrid.zIndex--;
           g.zIndex++;
