@@ -53,9 +53,7 @@ window.addEventListener("keydown", e => {
   frameLoop();
 });
 
-
 window.addEventListener("keyup", e => {
   mouse.shiftPressed = false;
   frameLoop();
 });
-

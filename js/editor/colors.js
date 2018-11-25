@@ -130,7 +130,6 @@ const deleteColor = index => {
    })
 
    buildColorUI();
-   // updateColors();//
    frameLoop();
 }
 
@@ -179,21 +178,16 @@ buildColorUI();
 
 selectColor(selectedColorIndex);
 
-
 const highlightGridsByIndex = colorIndex => {
-  console.log(colorIndex);
   grids.map(g => {
-    console.log(g);
     if(g.fillColorIndex == colorIndex) {
       g.svgEl.classList.add("pulse");
     }
-    
-  })
+  });
 }
 
 const clearGridHighlight = () => {
   grids.map(g => {
     g.svgEl.classList.remove("pulse");
   })
-
 }
