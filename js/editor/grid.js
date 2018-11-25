@@ -32,7 +32,6 @@ class Grid {
       this.svgEl.setAttribute("stroke-linejoin", "round");
 
       this.zIndex = (svgImage.querySelectorAll("polygon").length || 0)+ 1;
-      this.svgEl.setAttribute("z-index", this.zIndex);
 
       svgImage.appendChild(this.svgEl);
 

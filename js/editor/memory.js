@@ -70,6 +70,7 @@ const loadPicture = (picture) => {
     let pictureData = picture;
     let savedGrids = pictureData.grids;
 
+
     if(pictureData.colors) {
       availableColors = pictureData.colors;
       updateColors();
@@ -132,14 +133,6 @@ loadButton.addEventListener("click", () => {
   let picture = window.localStorage.getItem("picture");
   loadPicture(JSON.parse(picture));
 });
-
-// wobbleButton.addEventListener("mousedown", () => {
-//   wobble = true;
-// });
-
-// wobbleButton.addEventListener("mouseup", () => {
-//   wobble = false;
-// });
 
 resetButton.addEventListener("click", () => {
   resetPicture();
