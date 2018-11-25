@@ -32,7 +32,7 @@ const buildColorUI = () => {
     let html = `
       <div class="delete color-ui" title="Delete this color"></div>
       <div class="add color-ui" title="Clone this color"></div>
-      <div class="colorpicker-wrapper color-ui" title="Change this color">
+      <div class="colorpicker-wrapper color-ui" title="Change this color" index="${index}">
         <input class="colorpicker" type="color" value="${color}" index="${index}"/>
       </div>
       <div
@@ -57,6 +57,16 @@ const buildColorUI = () => {
     swatchEl.addEventListener("click", function(el){
       selectColor(el.target.getAttribute("index"));
     });
+
+    colorEl.querySelector(".colorpicker-wrapper").addEventListener("mouseover", function(el){
+      let index = el.target.getAttribute("index");
+      highlightGridsByIndex(index);
+    });
+
+    colorEl.querySelector(".colorpicker-wrapper").addEventListener("mouseout", function(el){
+      clearGridHighlight();
+    });
+
 
     let deleteEl = colorEl.querySelector(".delete");
     deleteEl.addEventListener("click", function(el){
@@ -168,3 +178,22 @@ const selectColor = colorIndex => {
 buildColorUI();
 
 selectColor(selectedColorIndex);
+
+
+const highlightGridsByIndex = colorIndex => {
+  console.log(colorIndex);
+  grids.map(g => {
+    console.log(g);
+    if(g.fillColorIndex == colorIndex) {
+      g.svgEl.classList.add("pulse");
+    }
+    
+  })
+}
+
+const clearGridHighlight = () => {
+  grids.map(g => {
+    g.svgEl.classList.remove("pulse");
+  })
+
+}

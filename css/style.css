@@ -420,3 +420,16 @@ h1 {
     transform: translateY(5px);
   }
 }
+
+
+
+.svg-image polygon.pulse {
+  animation: pulse .3s ease-in-out;
+  animation-iteration-count: 2;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: .75;
+  }
+}
