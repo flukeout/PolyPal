@@ -1,9 +1,9 @@
 # ▲◼ PolyPal
 ### Your friendly web-based SVG editor for low-poly style illustrations 
 
-* ###  [Try it out!](https://flukeout.github.io/PolyPal/)
+###  [→ Try it out!](https://flukeout.github.io/PolyPal/)
 
-_PolyPal is a work in progress—it might have bugs!!_
+_Warning: It's a work in progress—it might have bugs!!_
 
 <img src="https://flukeout.github.io/PolyPal/images/screenshot.png" width="512"/>
 
