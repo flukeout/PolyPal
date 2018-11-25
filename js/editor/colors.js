@@ -127,7 +127,7 @@ const deleteColor = index => {
       grid.fillColorIndex--;
     }
     return grid;
-   })
+   });
 
    buildColorUI();
    frameLoop();
