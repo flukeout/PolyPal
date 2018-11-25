@@ -332,7 +332,6 @@ window.addEventListener("mouseup", (e) => {
 
   roundPoints();
   frameLoop();
-  savePicture();
 });
 
 const moveSticky = (dX, dY) => {

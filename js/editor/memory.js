@@ -126,14 +126,14 @@ const loadPicture = (picture) => {
   }
 }
 
-// saveButton.addEventListener("click", () => {
-//   savePicture();
-// });
+saveButton.addEventListener("click", () => {
+  savePicture();
+});
 
-// loadButton.addEventListener("click", () => {
-//   let picture = window.localStorage.getItem("picture");
-//   loadPicture(JSON.parse(picture));
-// });
+loadButton.addEventListener("click", () => {
+  let picture = window.localStorage.getItem("picture");
+  loadPicture(JSON.parse(picture));
+});
 
 resetButton.addEventListener("click", () => {
   resetPicture();
