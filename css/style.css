@@ -40,6 +40,7 @@ body {
   font-size: 12px;
   padding: 10px 12px;
   border-radius: 20px;
+  cursor: pointer;
 }
 
 .top-ui button:hover {
@@ -381,3 +382,41 @@ h1 {
 }
 
 
+
+
+.top-ui button {
+  position: relative;
+}
+
+.top-ui button:hover:after {
+  position: absolute;
+  top: 44px;
+  padding: 10px;
+  content: attr(text);
+  left: calc(50% - 60px);
+  width: 120px;
+  background: black;
+  color: white;
+  border-radius: 3px;
+  box-sizing: border-box;
+  animation: tooltip 2s ease-in;
+  transform: translateY(5px);
+}
+
+@keyframes tooltip {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(7px);
+  }
+  30% {
+    transform: translateY(5px);
+  }
+}

@@ -20,7 +20,6 @@ const toolCreate = {
       return newPoint;
     });
 
-
     this.activeGrid = createGrid(newPoints, { fillColorIndex : selectedColorIndex});
     grids.push(this.activeGrid);
   },
