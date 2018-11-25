@@ -49,12 +49,15 @@ const selectTool = toolName => {
       if(selectedTool === "selector" && toolName === "selector") {
         toggleExtrudeMode();
       }
+      if(selectedTool != toolName) {
+        deselectGrids();
+        deselectPoints();
+      }
       selectedTool = toolName;
       svgScene.setAttribute("tool", toolName);
     }
   });
-  deselectGrids();
-  deselectPoints();
+  
 }
 
 selectTool("selector");
