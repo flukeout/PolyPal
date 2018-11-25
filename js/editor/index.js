@@ -347,11 +347,6 @@ const deleteSelectedGrids = () => {
   grids = customFilter(grids, (g => g.selected));
 }
 
-window.addEventListener("keyup", e => {
-  let key = getKey(e.keyCode);
-});
-
-
 let frameCount = 0;
 let hoveredVertex = false;
 let hoveredSegments;

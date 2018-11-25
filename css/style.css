@@ -7,7 +7,6 @@ body {
   -moz-user-select: none;
 }
 
-
 .logo {
   color: black;
   margin: 0 15px;
@@ -325,7 +324,6 @@ h1 {
   background-image: url(../images/icon-selector-selected.svg);
 }
 
-
 .tools .tool.paintbrush:after {
   content: "B";
 }
@@ -341,8 +339,6 @@ h1 {
 .tools .tool.creator:after {
   content: "C";
 }
-
-
 
 .tool.paintbrush {
   background-image: url(../images/icon-paintbrush.svg);
@@ -368,7 +364,6 @@ h1 {
   cursor: pointer;
 }
 
-
 .svg-canvas[tool="selector"] {
   cursor: default;
 }
@@ -380,9 +375,6 @@ h1 {
 .svg-canvas[tool="move"] {
   cursor: move;
 }
-
-
-
 
 .top-ui button {
   position: relative;
@@ -420,8 +412,6 @@ h1 {
     transform: translateY(5px);
   }
 }
-
-
 
 .svg-image polygon.pulse {
   animation: pulse .3s ease-in-out;
