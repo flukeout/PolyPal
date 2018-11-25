@@ -15,7 +15,12 @@ body {
   font-size: 16px;
   float: left;
   position: relative;
-  top: 6px;
+  top: 10px;
+  background-image: url(../images/polypal-logo.svg);
+  background-position: top left;
+  background-repeat: no-repeat;
+  background-size: 34px;
+  padding-left: 38px;
 }
 
 .top-ui {
