@@ -125,7 +125,7 @@ svgScene.addEventListener("mousedown", (e) => {
 
             if(dist <= lineHoverDistance) {
               if(cloners.length < 2) {
-                console.log("starting a clone here");
+
                 cloners.push(thisP);
                 cloners.push(nextP);
               }
@@ -234,7 +234,6 @@ window.addEventListener("mousemove", (e) => {
 
     if(clonedGrid.grid) {
       let cloneDist = distPoints(clonedGrid.startPoint, { x: mouse.x, y : mouse.y});
-      console.log(cloneDist);
       if(cloneDist > 18) {
         clonedGrid.grid.mode = "normal";
       } else {
