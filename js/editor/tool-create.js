@@ -74,15 +74,16 @@ const toolCreate = {
       ]
 
       let index = 0;
-      this.activeGrid.points.map(p => {
-        p.x = this.start.x + vals[index].x;
-        p.y = this.start.y + vals[index].y;
-        index++;
-        return p;
-      });
-
-
+      if(this.activeGrid) {
+        this.activeGrid.points.map(p => {
+          p.x = this.start.x + vals[index].x;
+          p.y = this.start.y + vals[index].y;
+          index++;
+          return p;
+        });
+      }
     }
+
     this.activeGrid = false;
     selectTool("selector");
   }
